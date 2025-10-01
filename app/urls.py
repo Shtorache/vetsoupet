@@ -1,0 +1,14 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("", views.index, name="index"),
+    path("criar/", views.criar_agendamento, name="criar_agendamento"),
+    path("clientes/", views.lista_clientes, name="lista_clientes"),
+    path("clientes/novo/", views.cadastrar_cliente, name="cadastrar_cliente"),
+    path("clientes/<int:pk>/", views.detalhe_cliente, name="detalhe_cliente"),
+    path("clientes/<int:cliente_id>/adicionar-paciente/", views.adicionar_paciente, name="adicionar_paciente"),
+    path("editar/<int:pk>/", views.editar_agendamento, name="editar_agendamento"),
+    path("atendimentos/", views.atendimentos_realizados, name="atendimentos_realizados"),
+    path("atendimento/<int:pk>/", views.detalhar_atendimento, name="detalhar_atendimento"),
+]

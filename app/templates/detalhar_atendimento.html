@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalhes do Atendimento</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <main class="container">
+    <header class="page-header" style="justify-content: flex-start; gap: 20px;">
+        <h1>Detalhes do Atendimento</h1>
+        <a href="{% url 'atendimentos_realizados' %}" class="btn-secondary">↩ Voltar</a>
+    </header>
+
+    <section class="basic-details-card">
+        <h3>Dados do Paciente e Serviço</h3>
+        <div class="form-grid">
+            <p><strong>Cliente:</strong> {{ agendamento.cliente }}</p>
+            <p><strong>Animal:</strong> {{ agendamento.animal }}</p>
+            <p><strong>Espécie:</strong> {{ agendamento.get_especie_display }}</p>
+            <p><strong>Raça:</strong> {{ agendamento.raca|default:"N/A" }}</p>
+            <p><strong>Serviço:</strong> {{ agendamento.tipo_atendimento }}</p>
+            <p><strong>Profissional:</strong> {{ agendamento.get_profissional_display }}</p>
+            <p><strong>Data:</strong> {{ agendamento.data|date:"d/m/Y" }}</p>
+            <p><strong>Hora:</strong> {{ agendamento.hora|time:"H:i" }}</p>
+        </div>
+    </section>
+    
+    <hr style="margin: 30px 0;">
+
+    <form method="post" class="detail-form-section">
+      {% csrf_token %}
+      <h2>Registro do Atendimento</h2>
+
+      <div class="form-group">
+        <label for="{{ form.relato_atendimento.id_for_label }}">Relato do Atendimento</label>
+        {{ form.relato_atendimento }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.prescricao.id_for_label }}">Prescrição</label>
+        {{ form.prescricao }}
+      </div>
+      
+      <div class="form-group checkbox-group">
+        {{ form.violento }}
+        <label for="{{ form.violento.id_for_label }}">Paciente violento?</label>
+      </div>
+      
+      <div class="modal-actions" style="justify-content: flex-start;">
+        <button type="submit" class="primary">Salvar Detalhes</button>
+      </div>
+    </form>
+
+  </main>
+</body>
+</html>

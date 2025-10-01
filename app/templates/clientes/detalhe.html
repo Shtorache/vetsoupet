@@ -1,0 +1,20 @@
+<h1>{{ cliente.nome }}</h1>
+{% if cliente.foto %}
+  <img src="{{ cliente.foto.url }}" width="150">
+{% endif %}
+<p>Email: {{ cliente.email }}</p>
+<p>Telefone: {{ cliente.telefone }}</p>
+<p>Endereço: {{ cliente.endereco }}</p>
+
+<h2>Pacientes</h2>
+<a href="{% url 'adicionar_paciente' cliente.pk %}">Adicionar Paciente</a>
+<ul>
+  {% for paciente in pacientes %}
+    <li>
+      {% if paciente.foto %}
+        <img src="{{ paciente.foto.url }}" width="80">
+      {% endif %}
+      {{ paciente.nome }} - {{ paciente.especie }} ({{ paciente.raca }})
+    </li>
+  {% endfor %}
+</ul>

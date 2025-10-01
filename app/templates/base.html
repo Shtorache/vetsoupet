@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <title>{% block title %}Sistema Vet{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>SOUPET - Sistema Vet</h1>
+        {% if user.is_authenticated %}
+            <p>Bem-vindo, {{ user.username }} | <a href="{% url 'logout' %}">Sair</a></p>
+        {% endif %}
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

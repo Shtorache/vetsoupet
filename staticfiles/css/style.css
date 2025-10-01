@@ -1,30 +1,539 @@
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 10;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
-  justify-content: center; align-items: center;
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
 }
-.modal-content {
-  background: #fff;
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
   padding: 20px;
-  border-radius: 10px;
-  width: 400px;
 }
-.modal.hidden { display: none; }
-.modal:not(.hidden) { display: flex; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-success {
+  background: #ff4d4d;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-success:hover {
+  background: #e63939;
+}
+
+.agenda {
+  margin-top: 20px;
+}
+
+.appt-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin: 15px 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.appt-time {
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.status {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status.confirmado { background: #28a745; color: white; }
+.status.pendente { background: #ffc107; color: black; }
+.status.cancelado { background: #dc3545; color: white; }
+.status.realizado { background: #6235dc; color: white; }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden { display: none; }
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 500px;
+  max-width: 95%;
+  animation: fadeIn 0.3s ease;
+}
+
 .close {
   float: right;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 22px;
 }
-button.primary {
-  background: #3b82f6;
-  color: #fff;
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.primary {
+  background: #ff4d4d;
+  color: white;
+  padding: 10px 15px;
   border: none;
-  padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.secondary {
+  background: #ccc;
+  color: black;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.logo-header {
+    /* Define o tamanho base para o logo */
+    height: 40px; 
+    width: auto; 
+    /* Garante que a imagem mantenha a qualidade ao ser dimensionada */
+    object-fit: contain; 
+    /* Adiciona margem se necessário para separação */
+    margin: 5px 0; 
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* style.css - Adições e modificações cruciais */
+
+/* Definições que faltavam ou eram necessárias para o layout: */
+
+/* Botão de Logout Padrão */
+.btn-logout {
+  background: #6c757d; /* Cor Cinza */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-logout:hover {
+  background: #5a6268;
+}
+
+/* Link Secundário (Atendimentos Realizados) */
+.btn-secondary, .link-anteriores {
+    background: #e9ecef;
+    color: #495057;
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+    display: inline-block; /* Garante que o padding funcione */
+}
+
+.btn-secondary:hover, .link-anteriores:hover {
+    background: #dae0e5;
+}
+
+/* Contêiner do Cabeçalho - Usando Flexbox para alinhar e distribuir elementos */
+.page-header {
+  display: flex;
+  justify-content: space-between; /* Distribui link (esquerda), logo (centro) e botões (direita) */
+  align-items: center;
+  margin-bottom: 20px; /* Adiciona espaço após o cabeçalho */
+}
+
+/* Contêiner da Logo (o h1 que envolve a img) */
+.header-logo-container {
+    flex-grow: 1; /* Permite que o h1 ocupe o espaço central */
+    text-align: center; /* Centraliza a imagem dentro dele */
+    margin: 0;
+    padding: 0;
+    /* Adiciona um z-index se você suspeitar de sobreposição */
+    z-index: 10; 
+}
+
+.logo-header {
+    height: 40px; 
+    width: auto; 
+    object-fit: contain; 
+    margin: 0; /* Remove margem desnecessária, usando o padding do header */
+}
+
+/* Ajuste nos cards para acomodar os botões de edição */
+.appt-card {
+  /* ... estilos existentes ... */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Alinha itens adicionais como username e botão de edição */
+.appt-card td {
+    padding: 0 5px;
+}
+/* Estilo para o botão de edição (assumindo que seja diferente do btn-success) */
+.edit-btn {
+    background: #007bff;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.2s;
+}
+
+.edit-btn:hover {
+    background: #0056b3;
+}
+
+/* style.css - Adições para a estética do appt-card */
+
+.appt-card {
+    /* Manter o flex, mas agora com alinhamento vertical e separação por blocos */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alinha o conteúdo ao topo do card */
+    gap: 20px; /* Espaço entre os blocos (Time, Details, Actions) */
+    
+    background: white;
+    border-radius: 12px;
+    padding: 20px; /* Aumenta o padding para dar mais ar */
+    margin: 15px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Sombra mais suave */
+}
+
+/* Define a área de detalhes para ocupar a maior parte do espaço */
+.appt-details {
+    flex-grow: 1; 
+    max-width: 60%; /* Evita que o texto estique demais */
+}
+
+/* Estilização para separar cada grupo de informação */
+.detail-category {
+    margin: 0 0 10px 0;
+    padding: 5px 0;
+    border-left: 3px solid #ff4d4d; /* Linha sutil para categorizar */
+    padding-left: 10px;
+    font-size: 0.95rem;
+}
+
+.detail-category strong {
+    color: #495057; /* Cor sutil para os títulos das categorias */
+    font-weight: 700;
+}
+
+/* Ajusta o bloco de tempo e ações */
+.appt-time {
+    text-align: center;
+    min-width: 80px; /* Garante que a data e hora não quebrem */
+}
+
+.appt-hour {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.appt-date {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Organiza o status e botões de ação na direita */
+.appt-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinha tudo à direita */
+    gap: 8px;
+    min-width: 150px;
+}
+
+.user-info {
+    color: #999;
+    font-size: 0.75rem;
+    margin-top: 5px;
+}
+
+.notes {
+    font-size: 0.9rem;
+    color: #dc3545; /* Destaca observações */
+    margin-top: 10px;
+    padding-top: 5px;
+    border-top: 1px dashed #e9ecef;
+}
+
+/* Sobrescreve as células da tabela dentro do card (se houver) */
+.appt-card td {
+    display: none; /* Esconde as TDs antigas que você tinha */
+}
+.appt-actions .edit-btn {
+    margin-top: 5px;
+}
+
+/* style.css - Adições para as páginas de Detalhe e Realizados */
+
+/* Estilo para a tag de alerta */
+.tag.alert-tag {
+    display: inline-block;
+    background: #dc3545;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+/* Estilo para o bloco de dados básicos na página de detalhe */
+.basic-details-card {
+    background: #e9ecef;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.basic-details-card h3 {
+    margin-top: 0;
+    color: #495057;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.basic-details-card p {
+    margin: 5px 0;
+    font-size: 1rem;
+}
+
+/* Campos de formulário (Textarea/Checkbox) */
+.detail-form-section .form-group textarea,
+.detail-form-section .form-group input[type="text"],
+.detail-form-section .form-group input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    margin-top: 5px;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.checkbox-group label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+/* Ajustes para o layout de cards em "realizados" */
+.summary-details {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #e9ecef;
+}
+
+.summary-details .atendimento-info {
+    flex: 1;
+}
+
+.small-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Permite quebra no mobile */
+  gap: 10px;
+}
+
+.btn-success,
+.btn-logout,
+.btn-secondary,
+.link-anteriores,
+.primary,
+.secondary,
+.edit-btn {
+  font-size: 0.9rem; /* Ajuste de tamanho para caber em telas pequenas */
+}
+
+/* ================================
+   RESPONSIVIDADE
+================================ */
+
+/* Telas até 768px (tablets e celulares em modo paisagem) */
+@media (max-width: 768px) {
+  .container {
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .btn-success,
+  .btn-logout,
+  .btn-secondary,
+  .link-anteriores {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .appt-card {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+    padding: 15px;
+  }
+
+  .appt-time {
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .appt-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .appt-details {
+    max-width: 100%;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr; /* Cada campo em uma linha */
+  }
+
+  .modal-content {
+    width: 90%;
+    padding: 15px;
+  }
+}
+
+/* Telas até 480px (celulares pequenos em retrato) */
+@media (max-width: 480px) {
+  body {
+    font-size: 0.9rem;
+  }
+
+  .container {
+    margin: 10px auto;
+    padding: 10px;
+  }
+
+  .page-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .btn-success,
+  .btn-logout,
+  .btn-secondary,
+  .link-anteriores,
+  .primary,
+  .secondary {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+  }
+
+  .appt-card {
+    padding: 12px;
+    margin: 10px 0;
+  }
+
+  .appt-hour {
+    font-size: 1.2rem;
+  }
+
+  .appt-date {
+    font-size: 0.8rem;
+  }
+
+  .appt-actions {
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 10px;
+  }
+
+  textarea, input, select {
+    font-size: 0.85rem;
+  }
 }

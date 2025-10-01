@@ -26,7 +26,15 @@ SECRET_KEY = 'django-insecure-6*)^8$cjeyt5c&^$49510*xnwn&#17y5(d(x*80r0y2-g&j5@d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "54edde56f270.ngrok-free.app"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://54edde56f270.ngrok-free.app"
+]
 
 
 # Application definition
@@ -112,9 +120,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -124,8 +132,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# A URL para acessar os arquivos no navegador
 STATIC_URL = '/static/'
+
+# A pasta para onde o `collectstatic` vai copiar TODOS os arquivos
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# A lista de pastas onde o Django vai PROCURAR por arquivos estáticos
+# PARA:
+STATICFILES_DIRS = [
+    BASE_DIR / 'app' / 'static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

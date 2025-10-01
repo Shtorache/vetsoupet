@@ -7,19 +7,57 @@ import json
 import datetime # <-- Adicionado para a separação de datas
 
 
+# Substitua sua função index por esta:
+
 @login_required
 def index(request):
     today = datetime.date.today()
     
-    # 1. Agendamentos Passados (anteriores a hoje) - Ordem decrescente
-    agendamentos_anteriores = Agendamento.objects.filter(
-        data__lt=today 
-    ).order_by("-data", "-hora")
+    # 1. Define as buscas base
+    agendamentos_ativos = Agendamento.objects.filter(data__gte=today)
+    agendamentos_anteriores = Agendamento.objects.filter(data__lt=today)
 
-    # 2. Agendamentos Ativos (hoje ou futuro) - Ordem crescente (próximo primeiro)
-    agendamentos_ativos = Agendamento.objects.filter(
-        data__gte=today 
-    ).order_by("data", "hora")
+    # 2. Pega os valores do formulário de filtro da URL (GET)
+    profissional = request.GET.get('profissional', '')
+    cliente = request.GET.get('cliente', '')
+    animal = request.GET.get('animal', '')
+    especie = request.GET.get('especie_filtro', '')
+    data = request.GET.get('data', '')
+    status = request.GET.get('status', '')
+
+    # 3. Aplica os filtros nas DUAS buscas, se eles existirem
+    if profissional:
+        agendamentos_ativos = agendamentos_ativos.filter(profissional__icontains=profissional)
+        agendamentos_anteriores = agendamentos_anteriores.filter(profissional__icontains=profissional)
+    if cliente:
+        agendamentos_ativos = agendamentos_ativos.filter(cliente__icontains=cliente)
+        agendamentos_anteriores = agendamentos_anteriores.filter(cliente__icontains=cliente)
+    if animal:
+        agendamentos_ativos = agendamentos_ativos.filter(animal__icontains=animal)
+        agendamentos_anteriores = agendamentos_anteriores.filter(animal__icontains=animal)
+    if especie:
+        agendamentos_ativos = agendamentos_ativos.filter(especie=especie)
+        agendamentos_anteriores = agendamentos_anteriores.filter(especie=especie)
+    if data:
+        agendamentos_ativos = agendamentos_ativos.filter(data=data)
+        agendamentos_anteriores = agendamentos_anteriores.filter(data=data)
+    if status:
+        agendamentos_ativos = agendamentos_ativos.filter(status=status)
+        agendamentos_anteriores = agendamentos_anteriores.filter(status=status)
+
+    # 4. Cria um dicionário com os filtros aplicados para devolver ao template
+    filtros = {
+        'profissional': profissional,
+        'cliente': cliente,
+        'animal': animal,
+        'especie_filtro': especie,
+        'data': data,
+        'status': status,
+    }
+
+    # Ordena os resultados finais
+    agendamentos_ativos = agendamentos_ativos.order_by("data", "hora")
+    agendamentos_anteriores = agendamentos_anteriores.order_by("-data", "-hora")
 
     form = AgendamentoForm()
     racas_choices = json.dumps(Agendamento.RACAS_CHOICES)
@@ -29,17 +67,50 @@ def index(request):
         "agendamentos_anteriores": agendamentos_anteriores,
         "form": form,
         "racas_choices": racas_choices,
+        "filtros": filtros, # <-- DEVOLVE OS FILTROS PARA O TEMPLATE
     })
-
 @login_required
 def atendimentos_realizados(request):
-    # ✅ Garantindo a ordem cronológica
-    agendamentos = Agendamento.objects.filter(status="realizado").order_by("data", "hora")
+    # 1. Começa com a busca base por atendimentos realizados
+    agendamentos = Agendamento.objects.filter(status="realizado")
+
+    # 2. Pega os valores do formulário de filtro da URL (GET)
+    profissional = request.GET.get('profissional', '')
+    cliente = request.GET.get('cliente', '')
+    animal = request.GET.get('animal', '')
+    especie = request.GET.get('especie_filtro', '')
+    data = request.GET.get('data', '')
+
+    # 3. Aplica os filtros na busca, um por um, se eles existirem
+    if profissional:
+        # __icontains faz uma busca case-insensitive que "contém" o texto
+        agendamentos = agendamentos.filter(profissional__icontains=profissional)
+    if cliente:
+        agendamentos = agendamentos.filter(cliente__icontains=cliente)
+    if animal:
+        agendamentos = agendamentos.filter(animal__icontains=animal)
+    if especie:
+        agendamentos = agendamentos.filter(especie=especie)
+    if data:
+        agendamentos = agendamentos.filter(data=data)
+
+    # 4. Cria um dicionário com os filtros aplicados para devolver ao template
+    filtros = {
+        'profissional': profissional,
+        'cliente': cliente,
+        'animal': animal,
+        'especie_filtro': especie,
+        'data': data
+    }
+    
+    # Ordena o resultado final
+    agendamentos = agendamentos.order_by("-data", "-hora")
     form = AgendamentoForm()
 
     return render(request, "atendimentos_realizados.html", {
         "agendamentos": agendamentos,
         "form": form,
+        "filtros": filtros, # <-- DEVOLVE OS FILTROS PARA O TEMPLATE
     })
 
 @login_required

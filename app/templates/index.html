@@ -27,7 +27,12 @@
 
     <div id="filtro-panel" class="hidden filtro-panel">
       <form method="get" class="filtro-form">
-        <input type="text" name="profissional" placeholder="Profissional" value="{{ filtros.profissional }}">
+        <select name="profissional">
+          {% for key, val in form.profissional.field.choices %}
+            <option value="{{ key }}" {% if filtros.profissional == key %}selected{% endif %}>{{ val }}</option>
+          {% endfor %}
+        </select>
+
         <input type="text" name="cliente" placeholder="Cliente" value="{{ filtros.cliente }}">
         <input type="text" name="animal" placeholder="Animal" value="{{ filtros.animal }}">
 

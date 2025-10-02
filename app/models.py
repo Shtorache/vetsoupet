@@ -2,11 +2,28 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Animal(models.Model):
-    nome = models.CharField(max_length=100)
+class Cliente(models.Model):
+    nome = models.CharField(max_length=150)
+    email = models.EmailField(blank=True, null=True)
+    telefone = models.CharField(max_length=20, blank=True, null=True)
+    endereco = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.nome
+
+def upload_tutor(instance, filename):
+    return f"tutores/{instance.id}/{filename}"
+
+def upload_paciente(instance, filename):
+    # 🎯 CORREÇÃO: Verifica se 'instance.cliente' existe e tem um PK.
+    # Se o objeto Animal está sendo criado (primeira submissão), ele ainda não tem um PK.
+    # No entanto, ele DEVE ter o objeto 'cliente' anexado na view antes de ser salvo (commit=False).
+    # Usamos uma string temporária se o cliente ainda não estiver anexado (embora a view deva cuidar disso).
+    cliente_id = instance.cliente.pk if hasattr(instance, 'cliente') and instance.cliente else 'temp_upload'
+    
+    # Se a foto já existe (edição), instance.cliente já deve ter um PK.
+    return f"pacientes/{cliente_id}/{filename}"
+
 
 
 class TipoAtendimento(models.Model):
@@ -89,8 +106,8 @@ class Agendamento(models.Model):
     }
 
 
-    cliente = models.CharField(max_length=100)
-    animal = models.CharField(max_length=100)
+    cliente = models.ForeignKey('Cliente', on_delete=models.PROTECT, related_name="agendamentos_cliente")
+    animal = models.ForeignKey('Animal', on_delete=models.PROTECT, related_name="agendamentos_paciente")
 
     especie = models.CharField(max_length=100, choices=ESPECIE_CHOICES, default=None)
     raca = models.CharField(max_length=100, blank=True, null=True)
@@ -119,29 +136,16 @@ class Agendamento(models.Model):
     )
 
     def __str__(self):
-        return f"{self.cliente} - {self.animal} ({self.data} {self.hora})"
+        return f"{self.cliente.nome} - {self.animal.nome} ({self.data} {self.hora})"
 
-def upload_tutor(instance, filename):
-    return f"tutores/{instance.id}/{filename}"
-
-def upload_paciente(instance, filename):
-    return f"pacientes/{instance.cliente.id}/{filename}"
-
-class Cliente(models.Model):
-    nome = models.CharField(max_length=150)
-    email = models.EmailField(blank=True, null=True)
-    telefone = models.CharField(max_length=20, blank=True, null=True)
-    endereco = models.CharField(max_length=255, blank=True, null=True)
-    foto = models.ImageField(upload_to=upload_tutor, blank=True, null=True)
-
-    def __str__(self):
-        return self.nome
-
-
-class Paciente(models.Model):
+class Animal(models.Model):
     cliente = models.ForeignKey(Cliente, related_name="pacientes", on_delete=models.CASCADE)
     nome = models.CharField(max_length=150)
-    especie = models.CharField(max_length=50, choices=[("Cachorro", "Cachorro"), ("Gato", "Gato"), ("Outro", "Outro")])
+    
+    # 🎯 CORREÇÃO CRÍTICA: Usar as mesmas choices do Agendamento
+    # O valor (e.g., 'canino') deve ser o mesmo usado como chave no RACAS_CHOICES.
+    especie = models.CharField(max_length=50, choices=Agendamento.ESPECIE_CHOICES) 
+    
     raca = models.CharField(max_length=100, blank=True, null=True)
     idade = models.PositiveIntegerField(blank=True, null=True)
     foto = models.ImageField(upload_to=upload_paciente, blank=True, null=True)

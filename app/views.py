@@ -1,13 +1,32 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from .models import Agendamento, Cliente, Paciente
-from .forms import AgendamentoForm, ClienteForm, PacienteForm, AtendimentoDetalhadoForm
+from .models import Agendamento, Cliente, Animal
+from .forms import AgendamentoForm, ClienteForm, AnimalForm, AtendimentoDetalhadoForm
 from django.contrib.auth.decorators import login_required
 import json
 import datetime # <-- Adicionado para a separação de datas
 
 
 # Substitua sua função index por esta:
+@login_required
+def buscar_pacientes_por_cliente(request, cliente_id):
+    """Retorna uma lista de pacientes (id e nome) para o cliente selecionado em formato JSON."""
+    
+    if not str(cliente_id).isdigit():
+        return JsonResponse({"pacientes": []}, status=400)
+
+    try:
+        pacientes = Animal.objects.filter(cliente_id=cliente_id).order_by('nome')
+    except Exception:
+        return JsonResponse({"pacientes": []}, status=500)
+    
+    # Cria a lista de pacientes com ID e nome (incluindo a espécie para clareza)
+    pacientes_data = [
+        {"id": paciente.id, "nome": f"{paciente.nome} ({paciente.especie})"}
+        for paciente in pacientes
+    ]
+    
+    return JsonResponse({"pacientes": pacientes_data})
 
 @login_required
 def index(request):
@@ -19,8 +38,8 @@ def index(request):
 
     # 2. Pega os valores do formulário de filtro da URL (GET)
     profissional = request.GET.get('profissional', '')
-    cliente = request.GET.get('cliente', '')
-    animal = request.GET.get('animal', '')
+    cliente_nome = request.GET.get('cliente', '')
+    animal_nome = request.GET.get('animal', '')
     especie = request.GET.get('especie_filtro', '')
     data = request.GET.get('data', '')
     status = request.GET.get('status', '')
@@ -29,12 +48,12 @@ def index(request):
     if profissional:
         agendamentos_ativos = agendamentos_ativos.filter(profissional__icontains=profissional)
         agendamentos_anteriores = agendamentos_anteriores.filter(profissional__icontains=profissional)
-    if cliente:
-        agendamentos_ativos = agendamentos_ativos.filter(cliente__icontains=cliente)
-        agendamentos_anteriores = agendamentos_anteriores.filter(cliente__icontains=cliente)
-    if animal:
-        agendamentos_ativos = agendamentos_ativos.filter(animal__icontains=animal)
-        agendamentos_anteriores = agendamentos_anteriores.filter(animal__icontains=animal)
+    if cliente_nome:
+        agendamentos_ativos = agendamentos_ativos.filter(cliente__icontains=cliente_nome)
+        agendamentos_anteriores = agendamentos_anteriores.filter(cliente__icontains=cliente_nome)
+    if animal_nome:
+        agendamentos_ativos = agendamentos_ativos.filter(animal__icontains=animal_nome)
+        agendamentos_anteriores = agendamentos_anteriores.filter(animal__icontains=animal_nome)
     if especie:
         agendamentos_ativos = agendamentos_ativos.filter(especie=especie)
         agendamentos_anteriores = agendamentos_anteriores.filter(especie=especie)
@@ -48,8 +67,8 @@ def index(request):
     # 4. Cria um dicionário com os filtros aplicados para devolver ao template
     filtros = {
         'profissional': profissional,
-        'cliente': cliente,
-        'animal': animal,
+        'cliente': cliente_nome,
+        'animal': animal_nome,
         'especie_filtro': especie,
         'data': data,
         'status': status,
@@ -76,8 +95,8 @@ def atendimentos_realizados(request):
 
     # 2. Pega os valores do formulário de filtro da URL (GET)
     profissional = request.GET.get('profissional', '')
-    cliente = request.GET.get('cliente', '')
-    animal = request.GET.get('animal', '')
+    cliente_nome = request.GET.get('cliente', '')
+    animal_nome = request.GET.get('animal', '')
     especie = request.GET.get('especie_filtro', '')
     data = request.GET.get('data', '')
 
@@ -85,10 +104,10 @@ def atendimentos_realizados(request):
     if profissional:
         # __icontains faz uma busca case-insensitive que "contém" o texto
         agendamentos = agendamentos.filter(profissional__icontains=profissional)
-    if cliente:
-        agendamentos = agendamentos.filter(cliente__icontains=cliente)
-    if animal:
-        agendamentos = agendamentos.filter(animal__icontains=animal)
+    if cliente_nome:
+        agendamentos = agendamentos.filter(cliente__icontains=cliente_nome)
+    if animal_nome:
+        agendamentos = agendamentos.filter(animal__icontains=animal_nome)
     if especie:
         agendamentos = agendamentos.filter(especie=especie)
     if data:
@@ -97,8 +116,8 @@ def atendimentos_realizados(request):
     # 4. Cria um dicionário com os filtros aplicados para devolver ao template
     filtros = {
         'profissional': profissional,
-        'cliente': cliente,
-        'animal': animal,
+        'cliente': cliente_nome,
+        'animal': animal_nome,
         'especie_filtro': especie,
         'data': data
     }
@@ -146,8 +165,8 @@ def editar_agendamento(request, pk):
         return JsonResponse({"success": False, "errors": form.errors})
 
     return JsonResponse({
-        "cliente": agendamento.cliente,
-        "animal": agendamento.animal,
+        "cliente": agendamento.cliente.id,
+        "animal": agendamento.animal.id,
         "tipo_atendimento": agendamento.tipo_atendimento,
         "profissional": agendamento.profissional,
         "especie": getattr(agendamento, "especie", ""),
@@ -175,8 +194,14 @@ def criar_agendamento(request):
 
 @login_required
 def lista_clientes(request):
-    clientes = Cliente.objects.all()
-    return render(request, "clientes/lista.html", {"clientes": clientes})
+    """Lista todos os clientes e prepara o formulário para adicionar um novo."""
+    clientes = Cliente.objects.all().order_by('nome')
+    form = ClienteForm() # Se você quiser usar o modal de cadastro rápido, é bom ter o form
+    
+    return render(request, "clientes/lista_clientes.html", {
+        "clientes": clientes,
+        "form": form # Passa o formulário, mesmo que não seja usado diretamente na listagem
+    })
 
 
 @login_required
@@ -201,13 +226,26 @@ def detalhe_cliente(request, pk):
 @login_required
 def adicionar_paciente(request, cliente_id):
     cliente = get_object_or_404(Cliente, pk=cliente_id)
+
     if request.method == "POST":
-        form = PacienteForm(request.POST, request.FILES)
+        form = AnimalForm(request.POST, request.FILES)
         if form.is_valid():
             paciente = form.save(commit=False)
+            # garante associação correta (o campo estará no form, mas reforçamos aqui)
             paciente.cliente = cliente
             paciente.save()
             return redirect("detalhe_cliente", pk=cliente.pk)
+        else:
+            # DEBUG: imprime erros no console do servidor (remova em produção)
+            print("Erros no AnimalForm:", form.errors)
     else:
-        form = PacienteForm()
-    return render(request, "pacientes/adicionar.html", {"form": form, "cliente": cliente})
+        # importante: passar o cliente como valor inicial para o campo hidden
+        form = AnimalForm(initial={"cliente": cliente.pk})
+
+    racas_choices_json = json.dumps(Agendamento.RACAS_CHOICES)
+
+    return render(request, "clientes/adicionar.html", {
+        "form": form,
+        "cliente": cliente,
+        "racas_choices": racas_choices_json,
+    })

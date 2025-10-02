@@ -15,6 +15,9 @@
     </div>
     <div class="header-actions">
         <a href="{% url 'atendimentos_realizados' %}" class="btn btn-secondary">Atendimentos Realizados</a>
+        
+        <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Clientes</a> 
+        
         <button class="btn btn-primary" id="new-appointment">+ Novo Agendamento</button>
         <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}

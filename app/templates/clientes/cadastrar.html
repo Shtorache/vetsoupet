@@ -1,6 +1,54 @@
-<h1>Cadastrar Cliente</h1>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Salvar</button>
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastrar Cliente</title>
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+  <style>
+    .container { max-width: 800px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+    .page-title { text-align: center; margin-bottom: 20px; }
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Duas colunas */
+        gap: 20px;
+    }
+    .full-width { grid-column: 1 / -1; } /* Faz um campo ocupar toda a largura */
+    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; }
+    .form-actions { text-align: right; margin-top: 20px; }
+  </style>
+</head>
+<body>
+    <main class="container">
+        <h1 class="page-title">Cadastrar Cliente</h1>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-grid">
+                
+                {% for field in form %}
+                    {% comment %} 
+                        O campo 'endereco' é grande, vamos fazê-lo full-width. 
+                        O campo 'foto' também deve ser full-width para melhor visualização.
+                    {% endcomment %}
+                    <div class="form-group {% if field.name == 'endereco' or field.name == 'foto' %}full-width{% endif %}">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <small class="text-danger">{{ field.errors }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar Cliente</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

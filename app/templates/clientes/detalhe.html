@@ -1,20 +1,61 @@
-<h1>{{ cliente.nome }}</h1>
-{% if cliente.foto %}
-  <img src="{{ cliente.foto.url }}" width="150">
-{% endif %}
-<p>Email: {{ cliente.email }}</p>
-<p>Telefone: {{ cliente.telefone }}</p>
-<p>Endereço: {{ cliente.endereco }}</p>
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ cliente.nome }}</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <style>
+        .container { max-width: 800px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .cliente-header { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .cliente-header img { border-radius: 50%; margin-right: 20px; object-fit: cover; }
+        .cliente-info p { margin: 5px 0; }
+        .pacientes-section { margin-top: 30px; }
+        .pacientes-section ul { list-style: none; padding: 0; }
+        .pacientes-section li { 
+            border: 1px solid #eee; 
+            padding: 10px; 
+            margin-bottom: 10px; 
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .pacientes-section li img { margin-right: 15px; border-radius: 4px; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <header class="cliente-header">
+            {% if cliente.foto %}
+                <img src="{{ cliente.foto.url }}" alt="{{ cliente.nome }}" width="100" height="100">
+            {% endif %}
+            <div>
+                <h1>{{ cliente.nome }}</h1>
+                <p>Email: <strong>{{ cliente.email|default:"N/A" }}</strong></p>
+                <p>Telefone: <strong>{{ cliente.telefone|default:"N/A" }}</strong></p>
+                <p>Endereço: <strong>{{ cliente.endereco|default:"N/A" }}</strong></p>
+            </div>
+        </header>
 
-<h2>Pacientes</h2>
-<a href="{% url 'adicionar_paciente' cliente.pk %}">Adicionar Paciente</a>
-<ul>
-  {% for paciente in pacientes %}
-    <li>
-      {% if paciente.foto %}
-        <img src="{{ paciente.foto.url }}" width="80">
-      {% endif %}
-      {{ paciente.nome }} - {{ paciente.especie }} ({{ paciente.raca }})
-    </li>
-  {% endfor %}
-</ul>
+        <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Voltar para a Lista</a>
+        <section class="pacientes-section">
+            <h2>Animais de {{ cliente.nome }}</h2>
+            <a href="{% url 'adicionar_paciente' cliente.pk %}" class="btn btn-primary">Adicionar Animal</a>
+            
+            <ul>
+                {% for paciente in pacientes %}
+                    <li>
+                        {% if paciente.foto %}
+                            <img src="{{ paciente.foto.url }}" alt="{{ paciente.nome }}" width="80" height="80">
+                        {% endif %}
+                        <strong>{{ paciente.nome }}</strong> - {{ paciente.especie }} 
+                        {% if paciente.raca %}({{ paciente.raca }}){% endif %}
+                    </li>
+                {% empty %}
+                    <p>Nenhum animal cadastrado para este cliente.</p>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

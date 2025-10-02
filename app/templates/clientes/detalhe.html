@@ -33,7 +33,7 @@
 
             <div class="pacientes-grid">
                 {% for paciente in pacientes %}
-                    <div class="paciente-card">
+                    <a href="{% url 'historico_animal' animal_pk=paciente.pk %}" class="paciente-card clickable-card">
                         {% if paciente.foto %}
                             <img src="{{ paciente.foto.url }}" alt="{{ paciente.nome }}">
                         {% else %}
@@ -41,7 +41,7 @@
                         {% endif %}
                         <strong>{{ paciente.nome }}</strong>
                         <span>{{ paciente.especie }}{% if paciente.raca %} ({{ paciente.raca }}){% endif %}</span>
-                    </div>
+                    </a>
                 {% empty %}
                     <p>Nenhum animal cadastrado para este cliente.</p>
                 {% endfor %}

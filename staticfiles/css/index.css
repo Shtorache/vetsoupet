@@ -1,12 +1,12 @@
-/* index.css - Estilo Principal SouPet (Versão Completa e Refinada) */
+/* index.css - Estilo Principal SouPet (Versão Final PC/Mobile) */
 
 /* 1. Variáveis de Tema */
 :root {
-    --primary: #b30000;      /* Vermelho principal, mais forte */
+    --primary: #1e9400;      /* Verde principal */
     --secondary: #2a9d8f;    /* Verde-água para ações secundárias */
     --success: #28a745;      /* Verde para sucesso */
-    --warning: #f4a261;      /* Laranja para pendente/alerta */
-    --danger: #e76f51;       /* Vermelho/Laranja para perigo */
+    --warning: #f77428;      /* Laranja para pendente/alerta */
+    --danger: #f82626;       /* Vermelho para perigo */
     --bg-main: #f8f9fa;      /* Fundo da página */
     --bg-card: #ffffff;      /* Fundo dos cards */
     --text-main: #212529;    /* Texto principal (quase preto) */
@@ -50,21 +50,22 @@ body {
 }
 
 /* 4. Botões */
-/* Classe base para todos os botões */
 .btn, .btn-primary, .btn-secondary, .btn-success, .btn-logout, .edit-btn, .primary, .secondary {
     border: none;
     border-radius: var(--border-radius);
-    padding: 10px 20px;
-    font-size: 0.9rem;
+    padding: 14px 28px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease-in-out;
     display: inline-block;
+    text-align: center;
+    letter-spacing: 0.5px;
 }
 .btn:hover, .btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-logout:hover, .edit-btn:hover, .primary:hover, .secondary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
 }
 
 /* Variações de cor */
@@ -72,179 +73,134 @@ body {
 .btn-secondary, .secondary { background-color: #e9ecef; color: var(--text-main); }
 .btn-success { background-color: var(--success); color: white; }
 .btn-logout { background-color: var(--danger); color: white; }
-.edit-btn { background-color: var(--secondary); color: white; font-size: 0.8rem; padding: 6px 12px; }
+.edit-btn { background-color: var(--secondary); color: white; font-size: 0.85rem; padding: 8px 14px; }
+
+/* 🔥 BOTÃO DE SAIR FLUTUANTE (VÁLIDO PARA TODAS AS TELAS) 🔥 */
+.header-actions form {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+}
+.btn-logout {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    border-radius: 40px; /* Deixa mais arredondado */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.btn-logout:hover {
+    background-color: #d60000;
+    transform: translateY(-2px) scale(1.05);
+}
 
 
 /* 5. Painel de Filtros */
-.filtro-panel {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background-color: var(--bg-card);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-}
-.filtro-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: center;
-}
-.filtro-form input,
-.filtro-form select {
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    flex: 1;
-}
+.filtro-panel { margin-bottom: 2rem; padding: 1.5rem; background-color: var(--bg-card); border-radius: var(--border-radius); box-shadow: var(--shadow); }
+.filtro-form { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+.filtro-form input, .filtro-form select { padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; flex: 1; }
 
 /* 6. Seção da Agenda e Cards */
-.agenda {
-    margin: 2rem 0;
-}
-.agenda h3 {
-    margin-bottom: 1rem;
-    color: var(--primary);
-    border-bottom: 2px solid var(--primary);
-    padding-bottom: 0.5rem;
-    display: inline-block;
-}
-
-.appt-card {
-    background-color: var(--bg-card);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    gap: 1.5rem;
-    align-items: flex-start;
-    border-left: 5px solid var(--primary);
-}
-
-.appt-time {
-    min-width: 100px;
-    text-align: center;
-}
-.appt-date {
-    font-weight: 700;
-    color: var(--text-main);
-}
-.appt-hour {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.appt-details {
-    flex: 1;
-}
-.detail-category {
-    margin: 0.5rem 0;
-    font-size: 0.95rem;
-}
-.notes {
-    font-style: italic;
-    color: var(--text-muted);
-    margin-top: 0.8rem;
-    padding-top: 0.8rem;
-    border-top: 1px dashed var(--border-color);
-}
-
-.appt-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-}
-.user-info {
-    font-size: 12px;
-    color: var(--text-muted);
-}
-
-.status {
-    padding: 5px 12px;
-    border-radius: 50px; /* Formato de pílula */
-    font-size: 12px;
-    font-weight: 700;
-    color: white;
-    text-transform: capitalize;
-}
-/* CORREÇÃO DOS NOMES PARA CORRESPONDER AO DJANGO */
+.agenda { margin: 2rem 0; }
+.agenda h3 { margin-bottom: 1rem; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; display: inline-block; }
+.appt-card { background-color: var(--bg-card); border-radius: var(--border-radius); box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1.5rem; display: flex; gap: 1.5rem; align-items: flex-start; border-left: 5px solid var(--primary); }
+.appt-time { min-width: 100px; text-align: center; }
+.appt-date { font-weight: 700; color: var(--text-main); }
+.appt-hour { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
+.appt-details { flex: 1; }
+.detail-category { margin: 0.5rem 0; font-size: 0.95rem; }
+.notes { font-style: italic; color: var(--text-muted); margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px dashed var(--border-color); }
+.appt-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.user-info { font-size: 12px; color: var(--text-muted); }
+.status { padding: 5px 12px; border-radius: 50px; font-size: 12px; font-weight: 700; color: white; text-transform: capitalize; }
 .status.pendente { background-color: var(--warning); }
 .status.realizado { background-color: var(--success); }
 .status.cancelado { background-color: var(--danger); }
 .status.confirmado { background-color: var(--secondary); }
 
 /* 7. Modal */
-.modal {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-}
-/* PARA: */
-.hidden {
-  display: none;
-}
-.modal-content {
-    background: var(--bg-card);
-    padding: 2rem;
-    border-radius: var(--border-radius);
-    width: 600px;
-    max-width: 95%;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    position: relative;
-}
-.modal-content h2 {
-    margin-top: 0;
-    color: var(--primary);
-}
-.close {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    color: var(--text-muted);
-}
+.modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.hidden { display: none; }
+.modal-content { background: var(--bg-card); padding: 2rem; border-radius: var(--border-radius); width: 600px; max-width: 95%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; }
+.modal-content h2 { margin-top: 0; color: var(--primary); }
+.close { position: absolute; top: 15px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; color: var(--text-muted); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.form-group { display: flex; flex-direction: column; }
+.form-group.full-width { grid-column: span 2; }
+.form-group label { font-size: 14px; margin-bottom: 5px; font-weight: 600; color: var(--text-main); }
+.form-group input, .form-group select, .form-group textarea { padding: 10px; border: 1px solid var(--border-color); border-radius: var(--border-radius); font-size: 14px; width: 100%; box-sizing: border-box; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
 
-/* Grid de formulário no modal */
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.2rem;
-}
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-.form-group.full-width {
-    grid-column: span 2;
-}
-.form-group label {
-    font-size: 14px;
-    margin-bottom: 5px;
-    font-weight: 600;
-    color: var(--text-main);
-}
-.form-group input,
-.form-group select,
-.form-group textarea {
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-size: 14px;
-}
 
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
+/* ======================================================= */
+/* ✨ REGRAS PARA TELAS PEQUENAS (CELULARES) ✨             */
+/* ======================================================= */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    .page-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    /* ✅ ALTERADO: Botões do menu ficam lado a lado e com tamanho uniforme */
+    .header-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+    .header-actions .btn {
+        flex-grow: 1; /* Faz os botões crescerem para ocupar o espaço */
+    }
+
+    .filtro-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filtro-form .btn {
+        width: 100%;
+    }
+    .appt-card {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .appt-time {
+        min-width: 0;
+        text-align: left;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px dashed var(--border-color);
+    }
+    .appt-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+        width: 100%;
+        align-items: center;
+    }
+    .modal-content {
+        width: auto;
+        margin: 0 1rem;
+        padding: 1.5rem;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .form-group.full-width {
+        grid-column: auto;
+    }
+    .modal-actions {
+        flex-direction: column-reverse;
+    }
+    .modal-actions .btn, .modal-actions .secondary {
+        width: 100%;
+    }
 }

@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Clientes</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <style>
+        /* Estilos específicos para a listagem de clientes, você pode movê-los para o index.css */
+        .cliente-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .cliente-info strong {
+            display: inline-block;
+            min-width: 80px;
+        }
+        .cliente-actions a {
+            margin-left: 10px;
+        }
+        .cliente-card:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <header class="page-header">
+            <div class="header-logo">
+                <img src="{% static 'imgs/IMG_6112.PNG' %}" alt="Logo VET Sou Pet">
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'index' %}" class="btn btn-secondary">Voltar para Agenda</a>
+                <a href="{% url 'cadastrar_cliente' %}" class="btn btn-primary">+ Novo Cliente</a>
+            </div>
+        </header>
+
+        <h2>Gerenciamento de Clientes</h2>
+        
+        <section class="cliente-list">
+            {% for cliente in clientes %}
+            <div class="cliente-card">
+                <div class="cliente-info">
+                    <p><strong>Nome:</strong> {{ cliente.nome }}</p>
+                    <p><strong>Telefone:</strong> {{ cliente.telefone|default:"N/A" }}</p>
+                    <p><strong>Email:</strong> {{ cliente.email|default:"N/A" }}</p>
+                </div>
+                <div class="cliente-actions">
+                    <span class="text-muted">Animais: {{ cliente.pacientes.count }}</span>
+                    <a href="{% url 'detalhe_cliente' pk=cliente.pk %}" class="btn btn-secondary">Ver Detalhes</a>
+                </div>
+            </div>
+            {% empty %}
+                <p>Nenhum cliente cadastrado.</p>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

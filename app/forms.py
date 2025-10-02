@@ -1,9 +1,9 @@
 from django import forms
-from .models import Agendamento, Cliente, Paciente, Profissional
+from .models import Agendamento, Cliente, Animal, Profissional
 
 
 from django import forms
-from .models import Agendamento, Cliente, Paciente, Profissional
+from .models import Agendamento, Cliente, Animal, Profissional
 
 
 class AgendamentoForm(forms.ModelForm):
@@ -34,8 +34,8 @@ class AgendamentoForm(forms.ModelForm):
             "status",
         ]
         widgets = {
-            "cliente": forms.TextInput(attrs={"class": "form-control"}),
-            "animal": forms.TextInput(attrs={"class": "form-control"}),
+            "cliente": forms.Select(attrs={"class": "form-control", "id": "id_cliente"}),
+            "animal": forms.Select(attrs={"class": "form-control", "id": "id_animal"}),
             "tipo_atendimento": forms.Select(attrs={"class": "form-control"}),
             "profissional": forms.Select(attrs={"class": "form-control"}),
             "data": forms.DateInput(attrs={"type": "date", "class": "form-control"}),  # 🔹 igual ao seu original
@@ -48,16 +48,34 @@ class AgendamentoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        especie = None
+        # 🔹 LÓGICA DE FILTRO DO Animal/ANIMAL
+        # 1. Inicialmente, remove todas as opções de animal.
+        self.fields['animal'].queryset = Animal.objects.none()
+        self.fields['animal'].choices = [("", "Selecione um cliente primeiro")]
 
-        # 🔹 Pega a espécie enviada no POST (quando valida o form)
+        cliente_id = None
+        
+        # 2. Tenta obter o cliente selecionado (do POST ou da instância em edição)
+        if self.data and "cliente" in self.data:
+            cliente_id = self.data.get("cliente")
+        elif self.instance and self.instance.cliente_id:
+            cliente_id = self.instance.cliente_id
+
+        # 3. Se um cliente for encontrado, filtra os Animals.
+        if cliente_id:
+            self.fields['animal'].queryset = Animal.objects.filter(cliente_id=cliente_id).order_by('nome')
+            
+            # Se já há Animals, remove a opção de "Selecione..."
+            if self.fields['animal'].queryset.exists():
+                self.fields['animal'].choices = [] 
+
+        # 🔹 LÓGICA DA RAÇA (Permanece inalterada)
+        especie = None
         if self.data and "especie" in self.data:
             especie = self.data.get("especie")
-        # 🔹 Se for edição, usa a instância
         elif self.instance and self.instance.especie:
             especie = self.instance.especie
 
-        # 🔹 Define os choices da raça dinamicamente
         if especie in Agendamento.RACAS_CHOICES:
             self.fields["raca"].choices = Agendamento.RACAS_CHOICES[especie]
         else:
@@ -77,28 +95,53 @@ class AtendimentoDetalhadoForm(forms.ModelForm):
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields = ["nome", "email", "telefone", "endereco", "foto"]
+        fields = ["nome", "email", "telefone", "endereco"]
         widgets = {
             "nome": forms.TextInput(attrs={"class": "form-control"}),
             "email": forms.EmailInput(attrs={"class": "form-control"}),
             "telefone": forms.TextInput(attrs={"class": "form-control"}),
             "endereco": forms.TextInput(attrs={"class": "form-control"}),
-            "foto": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
 
 
-class PacienteForm(forms.ModelForm):
+class AnimalForm(forms.ModelForm):
+    especie = forms.ChoiceField(
+        choices=Agendamento.ESPECIE_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={"class": "form-control", "id": "id_especie_animal"})
+    )
+    raca = forms.ChoiceField(
+        choices=[],
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control", "id": "id_raca_animal"})
+    )
+
     class Meta:
-        model = Paciente
+        model = Animal
         fields = ["cliente", "nome", "especie", "raca", "idade", "foto"]
         widgets = {
-            "cliente": forms.Select(attrs={"class": "form-control"}),
+            "cliente": forms.HiddenInput(),
             "nome": forms.TextInput(attrs={"class": "form-control"}),
-            "especie": forms.Select(attrs={"class": "form-control"}),
-            "raca": forms.TextInput(attrs={"class": "form-control"}),
+            "especie": forms.Select(attrs={"class": "form-control", "id": "id_especie_animal"}),
+            "raca": forms.Select(attrs={"class": "form-control", "id": "id_raca_animal"}),
             "idade": forms.NumberInput(attrs={"class": "form-control"}),
             "foto": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # preenche opções de raça de acordo com a espécie (se houver)
+        especie = None
+        if self.data and "especie" in self.data:
+            especie = self.data.get("especie")
+        elif self.instance and getattr(self.instance, "especie", None):
+            especie = self.instance.especie
+
+        if especie in Agendamento.RACAS_CHOICES:
+            self.fields["raca"].choices = Agendamento.RACAS_CHOICES[especie]
+        else:
+            self.fields["raca"].choices = [("", "Selecione uma espécie primeiro")]
 
 
 class ProfissionalForm(forms.ModelForm):

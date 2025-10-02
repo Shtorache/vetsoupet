@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Lista de Clientes</title>
+    <link rel="stylesheet" href="{% static 'css/lista_clientes.css' %}">
+</head>
+<body>
+    <main class="container">
+        <header class="page-header">
+            <div class="header-logo">
+                <img src="{% static 'imgs/IMG_6112.PNG' %}" alt="Logo VET Sou Pet">
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'index' %}" class="btn btn-secondary">Voltar para Agenda</a>
+                <a href="{% url 'cadastrar_cliente' %}" class="btn btn-primary">+ Novo Cliente</a>
+            </div>
+        </header>
+
+        <h2>Gerenciamento de Clientes</h2>
+        
+        <section class="cliente-list">
+            {% for cliente in clientes %}
+            <div class="cliente-card">
+                <div class="cliente-info">
+                    <p><strong>Nome:</strong> {{ cliente.nome }}</p>
+                    <p><strong>Telefone:</strong> {{ cliente.telefone|default:"N/A" }}</p>
+                    <p><strong>Email:</strong> {{ cliente.email|default:"N/A" }}</p>
+                </div>
+                <div class="cliente-actions">
+                    <span class="text-muted">Animais: {{ cliente.pacientes.count }}</span>
+                    <a href="{% url 'detalhe_cliente' pk=cliente.pk %}" class="btn btn-secondary">Ver Detalhes</a>
+                </div>
+            </div>
+            {% empty %}
+                <p>Nenhum cliente cadastrado.</p>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

@@ -1,20 +1,52 @@
-<h1>{{ cliente.nome }}</h1>
-{% if cliente.foto %}
-  <img src="{{ cliente.foto.url }}" width="150">
-{% endif %}
-<p>Email: {{ cliente.email }}</p>
-<p>Telefone: {{ cliente.telefone }}</p>
-<p>Endereço: {{ cliente.endereco }}</p>
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ cliente.nome }}</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/detalhe.css' %}">
+</head>
+<body>
+    <main class="container">
+        <header class="cliente-header">
+            {% if cliente.foto %}
+                
+            {% else %}
+                
+            {% endif %}
+            <div class="cliente-info">
+                <h1>{{ cliente.nome }}</h1>
+                <p>Email: <strong>{{ cliente.email|default:"N/A" }}</strong></p>
+                <p>Telefone: <strong>{{ cliente.telefone|default:"N/A" }}</strong></p>
+                <p>Endereço: <strong>{{ cliente.endereco|default:"N/A" }}</strong></p>
+            </div>
+        </header>
 
-<h2>Pacientes</h2>
-<a href="{% url 'adicionar_paciente' cliente.pk %}">Adicionar Paciente</a>
-<ul>
-  {% for paciente in pacientes %}
-    <li>
-      {% if paciente.foto %}
-        <img src="{{ paciente.foto.url }}" width="80">
-      {% endif %}
-      {{ paciente.nome }} - {{ paciente.especie }} ({{ paciente.raca }})
-    </li>
-  {% endfor %}
-</ul>
+        <div class="actions">
+            <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Voltar</a>
+            <a href="{% url 'adicionar_paciente' cliente.pk %}" class="btn btn-primary">Adicionar Animal</a>
+        </div>
+
+        <section class="pacientes-section">
+            <h2>Animais de {{ cliente.nome }}</h2>
+
+            <div class="pacientes-grid">
+                {% for paciente in pacientes %}
+                    <div class="paciente-card">
+                        {% if paciente.foto %}
+                            <img src="{{ paciente.foto.url }}" alt="{{ paciente.nome }}">
+                        {% else %}
+                            <img src="{% static 'img/default-pet.png' %}" alt="Animal">
+                        {% endif %}
+                        <strong>{{ paciente.nome }}</strong>
+                        <span>{{ paciente.especie }}{% if paciente.raca %} ({{ paciente.raca }}){% endif %}</span>
+                    </div>
+                {% empty %}
+                    <p>Nenhum animal cadastrado para este cliente.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

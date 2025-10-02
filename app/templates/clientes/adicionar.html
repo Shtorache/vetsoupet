@@ -1,6 +1,99 @@
-<h1>Adicionar Paciente para {{ cliente.nome }}</h1>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Salvar</button>
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Animal - {{ cliente.nome }}</title>
+    <link rel="stylesheet" href="{% static 'css/adicionar_animal.css' %}">
+</head>
+<body>
+    <main class="container">
+        <h1 class="page-title">Adicionar Animal para {{ cliente.nome }}</h1>
+
+        <!-- Mini dashboard de pets existentes -->
+        {% if pacientes %}
+        <section class="dashboard-pets">
+            <h2>Animais cadastrados</h2>
+            <div class="pets-grid">
+                {% for paciente in pacientes %}
+                    <div class="pet-card">
+                        {% if paciente.foto %}
+                            <img src="{{ paciente.foto.url }}" alt="{{ paciente.nome }}">
+                        {% else %}
+                            <div class="placeholder">Sem foto</div>
+                        {% endif %}
+                        <div class="pet-info">
+                            <strong>{{ paciente.nome }}</strong>
+                            <span>{{ paciente.especie }}{% if paciente.raca %} ({{ paciente.raca }}){% endif %}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Formulário de cadastro -->
+        <form method="post" enctype="multipart/form-data" class="form-animal">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+              <div class="text-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-grid">
+                {% for field in form %}
+                    {% if field.name == 'cliente' %}
+                        <div style="display:none;">{{ field }}</div>
+                    {% else %}
+                        <div class="form-group {% if field.name == 'foto' %}full-width{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <small class="text-danger">{{ field.errors }}</small>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'detalhe_cliente' pk=cliente.pk %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar Animal</button>
+            </div>
+        </form>
+
+    </main>
+
+    <!-- Script de raças -->
+    <script id="racas-choices-animal" type="application/json">
+        {{ racas_choices|safe }}
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const racasChoicesElement = document.getElementById("racas-choices-animal");
+            let racasChoices = {};
+            try { racasChoices = JSON.parse(racasChoicesElement.textContent.trim() || '{}'); }
+            catch (e) { console.error("Erro ao parsear RACAS_CHOICES.", e); }
+
+            const especieSelect = document.getElementById("id_especie_animal");
+            const racaSelect = document.getElementById("id_raca_animal");
+            
+            const updateRacaChoices = (especie, selectedRaca=null) => {
+                racaSelect.innerHTML = ''; 
+                racaSelect.add(new Option('---------', ''));
+                (racasChoices[especie]||[]).forEach(([v,l]) => {
+                    const option = new Option(l,v);
+                    if (selectedRaca && v===selectedRaca) option.selected = true;
+                    racaSelect.add(option);
+                });
+                if ((racasChoices[especie]||[]).length===0 && especie)
+                    racaSelect.options[0].textContent = 'Nenhuma raça disponível';
+            };
+
+            if (especieSelect && racaSelect) {
+                especieSelect.addEventListener("change", e => updateRacaChoices(e.target.value));
+                if (especieSelect.value) updateRacaChoices(especieSelect.value, racaSelect.value);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+/* cadastro_cliente.css - Estilo moderno estilo Material UI */
+
+body {
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 40px;
+    border-radius: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+}
+
+.page-title {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 34px;
+    font-weight: 700;
+    color: #3a56f3;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px; /* Maior espaçamento entre os campos */
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #555;
+    font-size: 15px;
+    transition: color 0.3s;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #007bff;
+    background-color: #e8f0fe;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.text-danger {
+    color: #d9534f;
+    font-size: 13px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #04e604, #1df109);
+    color: #fff;
+    box-shadow: 0 6px 15px rgba(0, 102, 255, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 102, 255, 0.4);
+}
+
+.btn-secondary {
+    background-color: #f71414;
+    color: #fff;
+    box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(243, 29, 29, 0.4);
+}
+
+/* ===================================== */
+/* ✨ RESPONSIVIDADE PARA CELULARES ✨     */
+/* ===================================== */
+@media (max-width: 768px) {
+
+    /* ✅ Melhora o espaçamento do container em telas pequenas */
+    .container {
+        margin: 20px 15px; /* Menos margem vertical, e adiciona margem lateral */
+        padding: 25px;     /* Menos padding interno */
+    }
+
+    /* ✅ Reduz o título para economizar espaço */
+    .page-title {
+        font-size: 28px;
+        margin-bottom: 30px;
+    }
+
+    /* Transforma o grid de 2 colunas em 1 (você já tinha feito isso, está perfeito) */
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* ✅ Ajusta os botões de ação para o padrão mobile */
+    .form-actions {
+        flex-direction: column-reverse; /* Empilha os botões (primário no topo) */
+        gap: 10px;
+    }
+
+    .form-actions .btn {
+        width: 100%; /* Botões ocupam a largura total */
+    }
+}

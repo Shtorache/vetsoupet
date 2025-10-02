@@ -1,0 +1,153 @@
+/* ===== Container principal ===== */
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px 25px;
+    background: linear-gradient(145deg, #ffffff, #f9f9fa);
+    border-radius: 15px;
+    box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+/* ===== Cabeçalho ===== */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+.header-logo img {
+    height: 60px;
+}
+.header-actions a {
+    margin-left: 10px;
+}
+
+/* ===== Título ===== */
+h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #222;
+    font-weight: 600;
+}
+
+/* ===== Cards de clientes ===== */
+.cliente-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+.cliente-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+.cliente-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* ===== Informações do cliente ===== */
+.cliente-info p {
+    margin: 5px 0;
+    font-size: 15px;
+    color: #555;
+}
+.cliente-info strong {
+    color: #333;
+    min-width: 80px;
+}
+
+/* ===== Ações ===== */
+.cliente-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+.cliente-actions .text-muted {
+    font-size: 14px;
+    color: #888;
+}
+.btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+    box-sizing: border-box; /* Boa prática para botões */
+}
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3, #003f7f);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    border: none;
+}
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #495057, #343a40);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* ================================== */
+/* ✨ OTIMIZAÇÕES PARA DISPOSITIVOS MÓVEIS ✨ */
+/* ================================== */
+@media (max-width: 768px) {
+    
+    /* ✅ Ajusta o container principal */
+    .container {
+        margin: 20px 15px;
+        padding: 20px;
+    }
+
+    /* ✅ Centraliza o título e reduz o tamanho */
+    h2 {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    /* ✅ Reorganiza o cabeçalho para ser vertical e centralizado */
+    .page-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    /* ✅ Melhora as ações do cabeçalho para serem botões de largura total */
+    .header-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        align-items: stretch;
+    }
+    .header-actions a {
+        margin-left: 0;
+        text-align: center;
+    }
+
+    /* ✅ Ajusta as ações dentro de cada card de cliente */
+    .cliente-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}

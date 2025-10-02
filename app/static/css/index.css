@@ -117,6 +117,8 @@ body {
 .status.cancelado { background-color: var(--danger); }
 .status.confirmado { background-color: var(--secondary); }
 
+
+
 /* 7. Modal */
 .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
 .hidden { display: none; }
@@ -226,3 +228,35 @@ body {
 .appt-card .status-select.realizado { background-color: #28a745; color: white; }
 .appt-card .status-select.cancelado { background-color: #dc3545; color: white; }
 .appt-card .status-select.confirmado { background-color: #0dcaf0; color: white; }
+
+/* ======================================================= */
+/* 🔥 ESTILOS PARA O DROPDOWN DE STATUS INTERATIVO 🔥      */
+/* ======================================================= */
+
+/* 1. Estilo base do dropdown */
+.status-select {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 50px;
+    border: 1px solid transparent;
+    text-transform: capitalize;
+    cursor: pointer;
+    
+    /* Essencial para permitir cores customizadas no celular */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* 2. Cores baseadas no status (APENAS nos cards) */
+.appt-card .status-select.pendente { background-color: #ffc107; color: #212529; }
+.appt-card .status-select.realizado { background-color: #28a745; color: white; }
+.appt-card .status-select.cancelado { background-color: #dc3545; color: white; }
+.appt-card .status-select.confirmado { background-color: #0dcaf0; color: white; }
+
+/* 3. Garante que a lista de opções seja sempre branca */
+.appt-card .status-select option {
+    background-color: #ffffff;
+    color: #212529;
+}

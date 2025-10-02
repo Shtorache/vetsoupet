@@ -5,370 +5,186 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
   <title>Agendamentos</title>
-  <!-- Import do CSS -->
   <link rel="stylesheet" href="{% static 'css/index.css' %}">
+ 
 </head>
 <body>
-  <main class="container">
-    <header class="page-header">
+<main class="container">
+  <header class="page-header">
     <div class="header-logo">
-        <img src="{% static 'imgs/IMG_6112.PNG' %}" alt="Logo VET Sou Pet">
+      <img src="{% static 'imgs/IMG_6112.PNG' %}" alt="Logo VET Sou Pet">
     </div>
     <div class="header-actions">
-        <a href="{% url 'atendimentos_realizados' %}" class="btn btn-secondary">Atendimentos Realizados</a>
-        
-        <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Clientes</a> 
-        
-        <button class="btn btn-primary" id="new-appointment">+ Novo Agendamento</button>
-        <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-logout">Sair dessa conta</button>
-        </form>
-    </div>
-</header>
-
-    <button type="button" id="toggle-filtro" class="btn-secondary">Mostrar Filtros</button>
-
-    <div id="filtro-panel" class="hidden filtro-panel">
-      <form method="get" class="filtro-form">
-        <select name="profissional">
-          {% for key, val in form.profissional.field.choices %}
-            <option value="{{ key }}" {% if filtros.profissional == key %}selected{% endif %}>{{ val }}</option>
-          {% endfor %}
-        </select>
-
-        <input type="text" name="cliente" placeholder="Cliente" value="{{ filtros.cliente }}">
-        <input type="text" name="animal" placeholder="Animal" value="{{ filtros.animal }}">
-
-        <select name="especie_filtro">
-          <option value="">Espécie</option>
-          {% for key, val in form.especie.field.choices %}
-            <option value="{{ key }}" {% if filtros.especie_filtro == key %}selected{% endif %}>{{ val }}</option>
-          {% endfor %}
-        </select>
-
-        <input type="date" name="data" value="{{ filtros.data }}">
-
-        <select name="status">
-          <option value="">Status</option>
-          {% for key, val in form.status.field.choices %}
-            <option value="{{ key }}" {% if filtros.status == key %}selected{% endif %}>{{ val }}</option>
-          {% endfor %}
-        </select>
-
-        <button type="submit" class="btn-primary">Filtrar</button>
-        <a href="{% url 'index' %}" class="btn-secondary">Limpar</a>
+      <a href="{% url 'atendimentos_realizados' %}" class="btn btn-secondary">Atendimentos Realizados</a>
+      <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Clientes</a>
+      <button class="btn btn-primary" id="new-appointment">+ Novo Agendamento</button>
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-logout">Sair dessa conta</button>
       </form>
     </div>
+  </header>
 
-    <section class="agenda">
-        <h3>Próximos Agendamentos</h3>
-        {% for ag in agendamentos_ativos %}
-          <div class="appt-card">
-              <div class="appt-time">
-                  <div class="appt-date">{{ ag.data|date:"d/m/Y" }}</div>
-                  <div class="appt-hour">{{ ag.hora|time:"H:i" }}</div>
-              </div>
-              
-              <div class="appt-details">
-                  <p class="detail-category">
-                      <strong>Cliente:</strong> {{ ag.cliente }}<br>
-                      <strong>Paciente:</strong> {{ ag.animal }}
-                  </p>
-                  
-                  <p class="detail-category">
-                      <strong>Espécie/Raça:</strong> {{ ag.get_especie_display }} {% if ag.raca %}({{ ag.raca }}){% endif %}
-                  </p>
-                  
-                  <p class="detail-category">
-                      <strong>Serviço:</strong> {{ ag.tipo_atendimento }}<br>
-                      <strong>Profissional:</strong> {{ ag.get_profissional_display }}
-                      <small class="text-muted"> | Duração: {{ ag.duracao }} min</small>
-                  </p>
-
-                  {% if ag.observacoes %}
-                      <p class="notes">
-                          **Obs:** {{ ag.observacoes }}
-                      </p>
-                  {% endif %}
-              </div>
-              
-              <div class="appt-actions">
-    <select class="status-select status-{{ ag.status }}" data-id="{{ ag.id }}">
-        {% for value, display in form.status.field.choices %}
-            <option value="{{ value }}" {% if ag.status == value %}selected{% endif %}>
-                {{ display }}
-            </option>
+  <button type="button" id="toggle-filtro" class="btn-secondary">Mostrar Filtros</button>
+  <div id="filtro-panel" class="hidden filtro-panel">
+    <form method="get" class="filtro-form">
+      <select name="profissional">
+        {% for key, val in form.profissional.field.choices %}
+          <option value="{{ key }}" {% if filtros.profissional == key %}selected{% endif %}>{{ val }}</option>
         {% endfor %}
-    </select>
-    <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
-    <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
-    
-</div>
-
-        {% empty %}
-          <p class="no-appt">Nenhum agendamento futuro/hoje.</p>
+      </select>
+      <input type="text" name="cliente" placeholder="Cliente" value="{{ filtros.cliente }}">
+      <input type="text" name="animal" placeholder="Animal" value="{{ filtros.animal }}">
+      <select name="especie_filtro">
+        <option value="">Espécie</option>
+        {% for key, val in form.especie.field.choices %}
+          <option value="{{ key }}" {% if filtros.especie_filtro == key %}selected{% endif %}>{{ val }}</option>
         {% endfor %}
-    </section>
-
-    <a id="toggle-anteriores" class="btn-secondary link-anteriores">
-        <span id="icone-anteriores">▶</span> Agendamentos Anteriores a Hoje
-    </a>
-
-    <section id="agenda-anteriores" class="agenda hidden">
-          <h3>Histórico de Agendamentos</h3>
-          {% for ag in agendamentos_anteriores %}
-            <div class="appt-card">
-              <div class="appt-time">
-                  <div class="appt-date">{{ ag.data|date:"d/m/Y" }}</div>
-                  <div class="appt-hour">{{ ag.hora|time:"H:i" }}</div>
-              </div>
-              
-              <div class="appt-details">
-                  <p class="detail-category">
-                      <strong>Cliente:</strong> {{ ag.cliente }}<br>
-                      <strong>Paciente:</strong> {{ ag.animal }}
-                  </p>
-                  
-                  <p class="detail-category">
-                      <strong>Espécie/Raça:</strong> {{ ag.get_especie_display }} {% if ag.raca %}({{ ag.raca }}){% endif %}
-                  </p>
-                  
-                  <p class="detail-category">
-                      <strong>Serviço:</strong> {{ ag.tipo_atendimento }}<br>
-                      <strong>Profissional:</strong> {{ ag.get_profissional_display }}
-                      <small class="text-muted"> | Duração: {{ ag.duracao }} min</small>
-                  </p>
-
-                  {% if ag.observacoes %}
-                      <p class="notes">
-                          **Obs:** {{ ag.observacoes }}
-                      </p>
-                  {% endif %}
-              </div>
-              
-              <div class="appt-actions">
-    <select class="status-select status-{{ ag.status }}" data-id="{{ ag.id }}">
-        {% for value, display in form.status.field.choices %}
-            <option value="{{ value }}" {% if ag.status == value %}selected{% endif %}>
-                {{ display }}
-            </option>
+      </select>
+      <input type="date" name="data" value="{{ filtros.data }}">
+      <select name="status">
+        <option value="">Status</option>
+        {% for key, val in form.status.field.choices %}
+          <option value="{{ key }}" {% if filtros.status == key %}selected{% endif %}>{{ val }}</option>
         {% endfor %}
-    </select>
-    <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
-</div>
-            </div>
-          {% empty %}
-            <p class="no-appt">Nenhum agendamento anterior.</p>
-          {% endfor %}
-    </section>
-
-  </main>
-
-  <!-- Modal -->
-  <div id="appointmentModal" class="modal hidden">
-    <div class="modal-content">
-        <span class="close" id="close-modal">&times;</span>
-        <h2>Novo Agendamento</h2>
-        
-        <form id="appointment-form" method="POST">
-            {% csrf_token %}
-            <div class="form-grid">
-                
-                <div class="form-group">
-                    <label for="{{ form.cliente.id_for_label }}">Cliente:</label>
-                    {{ form.cliente }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.animal.id_for_label }}">Animal:</label>
-                    {{ form.animal }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.especie.id_for_label }}">Espécie:</label>
-                    {{ form.especie }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.raca.id_for_label }}">Raça:</label>
-                    {{ form.raca }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.tipo_atendimento.id_for_label }}">Tipo:</label>
-                    {{ form.tipo_atendimento }}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.profissional.id_for_label }}">Profissional:</label>
-                    {{ form.profissional }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.data.id_for_label }}">Data:</label>
-                    {{ form.data }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.hora.id_for_label }}">Hora:</label>
-                    {{ form.hora }}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.duracao.id_for_label }}">Duração (min):</label>
-                    {{ form.duracao }}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.status.id_for_label }}">Status:</label>
-                    {{ form.status }}
-                </div>
-
-                <div class="form-group full-width">
-                    <label for="{{ form.observacoes.id_for_label }}">Observações:</label>
-                    {{ form.observacoes }}
-                </div>
-
-            </div>
-
-            <div class="modal-actions">
-                <button type="button" class="secondary" id="cancel-modal">Cancelar</button>
-                <button type="submit" class="primary">Salvar Agendamento</button>
-            </div>
-        </form>
-    </div>
+      </select>
+      <button type="submit" class="btn-primary">Filtrar</button>
+      <a href="{% url 'index' %}" class="btn-secondary">Limpar</a>
+    </form>
   </div>
 
-  <!-- Scripts -->
-  <script src="{% static 'js/main.js' %}"></script>
+  <!-- Próximos agendamentos -->
+  <section class="agenda">
+    <h3>Próximos Agendamentos</h3>
+    {% for ag in agendamentos_ativos %}
+      <div class="appt-card">
+        <div class="appt-time">
+          <div class="appt-date">{{ ag.data|date:"d/m/Y" }}</div>
+          <div class="appt-hour">{{ ag.hora|time:"H:i" }}</div>
+        </div>
+        <div class="appt-details">
+          <p class="detail-category"><strong>Cliente:</strong> {{ ag.cliente }}<br><strong>Paciente:</strong> {{ ag.animal }}</p>
+          <p class="detail-category"><strong>Espécie/Raça:</strong> {{ ag.get_especie_display }} {% if ag.raca %}({{ ag.raca }}){% endif %}</p>
+          <p class="detail-category"><strong>Serviço:</strong> {{ ag.tipo_atendimento }}<br><strong>Profissional:</strong> {{ ag.get_profissional_display }}<small class="text-muted"> | Duração: {{ ag.duracao }} min</small></p>
+          {% if ag.observacoes %}
+            <p class="notes">**Obs:** {{ ag.observacoes }}</p>
+          {% endif %}
+        </div>
+        <div class="appt-actions">
+          <select class="status-select" data-id="{{ ag.id }}">
+            {% for value, display in form.status.field.choices %}
+              <option value="{{ value }}" {% if ag.status == value %}selected{% endif %}>{{ display }}</option>
+            {% endfor %}
+          </select>
+          
+          <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
+        </div>
+      </div>
+    {% empty %}
+      <p class="no-appt">Nenhum agendamento futuro/hoje.</p>
+    {% endfor %}
+  </section>
+
+  <!-- Agendamentos anteriores -->
+  <a id="toggle-anteriores" class="btn-secondary link-anteriores"><span id="icone-anteriores">▶</span> Agendamentos Anteriores a Hoje</a>
+  <section id="agenda-anteriores" class="agenda hidden">
+    <h3>Histórico de Agendamentos</h3>
+    {% for ag in agendamentos_anteriores %}
+      <div class="appt-card">
+        <div class="appt-time">
+          <div class="appt-date">{{ ag.data|date:"d/m/Y" }}</div>
+          <div class="appt-hour">{{ ag.hora|time:"H:i" }}</div>
+        </div>
+        <div class="appt-details">
+          <p class="detail-category"><strong>Cliente:</strong> {{ ag.cliente }}<br><strong>Paciente:</strong> {{ ag.animal }}</p>
+          <p class="detail-category"><strong>Espécie/Raça:</strong> {{ ag.get_especie_display }} {% if ag.raca %}({{ ag.raca }}){% endif %}</p>
+          <p class="detail-category"><strong>Serviço:</strong> {{ ag.tipo_atendimento }}<br><strong>Profissional:</strong> {{ ag.get_profissional_display }}<small class="text-muted"> | Duração: {{ ag.duracao }} min</small></p>
+          {% if ag.observacoes %}
+            <p class="notes">**Obs:** {{ ag.observacoes }}</p>
+          {% endif %}
+        </div>
+        <div class="appt-actions">
+          <select class="status-select" data-id="{{ ag.id }}">
+            {% for value, display in form.status.field.choices %}
+              <option value="{{ value }}" {% if ag.status == value %}selected{% endif %}>{{ display }}</option>
+            {% endfor %}
+          </select>
+          <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
+          <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
+        </div>
+      </div>
+    {% empty %}
+      <p class="no-appt">Nenhum agendamento anterior.</p>
+    {% endfor %}
+  </section>
+</main>
+
+<!-- Modal -->
+<div id="appointmentModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close" id="close-modal">&times;</span>
+    <h2>Novo Agendamento</h2>
+    <form id="appointment-form" method="POST">
+      {% csrf_token %}
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="{{ form.cliente.id_for_label }}">Cliente:</label>{{ form.cliente }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.animal.id_for_label }}">Animal:</label>{{ form.animal }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.especie.id_for_label }}">Espécie:</label>{{ form.especie }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.raca.id_for_label }}">Raça:</label>{{ form.raca }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.tipo_atendimento.id_for_label }}">Tipo:</label>{{ form.tipo_atendimento }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.profissional.id_for_label }}">Profissional:</label>{{ form.profissional }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.data.id_for_label }}">Data:</label>{{ form.data }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.hora.id_for_label }}">Hora:</label>{{ form.hora }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.duracao.id_for_label }}">Duração (min):</label>{{ form.duracao }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.status.id_for_label }}">Status:</label>{{ form.status }}
+        </div>
+        <div class="form-group full-width">
+          <label for="{{ form.observacoes.id_for_label }}">Observações:</label>{{ form.observacoes }}
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="secondary" id="cancel-modal">Cancelar</button>
+        <button type="submit" class="primary">Salvar Agendamento</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const clienteSelect = document.getElementById("id_cliente");
-        const animalSelect = document.getElementById("id_animal");
-        const especieSelect = document.getElementById("id_especie");
-        const racaSelect = document.getElementById("id_raca");
-
-        // Variável para armazenar os dados completos dos animais carregados
-        let loadedPacientesData = []; 
-        
-        // --- 1. Lógica de Carregamento Dinâmico do Animal ---
-
-        if (clienteSelect && animalSelect) {
-            clienteSelect.addEventListener("change", function() {
-                const clienteId = this.value;
-
-                // Limpa opções e dados
-                animalSelect.innerHTML = '<option value="">Carregando...</option>';
-                loadedPacientesData = []; 
-                
-                // 🚨 Limpa espécie e raça ao mudar o cliente
-                especieSelect.value = '';
-                racaSelect.innerHTML = '<option value="">Selecione uma espécie primeiro</option>';
-
-                if (clienteId) {
-                    fetch(`/clientes/${clienteId}/pacientes/`)
-                        .then(response => response.json())
-                        .then(data => {
-                            animalSelect.innerHTML = '<option value="">Selecione o animal</option>';
-                            loadedPacientesData = data.pacientes || []; // Armazena os dados completos
-                            
-                            if (loadedPacientesData.length > 0) {
-                                loadedPacientesData.forEach(paciente => {
-                                    const option = document.createElement("option");
-                                    option.value = paciente.id;
-                                    option.textContent = paciente.nome;
-                                    animalSelect.appendChild(option);
-                                });
-                            } else {
-                                const option = document.createElement("option");
-                                option.textContent = "Nenhum paciente encontrado";
-                                animalSelect.appendChild(option);
-                            }
-                        })
-                        .catch(err => {
-                            console.error("Erro ao buscar pacientes:", err);
-                            animalSelect.innerHTML = '<option value="">Erro ao carregar</option>';
-                        });
-                } else {
-                    animalSelect.innerHTML = '<option value="">Selecione um cliente primeiro</option>';
-                }
-            });
-        }
-        
-        // --- 2. Lógica de Preenchimento Automático de Espécie e Raça ---
-
-        if (animalSelect && especieSelect && racaSelect) {
-            animalSelect.addEventListener("change", function() {
-                const animalId = parseInt(this.value);
-                
-                // Encontra os dados completos do animal selecionado
-                const paciente = loadedPacientesData.find(p => p.id === animalId);
-                
-                if (paciente) {
-                    // Preenche a ESPÉCIE
-                    especieSelect.value = paciente.especie;
-                    
-                    // Dispara o evento de 'change' na espécie para carregar as RAÇAS dinamicamente
-                    // A função de raças que já existe (seu segundo script) fará o resto!
-                    const changeEvent = new Event('change');
-                    especieSelect.dispatchEvent(changeEvent);
-
-                    // Após o carregamento das raças, preenche a RAÇA
-                    // (Pode haver um pequeno atraso, mas geralmente funciona)
-                    // A Raça cadastrada é o VALUE do Agendamento.RACAS_CHOICES (e.g., 'labrador')
-                    if (paciente.raca) {
-                        // Usamos um timeout de 10ms apenas para garantir que o DOM seja atualizado
-                        setTimeout(() => {
-                           racaSelect.value = paciente.raca;
-                        }, 10);
-                    }
-                    
-                } else {
-                    // Limpa se a opção padrão for selecionada
-                    especieSelect.value = '';
-                    racaSelect.innerHTML = '<option value="">Selecione uma espécie primeiro</option>';
-                }
-            });
-        }
-    });
-  </script>
-
-  <script>
-    // Variável global para o main.js
-    window.racasPorEspecie = {{ racas_choices|safe }};
-
-    const especieSelect = document.getElementById("id_especie");
-    const racaSelect = document.getElementById("id_raca");
-
-    if (especieSelect && racaSelect) {
-      // 🚨 Preenche raças automaticamente se já houver espécie selecionada
-      const initialEvent = new Event('change');
-      especieSelect.dispatchEvent(initialEvent);
-
-      especieSelect.addEventListener("change", function() {
-        const especie = this.value;
-        racaSelect.innerHTML = ""; // limpa opções
-
-        if (window.racasPorEspecie[especie]) {
-          const defaultOption = document.createElement("option");
-          defaultOption.value = "";
-          defaultOption.textContent = "---------";
-          racaSelect.appendChild(defaultOption);
-
-          window.racasPorEspecie[especie].forEach(([value, text]) => {
-            const option = document.createElement("option");
-            option.value = value;
-            option.textContent = text;
-            racaSelect.appendChild(option);
-          });
-        } else {
-          const option = document.createElement("option");
-          option.textContent = "Selecione uma espécie primeiro";
-          racaSelect.appendChild(option);
-        }
-      });
-    }
-  </script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Atualiza cor do span de status sem afetar dropdown
+  document.querySelectorAll(".status-select").forEach(select => {
+    const updateStatusSpan = () => {
+      const span = select.nextElementSibling;
+      if (span && span.classList.contains("status")) {
+        span.className = "status " + select.value;
+        span.textContent = select.options[select.selectedIndex].text;
+      }
+    };
+    updateStatusSpan();
+    select.addEventListener("change", updateStatusSpan);
+  });
+});
+</script>
 </body>
 </html>

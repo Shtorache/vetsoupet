@@ -17,7 +17,7 @@
           <a href="{% url 'index' %}" class="btn-success">Voltar aos Agendamentos</a>
           <form action="{% url 'logout' %}" method="post">
               {% csrf_token %}
-              <button type="submit" class="btn-logout">Sair</button>
+              
           </form>
       </div>
     </header>

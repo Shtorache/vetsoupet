@@ -49,6 +49,20 @@ body {
     align-items: center;
     text-align: center;
 }
+
+/* ✅ ======================================================= ✅ */
+/* ✅ ADIÇÃO PARA REMOVER A APARÊNCIA DE LINK DOS CARDS        ✅ */
+/* ✅ ======================================================= ✅ */
+.pet-card a {
+    text-decoration: none; /* Remove o sublinhado */
+    color: inherit;      /* Faz com que o texto herde a cor do elemento pai */
+}
+/* Opcional: Efeito visual ao passar o mouse, se o card for um link */
+.pet-card a:hover strong {
+    color: #007bff;
+}
+
+
 .pet-card img, .pet-card .placeholder {
     width: 80px;
     height: 80px;
@@ -128,9 +142,8 @@ body {
     margin-top: 30px;
 }
 
-
 .btn {
-    padding: 10px 1px;
+    padding: 10px 22px;
     border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
@@ -138,8 +151,6 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
-
-    /* Novas regras para centralização perfeita */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -173,7 +184,9 @@ input[type="file"] {
     border: 1px solid #ccc;
 }
 
-
+/* ===================================== */
+/* ✨ RESPONSIVIDADE PARA CELULARES ✨     */
+/* ===================================== */
 @media(max-width: 768px) {
     .container {
         margin: 20px 15px;

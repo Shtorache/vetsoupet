@@ -204,3 +204,25 @@ body {
         width: 100%;
     }
 }
+
+
+.status-select {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* Adicione esta regra ao seu index.css para corrigir as cores das opções */
+
+.appt-card .status-select option {
+    background-color: #ffffff; /* Fundo branco para as opções */
+    color: #212529;         /* Texto escuro para as opções */
+}
+/* Cores aplicadas APENAS nos dropdowns DENTRO dos cards de agendamento */
+.appt-card .status-select.pendente { background-color: #ffc107; color: #333; }
+.appt-card .status-select.realizado { background-color: #28a745; color: white; }
+.appt-card .status-select.cancelado { background-color: #dc3545; color: white; }
+.appt-card .status-select.confirmado { background-color: #0dcaf0; color: white; }

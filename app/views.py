@@ -6,6 +6,13 @@ from django.contrib.auth.decorators import login_required
 import json
 import datetime # <-- Adicionado para a separação de datas
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from .models import Agendamento
+
+
 
 # Substitua sua função index por esta:
 # views.py (Função buscar_pacientes_por_cliente CORRIGIDA)
@@ -183,6 +190,34 @@ def editar_agendamento(request, pk):
         "observacoes": agendamento.observacoes,
         "status": agendamento.status,
     })
+
+
+
+
+@login_required
+@require_POST
+def atualizar_status(request):
+    try:
+        data = json.loads(request.body)
+        agendamento_id = data.get('id')
+        novo_status = data.get('status')
+
+        agendamento = Agendamento.objects.get(pk=agendamento_id)
+        
+        # Opcional: Verificação de permissão
+        # if agendamento.usuario != request.user and not request.user.is_staff:
+        #     return JsonResponse({'success': False, 'error': 'Permissão negada'}, status=403)
+
+        old_status = agendamento.status
+        agendamento.status = novo_status
+        agendamento.save(update_fields=['status'])
+
+        return JsonResponse({'success': True})
+
+    except Agendamento.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Agendamento não encontrado', 'old_status': old_status}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e), 'old_status': old_status}, status=500)
 
 
 @login_required

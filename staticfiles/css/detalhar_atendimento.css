@@ -1,18 +1,81 @@
-/* static/css/detalhar_atendimento.css */
+/* ==========================================================================
+   CSS Completo para a Página de Detalhes do Atendimento
+   ========================================================================== */
 
-/* ============================
-   LAYOUT E CABEÇALHO
-============================ */
+/* -------------------------------------------------------------------------- */
+/* #VARIÁVEIS DE TEMA E ESTILOS GLOBAIS */
+/* -------------------------------------------------------------------------- */
+:root {
+    --primary: #b30000;
+    --secondary: #2a9d8f;
+    --success: #28a745;
+    --warning: #f4a261;
+    --danger: #e76f51;
+    --bg-main: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-main: #212529;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --border-radius: 8px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* #COMPONENTES GERAIS (CABEÇALHO, BOTÕES) */
+/* -------------------------------------------------------------------------- */
 .page-header {
     display: flex;
     align-items: center;
-    gap: 20px; /* Espaço entre o título e o botão "Voltar" */
+    gap: 20px;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
+.page-header h1 {
+    margin: 0;
+}
 
-/* ============================
-   CARD DE DADOS BÁSICOS
-============================ */
+/* Base dos Botões */
+.btn, .btn-primary, .btn-secondary, .primary, .secondary {
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+.btn:hover, .btn-primary:hover, .btn-secondary:hover, .primary:hover, .secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Variações de cor */
+.btn-primary, .primary { background-color: var(--primary); color: white; }
+.btn-secondary, .secondary { background-color: #e9ecef; color: var(--text-main); }
+
+
+/* -------------------------------------------------------------------------- */
+/* #ESTILOS ESPECÍFICOS DA PÁGINA DE DETALHES */
+/* -------------------------------------------------------------------------- */
+
+/* Card de Dados Básicos */
 .basic-details-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -32,7 +95,6 @@
 
 .basic-details-card .form-grid {
     display: grid;
-    /* Cria colunas responsivas: tenta caber o máximo de colunas de 250px */
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
 }
@@ -50,20 +112,14 @@
     color: var(--text-muted);
 }
 
-
-/* ============================
-   SEPARADOR
-============================ */
+/* Separador */
 hr {
     border: none;
     border-top: 1px solid var(--border-color);
     margin: 2.5rem 0;
 }
 
-
-/* ============================
-   FORMULÁRIO DE REGISTRO
-============================ */
+/* Formulário de Registro */
 .detail-form-section h2 {
     color: var(--primary);
     margin-bottom: 1.5rem;
@@ -88,32 +144,29 @@ hr {
     border-radius: var(--border-radius);
     font-size: 1rem;
     font-family: inherit;
-    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
-    resize: vertical; /* Permite que o usuário redimensione a altura */
+    box-sizing: border-box;
+    resize: vertical;
 }
 
-/* Grupo do checkbox */
 .checkbox-group {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-top: 1rem;
 }
-
 .checkbox-group input[type="checkbox"] {
     width: 1.3em;
     height: 1.3em;
     cursor: pointer;
 }
-
 .checkbox-group label {
     margin-bottom: 0;
     font-weight: normal;
     cursor: pointer;
 }
 
-/* Botão de salvar */
 .detail-form-section .modal-actions {
+    display: flex; /* Adicionado para garantir o alinhamento */
     justify-content: flex-start;
     padding-top: 1rem;
     border-top: 1px solid var(--border-color);

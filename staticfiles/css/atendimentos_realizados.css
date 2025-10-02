@@ -1,15 +1,15 @@
-/* ========================================================================== 
+/* ==========================================================================
    Tema SouPet - Modernizado e Estilizado
    ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* VARIÁVEIS DE TEMA */
+/* VARIÁVEIS DE TEMA
 /* -------------------------------------------------------------------------- */
 :root {
-    /* Cores */
+    /* Cores principais */
     --primary: #2a9d8f;
-    --secondary: #f4a261;
-    --danger: #e76f51;
+    --secondary: #2e93f1;
+    --danger: #fc3838;
     --success: #28a745;
     --info: #007bff;
     --bg: #f8f9fa;
@@ -27,7 +27,7 @@
 }
 
 /* -------------------------------------------------------------------------- */
-/* RESET E ESTILOS GLOBAIS */
+/* RESET E ESTILOS GLOBAIS
 /* -------------------------------------------------------------------------- */
 * {
     box-sizing: border-box;
@@ -52,9 +52,9 @@ body {
     display: none;
 }
 
-/* -------------------------------------------------------------------------- */
-/* CABEÇALHO DA PÁGINA */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   CABEÇALHO
+   ========================================================================== */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -74,9 +74,9 @@ body {
     gap: 15px;
 }
 
-/* -------------------------------------------------------------------------- */
-/* BOTÕES MODERNOS */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   BOTÕES
+   ========================================================================== */
 .btn, .btn-success, .btn-logout, .btn-primary, .btn-secondary, .edit-btn {
     display: inline-block;
     padding: 10px 20px;
@@ -90,27 +90,32 @@ body {
     border: none;
 }
 
-.btn:hover, .btn-success:hover, .btn-logout:hover, 
-.btn-primary:hover, .btn-secondary:hover, .edit-btn:hover {
+.btn:hover, 
+.btn-success:hover, 
+.btn-logout:hover, 
+.btn-primary:hover, 
+.btn-secondary:hover, 
+.edit-btn:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-hover);
 }
 
+/* Cores específicas */
 .btn-success { background-color: var(--success); color: #fff; }
 .btn-logout  { background-color: var(--danger); color: #fff; }
 .btn-primary { background-color: var(--primary); color: #fff; }
 .btn-secondary { background-color: var(--secondary); color: #fff; }
 .edit-btn { background-color: var(--info); color: #fff; }
 
-/* Efeito de foco para acessibilidade */
+/* Foco para acessibilidade */
 .btn:focus {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
-/* -------------------------------------------------------------------------- */
-/* PAINEL DE FILTROS */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   PAINEL DE FILTROS
+   ========================================================================== */
 .filtro-panel {
     margin: 20px 0;
     padding: 20px;
@@ -140,19 +145,21 @@ body {
     transition: all 0.3s ease;
 }
 
-.filtro-form input:focus, .filtro-form select:focus {
+.filtro-form input:focus, 
+.filtro-form select:focus {
     border-color: var(--primary);
     box-shadow: 0 0 6px rgba(42, 157, 143, 0.3);
     outline: none;
 }
 
-/* -------------------------------------------------------------------------- */
-/* AGENDA E CARDS DE AGENDAMENTO */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   AGENDA E CARDS DE AGENDAMENTO
+   ========================================================================== */
 .agenda {
     margin-top: 25px;
 }
 
+/* CARD DE ATENDIMENTO */
 .appt-card {
     display: flex;
     gap: 20px;
@@ -170,18 +177,30 @@ body {
     box-shadow: var(--shadow-hover);
 }
 
-/* Coluna esquerda: horário */
+/* COLUNA HORÁRIO */
 .appt-time {
     min-width: 100px;
     text-align: center;
     color: var(--primary);
 }
 
-.appt-date { font-size: 1.1rem; font-weight: 600; }
-.appt-hour { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
-.user-info { font-size: 0.8rem; color: var(--muted); }
+.appt-date { 
+    font-size: 1.1rem; 
+    font-weight: 600; 
+}
 
-/* Coluna central: detalhes */
+.appt-hour { 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    margin-bottom: 5px; 
+}
+
+.user-info { 
+    font-size: 0.8rem; 
+    color: var(--muted); 
+}
+
+/* COLUNA DETALHES */
 .appt-details {
     flex-grow: 1;
     padding: 0 20px;
@@ -189,10 +208,23 @@ body {
     border-right: 1px solid var(--border);
 }
 
-.detail-category { margin: 10px 0; font-size: 0.95rem; }
-.small-text { font-size: 0.9rem; color: var(--muted); }
-.summary-details { margin-top: 15px; }
-.atendimento-info { margin-bottom: 10px; }
+.detail-category { 
+    margin: 10px 0; 
+    font-size: 0.95rem; 
+}
+
+.small-text { 
+    font-size: 0.9rem; 
+    color: var(--muted); 
+}
+
+.summary-details { 
+    margin-top: 15px; 
+}
+
+.atendimento-info { 
+    margin-bottom: 10px; 
+}
 
 .tag.alert-tag {
     display: inline-block;
@@ -204,7 +236,7 @@ body {
     font-weight: 600;
 }
 
-/* Coluna direita: ações e status */
+/* COLUNA AÇÕES E STATUS */
 .appt-actions {
     display: flex;
     flex-direction: column;
@@ -236,25 +268,63 @@ body {
     color: var(--muted);
 }
 
-/* -------------------------------------------------------------------------- */
-/* RESPONSIVIDADE */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   ✨ RESPONSIVIDADE - OTIMIZAÇÃO PARA MOBILE ✨
+   ========================================================================== */
 @media (max-width: 768px) {
-    .appt-card {
+
+    /* Ajusta o padding geral para telas menores */
+    .container {
+        padding: 15px;
+    }
+
+    /* Empilha o cabeçalho para um layout vertical */
+    .page-header {
         flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
-    .appt-details {
-        padding: 15px 0;
-        border: none;
+    .page-header h1 {
+        font-size: 1.7rem; /* Reduz um pouco o título */
     }
-    .appt-actions {
-        flex-direction: row;
-        justify-content: space-between;
-        width: 100%;
-        margin-top: 10px;
-    }
+
+    /* Faz os filtros ocuparem 100% da largura */
     .filtro-form {
         flex-direction: column;
         align-items: stretch;
+    }
+    .filtro-form .btn {
+        width: 100%; /* Botão de filtrar ocupa toda a largura */
+    }
+
+    /* Reestrutura completamente o card para um layout vertical */
+    .appt-card {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+    }
+
+    /* Transforma a coluna de tempo em um cabeçalho para o card */
+    .appt-time {
+        text-align: left;
+        width: 100%;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed var(--border);
+    }
+    
+    /* Remove as bordas laterais da seção de detalhes */
+    .appt-details {
+        padding: 10px 0;
+        border: none;
+    }
+
+    /* Organiza as ações em uma linha no final do card */
+    .appt-actions {
+        flex-direction: row;
+        justify-content: flex-end; /* Alinha botões à direita */
+        align-items: center;
+        width: 100%;
+        margin-top: 10px;
+        gap: 10px;
     }
 }

@@ -94,13 +94,18 @@
               </div>
               
               <div class="appt-actions">
-                  <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
-                  <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
-                  {% if ag.usuario == request.user %}
-                      <button class="edit-btn" data-id="{{ ag.id }}">Editar</button>
-                  {% endif %}
-              </div>
-          </div>
+    <select class="status-select status-{{ ag.status }}" data-id="{{ ag.id }}">
+        {% for value, display in form.status.field.choices %}
+            <option value="{{ value }}" {% if ag.status == value %}selected{% endif %}>
+                {{ display }}
+            </option>
+        {% endfor %}
+    </select>
+    <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
+    <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
+    
+</div>
+
         {% empty %}
           <p class="no-appt">Nenhum agendamento futuro/hoje.</p>
         {% endfor %}
@@ -143,12 +148,15 @@
               </div>
               
               <div class="appt-actions">
-                  <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
-                  <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
-                  {% if ag.usuario == request.user %}
-                      <button class="edit-btn" data-id="{{ ag.id }}">Editar</button>
-                  {% endif %}
-              </div>
+    <select class="status-select status-{{ ag.status }}" data-id="{{ ag.id }}">
+        {% for value, display in form.status.field.choices %}
+            <option value="{{ value }}" {% if ag.status == value %}selected{% endif %}>
+                {{ display }}
+            </option>
+        {% endfor %}
+    </select>
+    <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
+</div>
             </div>
           {% empty %}
             <p class="no-appt">Nenhum agendamento anterior.</p>

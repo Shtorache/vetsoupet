@@ -6,8 +6,8 @@
   --bg-card: #ffffff;          
   --primary: #ce2121;          
   --secondary: #4CAF50;        
-  --text-main: #333;          
-  --text-muted: #666;          
+  --text-main: #333;           
+  --text-muted: #666;           
   --border-radius: 14px;
   --shadow: 0 6px 16px rgba(0,0,0,0.1);
 }
@@ -68,6 +68,8 @@ form p {
 }
 
 form input {
+  /* Usamos box-sizing para que o padding não aumente a largura total */
+  box-sizing: border-box; 
   width: 100%;
   padding: 12px;
   border: 2px solid #eee;
@@ -106,4 +108,42 @@ button[type="submit"]:hover {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px);}
   to { opacity: 1; transform: translateY(0);}
+}
+
+
+/* ========================================= */
+/* ✨ INÍCIO DAS ALTERAÇÕES DE RESPONSIVIDADE ✨ */
+/* ========================================= */
+
+@media (max-width: 480px) {
+
+  /* Ajusta o corpo para não ter rolagem horizontal desnecessária */
+  body {
+    overflow-x: hidden;
+  }
+
+  .login-container {
+    /* Remove a margem superior/inferior excessiva */
+    margin: 30px 15px;
+    
+    /* Remove o max-width para que o container possa ser flexível */
+    max-width: none; 
+    
+    /* Define a largura para ocupar o espaço, respeitando as margens */
+    width: auto; 
+    
+    /* Reduz o preenchimento interno para dar mais espaço ao conteúdo */
+    padding: 2rem; 
+  }
+
+  /* Diminui um pouco o título para economizar espaço vertical */
+  .login-container h2 {
+    font-size: 1.7rem;
+  }
+
+  /* Esconde os detalhes decorativos em telas muito pequenas para uma UI mais limpa */
+  .login-container::before,
+  .login-container::after {
+    display: none;
+  }
 }

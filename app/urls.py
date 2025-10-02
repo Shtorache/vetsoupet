@@ -13,4 +13,5 @@ urlpatterns = [
     path("atendimento/<int:pk>/", views.detalhar_atendimento, name="detalhar_atendimento"),
     path("clientes/<int:cliente_id>/pacientes/", views.buscar_pacientes_por_cliente, name="buscar_pacientes"),
     path("animal/<int:animal_pk>/historico/", views.historico_animal, name="historico_animal"),
+    path('agendamentos/atualizar-status/', views.atualizar_status, name='atualizar_status'),
     ]

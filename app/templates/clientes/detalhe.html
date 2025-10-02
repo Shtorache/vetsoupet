@@ -5,31 +5,17 @@
     <meta charset="UTF-8">
     <title>{{ cliente.nome }}</title>
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
-    <style>
-        .container { max-width: 800px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
-        .cliente-header { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .cliente-header img { border-radius: 50%; margin-right: 20px; object-fit: cover; }
-        .cliente-info p { margin: 5px 0; }
-        .pacientes-section { margin-top: 30px; }
-        .pacientes-section ul { list-style: none; padding: 0; }
-        .pacientes-section li { 
-            border: 1px solid #eee; 
-            padding: 10px; 
-            margin-bottom: 10px; 
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-        }
-        .pacientes-section li img { margin-right: 15px; border-radius: 4px; object-fit: cover; }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/detalhe.css' %}">
 </head>
 <body>
     <main class="container">
         <header class="cliente-header">
             {% if cliente.foto %}
-                <img src="{{ cliente.foto.url }}" alt="{{ cliente.nome }}" width="100" height="100">
+                <img src="{{ cliente.foto.url }}" alt="{{ cliente.nome }}">
+            {% else %}
+                <img src="{% static 'img/default-user.png' %}" alt="Cliente">
             {% endif %}
-            <div>
+            <div class="cliente-info">
                 <h1>{{ cliente.nome }}</h1>
                 <p>Email: <strong>{{ cliente.email|default:"N/A" }}</strong></p>
                 <p>Telefone: <strong>{{ cliente.telefone|default:"N/A" }}</strong></p>
@@ -37,24 +23,29 @@
             </div>
         </header>
 
-        <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Voltar para a Lista</a>
+        <div class="actions">
+            <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Voltar</a>
+            <a href="{% url 'adicionar_paciente' cliente.pk %}" class="btn btn-primary">Adicionar Animal</a>
+        </div>
+
         <section class="pacientes-section">
             <h2>Animais de {{ cliente.nome }}</h2>
-            <a href="{% url 'adicionar_paciente' cliente.pk %}" class="btn btn-primary">Adicionar Animal</a>
-            
-            <ul>
+
+            <div class="pacientes-grid">
                 {% for paciente in pacientes %}
-                    <li>
+                    <div class="paciente-card">
                         {% if paciente.foto %}
-                            <img src="{{ paciente.foto.url }}" alt="{{ paciente.nome }}" width="80" height="80">
+                            <img src="{{ paciente.foto.url }}" alt="{{ paciente.nome }}">
+                        {% else %}
+                            <img src="{% static 'img/default-pet.png' %}" alt="Animal">
                         {% endif %}
-                        <strong>{{ paciente.nome }}</strong> - {{ paciente.especie }} 
-                        {% if paciente.raca %}({{ paciente.raca }}){% endif %}
-                    </li>
+                        <strong>{{ paciente.nome }}</strong>
+                        <span>{{ paciente.especie }}{% if paciente.raca %} ({{ paciente.raca }}){% endif %}</span>
+                    </div>
                 {% empty %}
                     <p>Nenhum animal cadastrado para este cliente.</p>
                 {% endfor %}
-            </ul>
+            </div>
         </section>
     </main>
 </body>

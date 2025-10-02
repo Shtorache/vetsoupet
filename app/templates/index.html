@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
   <title>Agendamentos</title>
   <!-- Import do CSS -->
@@ -21,7 +22,7 @@
         <button class="btn btn-primary" id="new-appointment">+ Novo Agendamento</button>
         <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="btn btn-logout">Sair</button>
+            <button type="submit" class="btn btn-logout">Sair dessa conta</button>
         </form>
     </div>
 </header>

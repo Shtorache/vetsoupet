@@ -11,9 +11,9 @@
     <main class="container">
         <header class="cliente-header">
             {% if cliente.foto %}
-                <img src="{{ cliente.foto.url }}" alt="{{ cliente.nome }}">
+                
             {% else %}
-                <img src="{% static 'img/default-user.png' %}" alt="Cliente">
+                
             {% endif %}
             <div class="cliente-info">
                 <h1>{{ cliente.nome }}</h1>

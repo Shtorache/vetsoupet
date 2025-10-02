@@ -29,12 +29,16 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "54edde56f270.ngrok-free.app"
+    "5cc10d9f894d.ngrok-free.app"
 ]
 
+# settings.py
+
+# Django >= 4.0
 CSRF_TRUSTED_ORIGINS = [
-    "https://54edde56f270.ngrok-free.app"
+    "https://5cc10d9f894d.ngrok-free.app",
 ]
+
 
 
 # Application definition

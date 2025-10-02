@@ -142,8 +142,7 @@ class Animal(models.Model):
     cliente = models.ForeignKey(Cliente, related_name="pacientes", on_delete=models.CASCADE)
     nome = models.CharField(max_length=150)
     
-    # 🎯 CORREÇÃO CRÍTICA: Usar as mesmas choices do Agendamento
-    # O valor (e.g., 'canino') deve ser o mesmo usado como chave no RACAS_CHOICES.
+    
     especie = models.CharField(max_length=50, choices=Agendamento.ESPECIE_CHOICES) 
     
     raca = models.CharField(max_length=100, blank=True, null=True)

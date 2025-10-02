@@ -118,9 +118,35 @@ body {
     box-shadow: 0 8px 20px rgba(243, 29, 29, 0.4);
 }
 
-/* Responsividade */
+/* ===================================== */
+/* ✨ RESPONSIVIDADE PARA CELULARES ✨     */
+/* ===================================== */
 @media (max-width: 768px) {
+
+    /* ✅ Melhora o espaçamento do container em telas pequenas */
+    .container {
+        margin: 20px 15px; /* Menos margem vertical, e adiciona margem lateral */
+        padding: 25px;     /* Menos padding interno */
+    }
+
+    /* ✅ Reduz o título para economizar espaço */
+    .page-title {
+        font-size: 28px;
+        margin-bottom: 30px;
+    }
+
+    /* Transforma o grid de 2 colunas em 1 (você já tinha feito isso, está perfeito) */
     .form-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* ✅ Ajusta os botões de ação para o padrão mobile */
+    .form-actions {
+        flex-direction: column-reverse; /* Empilha os botões (primário no topo) */
+        gap: 10px;
+    }
+
+    .form-actions .btn {
+        width: 100%; /* Botões ocupam a largura total */
     }
 }

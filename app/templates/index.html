@@ -234,6 +234,98 @@
 
   <!-- Scripts -->
   <script src="{% static 'js/main.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const clienteSelect = document.getElementById("id_cliente");
+        const animalSelect = document.getElementById("id_animal");
+        const especieSelect = document.getElementById("id_especie");
+        const racaSelect = document.getElementById("id_raca");
+
+        // Variável para armazenar os dados completos dos animais carregados
+        let loadedPacientesData = []; 
+        
+        // --- 1. Lógica de Carregamento Dinâmico do Animal ---
+
+        if (clienteSelect && animalSelect) {
+            clienteSelect.addEventListener("change", function() {
+                const clienteId = this.value;
+
+                // Limpa opções e dados
+                animalSelect.innerHTML = '<option value="">Carregando...</option>';
+                loadedPacientesData = []; 
+                
+                // 🚨 Limpa espécie e raça ao mudar o cliente
+                especieSelect.value = '';
+                racaSelect.innerHTML = '<option value="">Selecione uma espécie primeiro</option>';
+
+                if (clienteId) {
+                    fetch(`/clientes/${clienteId}/pacientes/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            animalSelect.innerHTML = '<option value="">Selecione o animal</option>';
+                            loadedPacientesData = data.pacientes || []; // Armazena os dados completos
+                            
+                            if (loadedPacientesData.length > 0) {
+                                loadedPacientesData.forEach(paciente => {
+                                    const option = document.createElement("option");
+                                    option.value = paciente.id;
+                                    option.textContent = paciente.nome;
+                                    animalSelect.appendChild(option);
+                                });
+                            } else {
+                                const option = document.createElement("option");
+                                option.textContent = "Nenhum paciente encontrado";
+                                animalSelect.appendChild(option);
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Erro ao buscar pacientes:", err);
+                            animalSelect.innerHTML = '<option value="">Erro ao carregar</option>';
+                        });
+                } else {
+                    animalSelect.innerHTML = '<option value="">Selecione um cliente primeiro</option>';
+                }
+            });
+        }
+        
+        // --- 2. Lógica de Preenchimento Automático de Espécie e Raça ---
+
+        if (animalSelect && especieSelect && racaSelect) {
+            animalSelect.addEventListener("change", function() {
+                const animalId = parseInt(this.value);
+                
+                // Encontra os dados completos do animal selecionado
+                const paciente = loadedPacientesData.find(p => p.id === animalId);
+                
+                if (paciente) {
+                    // Preenche a ESPÉCIE
+                    especieSelect.value = paciente.especie;
+                    
+                    // Dispara o evento de 'change' na espécie para carregar as RAÇAS dinamicamente
+                    // A função de raças que já existe (seu segundo script) fará o resto!
+                    const changeEvent = new Event('change');
+                    especieSelect.dispatchEvent(changeEvent);
+
+                    // Após o carregamento das raças, preenche a RAÇA
+                    // (Pode haver um pequeno atraso, mas geralmente funciona)
+                    // A Raça cadastrada é o VALUE do Agendamento.RACAS_CHOICES (e.g., 'labrador')
+                    if (paciente.raca) {
+                        // Usamos um timeout de 10ms apenas para garantir que o DOM seja atualizado
+                        setTimeout(() => {
+                           racaSelect.value = paciente.raca;
+                        }, 10);
+                    }
+                    
+                } else {
+                    // Limpa se a opção padrão for selecionada
+                    especieSelect.value = '';
+                    racaSelect.innerHTML = '<option value="">Selecione uma espécie primeiro</option>';
+                }
+            });
+        }
+    });
+  </script>
+
   <script>
     // Variável global para o main.js
     window.racasPorEspecie = {{ racas_choices|safe }};

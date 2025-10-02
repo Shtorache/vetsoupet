@@ -8,9 +8,11 @@ import datetime # <-- Adicionado para a separação de datas
 
 
 # Substitua sua função index por esta:
+# views.py (Função buscar_pacientes_por_cliente CORRIGIDA)
+
 @login_required
 def buscar_pacientes_por_cliente(request, cliente_id):
-    """Retorna uma lista de pacientes (id e nome) para o cliente selecionado em formato JSON."""
+    """Retorna uma lista de pacientes (id, nome, especie, raca) para o cliente selecionado em formato JSON."""
     
     if not str(cliente_id).isdigit():
         return JsonResponse({"pacientes": []}, status=400)
@@ -20,9 +22,13 @@ def buscar_pacientes_por_cliente(request, cliente_id):
     except Exception:
         return JsonResponse({"pacientes": []}, status=500)
     
-    # Cria a lista de pacientes com ID e nome (incluindo a espécie para clareza)
+    # 🎯 MUDANÇA AQUI: Incluindo especie e raca no JSON
     pacientes_data = [
-        {"id": paciente.id, "nome": f"{paciente.nome} ({paciente.especie})"}
+        {"id": paciente.id, 
+         "nome": f"{paciente.nome} ({paciente.especie})",
+         "especie": paciente.especie,  # <-- NOVO DADO
+         "raca": paciente.raca or ""   # <-- NOVO DADO (ou string vazia se for null)
+        }
         for paciente in pacientes
     ]
     
@@ -248,4 +254,19 @@ def adicionar_paciente(request, cliente_id):
         "form": form,
         "cliente": cliente,
         "racas_choices": racas_choices_json,
+    })
+
+@login_required
+def historico_animal(request, animal_pk):
+    animal = get_object_or_404(Animal, pk=animal_pk)
+    historico = Agendamento.objects.filter(animal=animal).order_by("-data", "-hora")
+    consultas_realizadas = historico.filter(status="realizado")
+    detalhe_form = AtendimentoDetalhadoForm()
+
+    return render(request, "clientes/historico_animal.html", {
+        "animal": animal,
+        "cliente": animal.cliente, 
+        "historico": historico, 
+        "consultas_realizadas": consultas_realizadas,
+        "detalhe_form": detalhe_form,
     })

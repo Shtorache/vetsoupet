@@ -103,11 +103,7 @@
           {% endif %}
         </div>
         <div class="appt-actions">
-          <select class="status-select" data-id="{{ ag.id }}">
-            {% for value, display in form.status.field.choices %}
-              <option value="{{ value }}" {% if ag.status == value %}selected{% endif %}>{{ display }}</option>
-            {% endfor %}
-          </select>
+          
           <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
           <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
           <br>
@@ -124,7 +120,8 @@
   <div class="modal-content">
     <span class="close" id="close-modal">&times;</span>
     <h2 id="modal-title">Novo Agendamento</h2>
-    <form id="appointment-form" method="POST">
+    <form id="appointment-form" method="POST" action="{% url 'criar_agendamento' %}">
+
       {% csrf_token %}
       <div class="form-grid">
         <div class="form-group"><label for="{{ form.cliente.id_for_label }}">Cliente:</label>{{ form.cliente }}</div>

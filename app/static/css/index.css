@@ -94,6 +94,17 @@ body {
 }
 
 
+/* ✨ NOVO ESTILO PARA O BOTÃO EDITAR ✨ */
+.btn-edit {
+    background-color: var(--secondary);
+    color: var(--text-light);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 8px 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
 /* 5. Painel de Filtros */
 .filtro-panel { margin-bottom: 2rem; padding: 1.5rem; background-color: var(--bg-card); border-radius: var(--border-radius); box-shadow: var(--shadow); }
 .filtro-form { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }

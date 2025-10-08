@@ -5,7 +5,7 @@ from .forms import AgendamentoForm, ClienteForm, AnimalForm, AtendimentoDetalhad
 from django.contrib.auth.decorators import login_required
 import json
 import datetime # <-- Adicionado para a separação de datas
-
+from .forms import AgendamentoForm, EditarAgendamentoForm
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -13,9 +13,6 @@ from django.contrib.auth.decorators import login_required
 from .models import Agendamento
 
 
-
-# Substitua sua função index por esta:
-# views.py (Função buscar_pacientes_por_cliente CORRIGIDA)
 
 @login_required
 def buscar_pacientes_por_cliente(request, cliente_id):
@@ -29,12 +26,12 @@ def buscar_pacientes_por_cliente(request, cliente_id):
     except Exception:
         return JsonResponse({"pacientes": []}, status=500)
     
-    # 🎯 MUDANÇA AQUI: Incluindo especie e raca no JSON
+   
     pacientes_data = [
         {"id": paciente.id, 
          "nome": f"{paciente.nome} ({paciente.especie})",
-         "especie": paciente.especie,  # <-- NOVO DADO
-         "raca": paciente.raca or ""   # <-- NOVO DADO (ou string vazia se for null)
+         "especie": paciente.especie,  
+         "raca": paciente.raca or ""   
         }
         for paciente in pacientes
     ]
@@ -45,11 +42,11 @@ def buscar_pacientes_por_cliente(request, cliente_id):
 def index(request):
     today = datetime.date.today()
     
-    # 1. Define as buscas base
+    
     agendamentos_ativos = Agendamento.objects.filter(data__gte=today)
     agendamentos_anteriores = Agendamento.objects.filter(data__lt=today)
 
-    # 2. Pega os valores do formulário de filtro da URL (GET)
+    
     profissional = request.GET.get('profissional', '')
     cliente_nome = request.GET.get('cliente', '')
     animal_nome = request.GET.get('animal', '')
@@ -57,7 +54,7 @@ def index(request):
     data = request.GET.get('data', '')
     status = request.GET.get('status', '')
 
-    # 3. Aplica os filtros nas DUAS buscas, se eles existirem
+    
     if profissional:
         agendamentos_ativos = agendamentos_ativos.filter(profissional__icontains=profissional)
         agendamentos_anteriores = agendamentos_anteriores.filter(profissional__icontains=profissional)
@@ -77,7 +74,7 @@ def index(request):
         agendamentos_ativos = agendamentos_ativos.filter(status=status)
         agendamentos_anteriores = agendamentos_anteriores.filter(status=status)
 
-    # 4. Cria um dicionário com os filtros aplicados para devolver ao template
+   
     filtros = {
         'profissional': profissional,
         'cliente': cliente_nome,
@@ -92,30 +89,32 @@ def index(request):
     agendamentos_anteriores = agendamentos_anteriores.order_by("-data", "-hora")
 
     form = AgendamentoForm()
+    edit_form = EditarAgendamentoForm()
     racas_choices = json.dumps(Agendamento.RACAS_CHOICES)
 
     return render(request, "index.html", {
         "agendamentos_ativos": agendamentos_ativos, 
         "agendamentos_anteriores": agendamentos_anteriores,
         "form": form,
+        "edit_form": edit_form,
         "racas_choices": racas_choices,
-        "filtros": filtros, # <-- DEVOLVE OS FILTROS PARA O TEMPLATE
+        "filtros": filtros, 
     })
 @login_required
 def atendimentos_realizados(request):
-    # 1. Começa com a busca base por atendimentos realizados
+   
     agendamentos = Agendamento.objects.filter(status="realizado")
 
-    # 2. Pega os valores do formulário de filtro da URL (GET)
+   
     profissional = request.GET.get('profissional', '')
     cliente_nome = request.GET.get('cliente', '')
     animal_nome = request.GET.get('animal', '')
     especie = request.GET.get('especie_filtro', '')
     data = request.GET.get('data', '')
 
-    # 3. Aplica os filtros na busca, um por um, se eles existirem
+   
     if profissional:
-        # __icontains faz uma busca case-insensitive que "contém" o texto
+        
         agendamentos = agendamentos.filter(profissional__icontains=profissional)
     if cliente_nome:
         agendamentos = agendamentos.filter(cliente__icontains=cliente_nome)
@@ -126,7 +125,7 @@ def atendimentos_realizados(request):
     if data:
         agendamentos = agendamentos.filter(data=data)
 
-    # 4. Cria um dicionário com os filtros aplicados para devolver ao template
+    
     filtros = {
         'profissional': profissional,
         'cliente': cliente_nome,
@@ -135,14 +134,14 @@ def atendimentos_realizados(request):
         'data': data
     }
     
-    # Ordena o resultado final
+   
     agendamentos = agendamentos.order_by("-data", "-hora")
     form = AgendamentoForm()
 
     return render(request, "atendimentos_realizados.html", {
         "agendamentos": agendamentos,
         "form": form,
-        "filtros": filtros, # <-- DEVOLVE OS FILTROS PARA O TEMPLATE
+        "filtros": filtros,
     })
 
 @login_required
@@ -163,33 +162,36 @@ def detalhar_atendimento(request, pk):
     })
 
 
+
+
+
 @login_required
 def editar_agendamento(request, pk):
     agendamento = get_object_or_404(Agendamento, pk=pk)
 
-    if agendamento.usuario != request.user:
-        return JsonResponse({"success": False, "error": "Você não tem permissão para editar este agendamento."}, status=403)
-
+    
     if request.method == "POST":
-        form = AgendamentoForm(request.POST, instance=agendamento)
+        
+        if agendamento.usuario != request.user:
+            return JsonResponse({"success": False, "error": "Permissão negada"}, status=403)
+        
+        form = EditarAgendamentoForm(request.POST, instance=agendamento)
         if form.is_valid():
             form.save()
             return JsonResponse({"success": True})
         return JsonResponse({"success": False, "errors": form.errors})
 
-    return JsonResponse({
-        "cliente": agendamento.cliente.id,
-        "animal": agendamento.animal.id,
-        "tipo_atendimento": agendamento.tipo_atendimento,
-        "profissional": agendamento.profissional,
-        "especie": getattr(agendamento, "especie", ""),
-        "raca": getattr(agendamento, "raca", ""),
-        "data": agendamento.data.strftime("%Y-%m-%d"),
-        "hora": agendamento.hora.strftime("%H:%M"),
-        "duracao": agendamento.duracao,
-        "observacoes": agendamento.observacoes,
-        "status": agendamento.status,
-    })
+    
+    else:
+        data = {
+            "cliente_nome": agendamento.cliente.nome,
+            "animal_nome": agendamento.animal.nome,
+            "data_formatada": agendamento.data.strftime("%d/%m/%Y"),
+            "hora_formatada": agendamento.hora.strftime("%H:%M"),
+            "status": agendamento.status,
+            "observacoes": agendamento.observacoes or "", 
+        }
+        return JsonResponse(data)
 
 
 
@@ -204,21 +206,20 @@ def atualizar_status(request):
 
         agendamento = Agendamento.objects.get(pk=agendamento_id)
         
-        # Opcional: Verificação de permissão
-        # if agendamento.usuario != request.user and not request.user.is_staff:
-        #     return JsonResponse({'success': False, 'error': 'Permissão negada'}, status=403)
+       
 
-        old_status = agendamento.status
         agendamento.status = novo_status
         agendamento.save(update_fields=['status'])
 
         return JsonResponse({'success': True})
 
     except Agendamento.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Agendamento não encontrado', 'old_status': old_status}, status=404)
+       
+        return JsonResponse({'success': False, 'error': 'Agendamento não encontrado'}, status=404)
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e), 'old_status': old_status}, status=500)
 
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    
 
 @login_required
 def criar_agendamento(request):

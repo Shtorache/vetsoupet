@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -6,7 +7,6 @@
   <meta charset="UTF-8">
   <title>Agendamentos</title>
   <link rel="stylesheet" href="{% static 'css/index.css' %}">
- 
 </head>
 <body>
 <main class="container">
@@ -53,7 +53,6 @@
     </form>
   </div>
 
-  <!-- Próximos agendamentos -->
   <section class="agenda">
     <h3>Próximos Agendamentos</h3>
     {% for ag in agendamentos_ativos %}
@@ -76,8 +75,9 @@
               <option value="{{ value }}" {% if ag.status == value %}selected{% endif %}>{{ display }}</option>
             {% endfor %}
           </select>
-          
           <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
+          <br>
+          <button type="button" class="btn btn-edit" data-id="{{ ag.id }}">Editar</button>
         </div>
       </div>
     {% empty %}
@@ -85,7 +85,6 @@
     {% endfor %}
   </section>
 
-  <!-- Agendamentos anteriores -->
   <a id="toggle-anteriores" class="btn-secondary link-anteriores"><span id="icone-anteriores">▶</span> Agendamentos Anteriores a Hoje</a>
   <section id="agenda-anteriores" class="agenda hidden">
     <h3>Histórico de Agendamentos</h3>
@@ -111,6 +110,8 @@
           </select>
           <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
           <small class="user-info">Agendado por: {{ ag.usuario.username }}</small>
+          <br>
+          <button type="button" class="btn btn-edit" data-id="{{ ag.id }}">Editar</button>
         </div>
       </div>
     {% empty %}
@@ -119,51 +120,56 @@
   </section>
 </main>
 
-<!-- Modal -->
 <div id="appointmentModal" class="modal hidden">
   <div class="modal-content">
     <span class="close" id="close-modal">&times;</span>
-    <h2>Novo Agendamento</h2>
+    <h2 id="modal-title">Novo Agendamento</h2>
     <form id="appointment-form" method="POST">
       {% csrf_token %}
       <div class="form-grid">
-        <div class="form-group">
-          <label for="{{ form.cliente.id_for_label }}">Cliente:</label>{{ form.cliente }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.animal.id_for_label }}">Animal:</label>{{ form.animal }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.especie.id_for_label }}">Espécie:</label>{{ form.especie }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.raca.id_for_label }}">Raça:</label>{{ form.raca }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.tipo_atendimento.id_for_label }}">Tipo:</label>{{ form.tipo_atendimento }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.profissional.id_for_label }}">Profissional:</label>{{ form.profissional }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.data.id_for_label }}">Data:</label>{{ form.data }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.hora.id_for_label }}">Hora:</label>{{ form.hora }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.duracao.id_for_label }}">Duração (min):</label>{{ form.duracao }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.status.id_for_label }}">Status:</label>{{ form.status }}
-        </div>
-        <div class="form-group full-width">
-          <label for="{{ form.observacoes.id_for_label }}">Observações:</label>{{ form.observacoes }}
-        </div>
+        <div class="form-group"><label for="{{ form.cliente.id_for_label }}">Cliente:</label>{{ form.cliente }}</div>
+        <div class="form-group"><label for="{{ form.animal.id_for_label }}">Animal:</label>{{ form.animal }}</div>
+        <div class="form-group"><label for="{{ form.especie.id_for_label }}">Espécie:</label>{{ form.especie }}</div>
+        <div class="form-group"><label for="{{ form.raca.id_for_label }}">Raça:</label>{{ form.raca }}</div>
+        <div class="form-group"><label for="{{ form.tipo_atendimento.id_for_label }}">Tipo:</label>{{ form.tipo_atendimento }}</div>
+        <div class="form-group"><label for="{{ form.profissional.id_for_label }}">Profissional:</label>{{ form.profissional }}</div>
+        <div class="form-group"><label for="{{ form.data.id_for_label }}">Data:</label>{{ form.data }}</div>
+        <div class="form-group"><label for="{{ form.hora.id_for_label }}">Hora:</label>{{ form.hora }}</div>
+        <div class="form-group"><label for="{{ form.duracao.id_for_label }}">Duração (min):</label>{{ form.duracao }}</div>
+        <div class="form-group"><label for="{{ form.status.id_for_label }}">Status:</label>{{ form.status }}</div>
+        <div class="form-group full-width"><label for="{{ form.observacoes.id_for_label }}">Observações:</label>{{ form.observacoes }}</div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="secondary" id="cancel-modal">Cancelar</button>
-        <button type="submit" class="primary">Salvar Agendamento</button>
+        <button type="button" class="btn btn-secondary" id="cancel-modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar Agendamento</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="editAppointmentModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close" id="close-edit-modal">&times;</span>
+    <h2>Editar Agendamento</h2>
+    <form id="edit-appointment-form" method="POST">
+      {% csrf_token %}
+      <div class="readonly-info">
+        <p><strong>Cliente:</strong> <span id="info-cliente"></span></p>
+        <p><strong>Paciente:</strong> <span id="info-animal"></span></p>
+        <p><strong>Data:</strong> <span id="info-data"></span> às <span id="info-hora"></span></p>
+      </div>
+      <hr>
+      <div class="form-group">
+        <label for="id_edit_status">Status:</label>
+        {{ edit_form.status }}
+      </div>
+      <div class="form-group full-width">
+        <label for="id_edit_observacoes">Observações:</label>
+        {{ edit_form.observacoes }}
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-edit-modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
       </div>
     </form>
   </div>
@@ -171,28 +177,30 @@
 
 <script src="{% static 'js/main.js' %}"></script>
 <script>
+// Passa as raças do Django para o JavaScript
+window.racasPorEspecie = {{ racas_choices|safe }};
+
 document.addEventListener("DOMContentLoaded", () => {
   // Atualiza cor do span de status sem afetar dropdown
   document.querySelectorAll(".status-select").forEach(select => {
+    const card = select.closest('.appt-card');
+    if (!card) return;
+
+    const span = card.querySelector(".status");
+    if (!span) return;
+
     const updateStatusSpan = () => {
-      const span = select.nextElementSibling;
-      if (span && span.classList.contains("status")) {
-        span.className = "status " + select.value;
-        span.textContent = select.options[select.selectedIndex].text;
-      }
+      span.className = "status " + select.value;
+      span.textContent = select.options[select.selectedIndex].text;
     };
-    updateStatusSpan();
+    
+    // Inicializa a cor e o texto do span ao carregar a página
+    updateStatusSpan(); 
+    
+    // Adiciona o listener para mudanças
     select.addEventListener("change", updateStatusSpan);
   });
 });
-
-window.racasPorEspecie = {
-    "canino": [["labrador","Labrador"],["pastor_alemao","Pastor Alemão"],["poodle","Poodle"],["bulldog","Bulldog"]],
-    "felino": [["siames","Siamês"],["persa","Persa"],["maine_coon","Maine Coon"],["sphynx","Sphynx"]],
-    "equino": [["mangalarga","Mangalarga"],["quarto_de_milha","Quarto de Milha"],["andaluz","Andaluz"]],
-    "bovino": [["nelore","Nelore"],["angus","Angus"],["girolando","Girolando"]],
-    "ave": [["calopsita","Calopsita"],["periquito","Periquito"],["papagaio","Papagaio"],["canario","Canário"]]
-};
 </script>
 </body>
 </html>

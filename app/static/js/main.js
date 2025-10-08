@@ -47,85 +47,96 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        // 2. ABRIR MODAL PARA EDITAR AGENDAMENTO
-        document.body.addEventListener("click", (event) => {
-            const editButton = event.target.closest('.edit-btn');
-            if (editButton) {
-                const card = editButton.closest('.appt-card');
-                currentEditingId = card.dataset.id;
-                const fetchURL = `/editar/${currentEditingId}/`;
+      // main.js - SUBSTITUA A LÓGICA DE EDIÇÃO POR ESTA
 
-                fetch(fetchURL)
-                    .then(response => {
-                        if (!response.ok) { throw new Error('Falha ao buscar dados'); }
-                        return response.json();
-                    })
-                    .then(data => {
-                        resetModalToNew(); 
-                        modalTitle.textContent = "Editar Agendamento";
-                        form.action = fetchURL;
+// --- Elementos do Modal de Edição ---
+const editModal = document.getElementById('editAppointmentModal');
+const editForm = document.getElementById('edit-appointment-form');
+const closeEditModalBtn = document.getElementById('close-edit-modal');
+const cancelEditModalBtn = document.getElementById('cancel-edit-modal');
 
-                        for (const key in data) {
-                            const input = form.querySelector(`#id_${key}`);
-                            if (input) input.value = data[key];
-                        }
-                        
-                        const readonlyFields = ['cliente', 'animal', 'especie', 'raca', 'tipo_atendimento', 'profissional', 'duracao', 'observacoes'];
-                        
-                        allFormGroups.forEach(group => {
-                            const input = group.querySelector('input, select, textarea');
-                            if (!input) return;
-                            const fieldName = input.id.replace('id_', '');
-                            if (readonlyFields.includes(fieldName)) {
-                                input.disabled = true;
-                                group.classList.add('is-readonly');
-                            }
-                        });
-                        
-                        openModal();
-                    })
-                    .catch(err => {
-                        console.error("Erro ao buscar dados do agendamento:", err);
-                        alert("Não foi possível carregar os dados para edição.");
-                    });
-            }
+// --- Função para abrir o modal de edição ---
+function openEditModal() {
+  if (editModal) editModal.classList.remove('hidden');
+}
+
+// --- Função para fechar o modal de edição ---
+function closeEditModal() {
+  if (editModal) editModal.classList.add('hidden');
+}
+
+// Event Listeners para fechar o modal
+if (closeEditModalBtn) closeEditModalBtn.addEventListener('click', closeEditModal);
+if (cancelEditModalBtn) cancelEditModalBtn.addEventListener('click', closeEditModal);
+
+
+// --- Lógica Principal para o Botão "Editar" ---
+document.body.addEventListener("click", (event) => {
+    const editButton = event.target.closest('.btn-edit');
+    if (!editButton) return;
+
+    const agendamentoId = editButton.dataset.id;
+    const fetchURL = `/editar_agendamento/${agendamentoId}/`;
+
+    // 1. Busca os dados atuais do agendamento
+    fetch(fetchURL)
+        .then(response => {
+            if (!response.ok) throw new Error('Falha ao buscar dados');
+            return response.json();
+        })
+        .then(data => {
+            // 2. Preenche as informações de visualização (não-editáveis)
+            document.getElementById('info-cliente').textContent = data.cliente_nome || 'N/A';
+            document.getElementById('info-animal').textContent = data.animal_nome || 'N/A';
+            document.getElementById('info-data').textContent = data.data_formatada || 'N/A';
+            document.getElementById('info-hora').textContent = data.hora_formatada || 'N/A';
+
+            
+            editForm.querySelector('[name="status"]').value = data.status;
+            editForm.querySelector('[name="observacoes"]').value = data.observacoes;
+            
+           
+            editForm.action = fetchURL;
+            
+            
+            openEditModal();
+        })
+        .catch(err => {
+            console.error("Erro:", err);
+            alert("Não foi possível carregar os dados para edição.");
         });
-        
-        // 3. FECHAR O MODAL
-        const closeBtn = document.getElementById("close-modal");
-        const cancelBtn = document.getElementById("cancel-modal");
-        if (closeBtn) closeBtn.addEventListener("click", closeModal);
-        if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
-        
-        // 4. SUBMISSÃO DO FORMULÁRIO (AJAX)
-        if (form) {
-            if (!form.dataset.createUrl) {
-                form.dataset.createUrl = "/criar/";
-            }
-            form.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const formData = new FormData(form);
-                const url = form.action;
-                try {
-                    const response = await fetch(url, {
-                        method: "POST",
-                        body: formData,
-                        headers: { "X-Requested-With": "XMLHttpRequest" },
-                    });
-                    const result = await response.json();
-                    if (result.success) {
-                        window.location.reload();
-                    } else {
-                        console.error("Erro do servidor:", result.errors || result.error);
-                        alert("Erro ao salvar o agendamento. Verifique os campos.");
-                    }
-                } catch (error) {
-                    console.error("Erro de rede:", error);
-                    alert("Ocorreu um erro de comunicação com o servidor.");
-                }
-            });
-        }
+});
 
+// --- Lógica de submissão do formulário de EDIÇÃO ---
+if (editForm) {
+  editForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(editForm);
+    const url = editForm.action;
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        window.location.reload();
+      } else {
+        console.error("Erro do servidor:", result.errors);
+        alert("Erro ao salvar. Verifique os campos.");
+      }
+    } catch (error) {
+      console.error("Erro de rede:", error);
+      alert("Ocorreu um erro de comunicação.");
+    }
+  });
+}
         // --- LÓGICAS DE PREENCHIMENTO DINÂMICO (DEPENDEM DO MODAL) ---
         const clienteSelect = document.getElementById("id_cliente");
         const animalSelect = document.getElementById("id_animal");
@@ -211,6 +222,68 @@ document.addEventListener("DOMContentLoaded", () => {
     // ====================================================================
     // FIM DO BLOCO DE PROTEÇÃO
     // ====================================================================
+    
+    document.addEventListener("DOMContentLoaded", function() {
+  // Botão editar: abre a modal e busca os dados do agendamento
+  document.querySelectorAll(".btn-edit").forEach(btn => {
+    btn.addEventListener("click", function() {
+      const agId = this.getAttribute("data-id");
+      fetch(`/editar_agendamento/${agId}/`)
+        .then(response => response.json())
+        .then(data => {
+          // Preencher os campos da modal
+          document.querySelector("#editAppointmentModal input[name='cliente']").value = data.cliente;
+          document.querySelector("#editAppointmentModal input[name='animal']").value = data.animal;
+          document.querySelector("#editAppointmentModal input[name='especie']").value = data.especie;
+          document.querySelector("#editAppointmentModal input[name='raca']").value = data.raca;
+          document.querySelector("#editAppointmentModal input[name='tipo_atendimento']").value = data.tipo_atendimento;
+          document.querySelector("#editAppointmentModal input[name='profissional']").value = data.profissional;
+          document.querySelector("#editAppointmentModal input[name='data']").value = data.data;
+          document.querySelector("#editAppointmentModal input[name='hora']").value = data.hora;
+          document.querySelector("#editAppointmentModal input[name='duracao']").value = data.duracao;
+          // Apenas estes dois são editáveis:
+          document.querySelector("#editAppointmentModal select[name='status']").value = data.status;
+          document.querySelector("#editAppointmentModal textarea[name='observacoes']").value = data.observacoes;
+
+          // Salvar id para o envio posterior
+          document.querySelector("#edit-appointment-form").setAttribute("data-id", agId);
+          document.getElementById("editAppointmentModal").classList.remove("hidden");
+        });
+    });
+  });
+
+  // Fechar modal
+  document.getElementById("close-edit-modal").addEventListener("click", function() {
+    document.getElementById("editAppointmentModal").classList.add("hidden");
+  });
+  document.getElementById("cancel-edit-modal").addEventListener("click", function() {
+    document.getElementById("editAppointmentModal").classList.add("hidden");
+  });
+
+  // Envia alteração via AJAX (apenas status e observacoes)
+  document.getElementById("edit-appointment-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    const agId = this.getAttribute("data-id");
+    const status = this.querySelector("select[name='status']").value;
+    const observacoes = this.querySelector("textarea[name='observacoes']").value;
+    fetch(`/editar_agendamento/${agId}/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": document.querySelector('#edit-appointment-form [name=csrfmiddlewaretoken]').value
+      },
+      body: `status=${encodeURIComponent(status)}&observacoes=${encodeURIComponent(observacoes)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.success){
+        location.reload(); // recarrega a página para atualizar agendamentos
+      } else {
+        alert("Erro: " + (data.error || "Falha ao salvar!"));
+      }
+    });
+  });
+});
 
 
     // --- LÓGICAS INDEPENDENTES (FUNCIONAM EM QUALQUER PÁGINA) ---

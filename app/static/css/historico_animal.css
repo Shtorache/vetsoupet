@@ -187,26 +187,45 @@ input[type="file"] {
 /* ===================================== */
 /* ✨ RESPONSIVIDADE PARA CELULARES ✨     */
 /* ===================================== */
+/* ✨ OTIMIZAÇÃO PARA CELULARES ✨         */
+/* ===================================== */
 @media(max-width: 768px) {
     .container {
-        margin: 20px 15px;
+        margin: 15px 10px;
         padding: 20px;
     }
+
     .page-title {
-        font-size: 24px;
+        font-size: 22px;
+        text-align: center;
+        margin-bottom: 25px;
     }
+
+    /* Dashboard pets */
     .pets-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-template-columns: 1fr 1fr; /* 2 colunas no celular */
+        gap: 20px;
     }
+    .pet-card {
+        padding: 12px;
+        background-color: #fafafa;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    }
+
+    /* Formulário */
     .form-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* cada input em linha única */
+        gap: 15px;
     }
+
     .form-actions {
         flex-direction: column-reverse;
         align-items: stretch;
-        gap: 10px;
+        gap: 12px;
     }
     .form-actions .btn {
         width: 100%;
     }
-}
+
+   

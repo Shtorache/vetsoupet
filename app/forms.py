@@ -81,6 +81,16 @@ class AgendamentoForm(forms.ModelForm):
         else:
             self.fields["raca"].choices = [("", "Selecione uma espécie primeiro")]
 
+
+
+
+class EditarAgendamentoForm(forms.ModelForm):
+    class Meta:
+        model = Agendamento
+        fields = ['status', 'observacoes']
+
+
+
 class AtendimentoDetalhadoForm(forms.ModelForm):
     class Meta:
         model = Agendamento

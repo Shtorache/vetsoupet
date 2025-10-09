@@ -29,7 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "5cc10d9f894d.ngrok-free.app"
+    "2b942452ff52.ngrok-free.app"
 ]
 
 # settings.py
@@ -37,6 +37,7 @@ ALLOWED_HOSTS = [
 # Django >= 4.0
 CSRF_TRUSTED_ORIGINS = [
     "https://5cc10d9f894d.ngrok-free.app",
+    "https://2b942452ff52.ngrok-free.app",
 ]
 
 

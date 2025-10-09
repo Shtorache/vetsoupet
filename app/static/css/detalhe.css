@@ -71,12 +71,12 @@ body {
     font-size: 15px;
     transition: all 0.3s ease;
     cursor: pointer;
+    border: none;
 }
 
 .btn-primary {
     background-color: #007bff;
     color: white;
-    border: none;
 }
 
 .btn-primary:hover {
@@ -87,7 +87,6 @@ body {
 .btn-secondary {
     background-color: #6c757d;
     color: white;
-    border: none;
 }
 
 .btn-secondary:hover {
@@ -142,17 +141,44 @@ body {
     color: #666;
 }
 
-/* responsividade */
+/* ===================================== */
+/* ✨ RESPONSIVIDADE PARA CELULARES ✨     */
+/* ===================================== */
 @media(max-width: 768px){
+
+    /* ✅ Ajusta o container principal */
+    .container {
+        margin: 20px 15px;
+        padding: 20px;
+    }
+
+    /* Empilha o cabeçalho (já estava correto) e ajusta o conteúdo */
     .cliente-header {
         flex-direction: column;
         text-align: center;
+        gap: 15px;
     }
     .cliente-header img {
-        margin-bottom: 15px;
+        width: 120px; /* ✅ Imagem um pouco menor */
+        height: 120px;
+        margin-bottom: 0; /* A propriedade 'gap' já cuida do espaçamento */
     }
+    .cliente-info h1 {
+        font-size: 26px; /* ✅ Título um pouco menor */
+    }
+
+    /* Centraliza os botões (já estava correto) e ajusta o espaçamento */
     .actions {
         justify-content: center;
         flex-wrap: wrap;
+        gap: 10px; /* ✅ Menor espaçamento entre os botões */
+    }
+    
+    /* ✅ Ajusta a seção de pacientes */
+    .pacientes-section h2 {
+        text-align: center; /* Centraliza o subtítulo */
+    }
+    .pacientes-grid {
+        gap: 15px; /* ✅ Menor espaçamento entre os cards */
     }
 }

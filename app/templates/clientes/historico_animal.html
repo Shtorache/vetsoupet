@@ -12,11 +12,11 @@
         <header class="historico-header">
             <h1>Histórico de Agendamentos: {{ animal.nome }}</h1>
             <p>Cliente: <a href="{% url 'detalhe_cliente' pk=cliente.pk %}"><strong>{{ cliente.nome }}</strong></a></p>
-            <p>Espécie/Raça: {{ animal.especie }}{% if animal.raca %} ({{ animal.raca }}){% endif %}</p>
+            <p>Espécie/Raça: {{ animal.get_especie_display }}{% if animal.raca %} ({{ animal.raca }}){% endif %}</p>
         </header>
 
         <div class="actions">
-            <a href="{% url 'detalhe_cliente' pk=cliente.pk %}" class="btn btn-secondary">Voltar para Detalhes</a>
+            <a href="{% url 'detalhe_cliente' pk=cliente.pk %}" class="btn btn-secondary">Voltar aos Detalhes do Cliente</a>
         </div>
 
         <section class="historico-section">
@@ -24,22 +24,27 @@
 
             <div class="historico-list">
                 {% for agendamento in historico %}
-                    <div class="agendamento-item">
-                        <div>
-                            <strong>{{ agendamento.data|date:"d/m/Y" }} às {{ agendamento.hora|time:"H:i" }}</strong>
-                            <p>Tipo: {{ agendamento.get_tipo_atendimento_display }} | Profissional: {{ agendamento.profissional }}</p>
+                    <div class="historico-card status-{{ agendamento.status }}">
+                        <div class="card-time">
+                            <strong>{{ agendamento.data|date:"d/m/Y" }}</strong>
+                            <span>{{ agendamento.hora|time:"H:i" }}</span>
+                        </div>
+                        
+                        <div class="card-details">
+                            <p><strong>Tipo:</strong> {{ agendamento.get_tipo_atendimento_display }}</p>
+                            <p><strong>Profissional:</strong> {{ agendamento.profissional }}</p>
                             {% if agendamento.observacoes %}
-                                <p>Obs: {{ agendamento.observacoes|truncatechars:80 }}</p>
+                                <p><strong>Obs:</strong> {{ agendamento.observacoes }}</p>
                             {% endif %}
                         </div>
                         
-                        <div class="item-actions">
-                            <span class="status-badge status-{{ agendamento.status }}">{{ agendamento.get_status_display }}</span>
-                            {% if agendamento.status == 'realizado' %}
-                                <br>
-                                <a href="{% url 'detalhar_atendimento' pk=agendamento.pk %}" class="btn btn-primary btn-sm" style="margin-top: 5px;">Ver Detalhes</a>
-                            {% endif %}
-                        </div>
+                        <div class="card-actions">
+    <span class="status-badge status-{{ agendamento.status }}">{{ agendamento.get_status_display }}</span>
+    {% if agendamento.status == 'realizado' %}
+        <a href="{% url 'detalhar_atendimento' pk=agendamento.pk %}" class="btn btn-primary btn-sm btn-detalhes">Ver Detalhes</a>
+    {% endif %}
+</div>
+
                     </div>
                 {% empty %}
                     <p>Nenhum agendamento encontrado para este animal.</p>

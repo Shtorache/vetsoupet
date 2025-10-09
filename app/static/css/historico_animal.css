@@ -1,231 +1,239 @@
-/* adicionar_animal.css - Formulário moderno para adicionar animal */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+/* historico_animal.css - Estilo para a página de histórico */
 
+/* 1. Variáveis de Tema */
+:root {
+    --primary: #1e9400;
+    --secondary: #2a9d8f;
+    --info: #0dcaf0;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --bg-main: #f0f2f5;
+    --bg-card: #ffffff;
+    --text-main: #212529;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --border-radius: 12px;
+    --shadow: 0 6px 18px rgba(0,0,0,0.07);
+}
+
+/* 2. Estilos Globais */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f0f2f5;
+    background-color: var(--bg-main);
     margin: 0;
-    padding: 0;
-    color: #333;
+    color: var(--text-main);
 }
 
 .container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
 }
 
-.page-title {
-    text-align: center;
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 30px;
-    color: #007bff;
-}
-
-/* Mini dashboard de pets */
-.dashboard-pets {
-    margin-bottom: 40px;
-    padding-bottom: 30px;
-    border-bottom: 1px solid #eee;
-}
-.dashboard-pets h2 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #333;
-}
-.pets-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 15px;
-}
-.pet-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* 3. Cabeçalho da Página */
+.historico-header {
+    background-color: var(--bg-card);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
     text-align: center;
 }
-
-/* ✅ ======================================================= ✅ */
-/* ✅ ADIÇÃO PARA REMOVER A APARÊNCIA DE LINK DOS CARDS        ✅ */
-/* ✅ ======================================================= ✅ */
-.pet-card a {
-    text-decoration: none; /* Remove o sublinhado */
-    color: inherit;      /* Faz com que o texto herde a cor do elemento pai */
+.historico-header h1 {
+    margin: 0 0 10px 0;
+    color: var(--primary);
 }
-/* Opcional: Efeito visual ao passar o mouse, se o card for um link */
-.pet-card a:hover strong {
-    color: #007bff;
+.historico-header p {
+    margin: 5px 0;
+    color: var(--text-muted);
 }
-
-
-.pet-card img, .pet-card .placeholder {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    background-color: #e9ecef;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6c757d;
-    font-size: 12px;
-}
-.pet-info {
-    margin-top: 10px;
-}
-.pet-info strong {
-    font-size: 14px;
-    display: block;
-}
-.pet-info span {
-    font-size: 12px;
-    color: #6c757d;
-}
-
-
-/* Formulário */
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.full-width {
-    grid-column: 1 / -1;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group label {
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #555;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    background-color: #fafafa;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0,123,255,0.2);
-    outline: none;
-}
-
-.text-danger {
-    color: #dc3545;
-    font-size: 0.85em;
-    margin-top: 4px;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 30px;
-}
-
-.btn {
-    padding: 10px 22px;
-    border-radius: 8px;
+.historico-header a {
+    color: var(--secondary);
     text-decoration: none;
     font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+}
+.historico-header a:hover {
+    text-decoration: underline;
+}
+
+/* 4. Botões de Ação */
+.actions {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+.btn {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
     border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    cursor: pointer;
 }
-
-.btn-primary {
-    background-color: #007bff;
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-}
-
 .btn-secondary {
     background-color: #6c757d;
     color: white;
 }
-
 .btn-secondary:hover {
     background-color: #5a6268;
-    transform: translateY(-2px);
+}
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
 }
 
-/* Estilo para input file */
-input[type="file"] {
-    padding: 6px;
-    border-radius: 6px;
-    background-color: #f8f9fa;
-    border: 1px solid #ccc;
+/* 5. Seção de Histórico e Cards */
+.historico-section h3 {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
 }
 
-/* ===================================== */
-/* ✨ RESPONSIVIDADE PARA CELULARES ✨     */
-/* ===================================== */
-/* ✨ OTIMIZAÇÃO PARA CELULARES ✨         */
-/* ===================================== */
-@media(max-width: 768px) {
+.historico-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.historico-card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: stretch;
+    border-left: 6px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex-wrap: wrap; /* Permite flexibilidade no mobile */
+}
+.historico-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+}
+
+.historico-card.status-realizado { border-left-color: var(--success); }
+.historico-card.status-confirmado { border-left-color: var(--info); }
+.historico-card.status-pendente { border-left-color: var(--warning); }
+.historico-card.status-cancelado { border-left-color: var(--danger); }
+
+.card-time {
+    padding: 1.5rem;
+    text-align: center;
+    border-right: 1px solid var(--border-color);
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.card-time strong { font-size: 1rem; }
+.card-time span { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
+
+.card-details {
+    flex-grow: 1;
+    padding: 1.5rem;
+}
+.card-details p {
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+.card-details p:last-child { margin-bottom: 0; }
+.card-details strong { color: var(--text-main); }
+
+/* Card Actions: Status e Botões */
+.card-actions {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column; /* Default para mobile */
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 150px;
+}
+
+/* Status Badge */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    text-transform: capitalize;
+    display: inline-block;
+}
+.status-badge.status-pendente { background-color: var(--warning); color: var(--text-main); }
+.status-badge.status-realizado { background-color: var(--success); }
+.status-badge.status-cancelado { background-color: var(--danger); }
+.status-badge.status-confirmado { background-color: var(--info); }
+
+/* 6. Responsividade */
+@media (max-width: 768px) {
     .container {
-        margin: 15px 10px;
-        padding: 20px;
+        margin: 20px auto;
+        padding: 15px;
     }
-
-    .page-title {
-        font-size: 22px;
-        text-align: center;
-        margin-bottom: 25px;
+    .historico-card {
+        flex-direction: column;
     }
-
-    /* Dashboard pets */
-    .pets-grid {
-        grid-template-columns: 1fr 1fr; /* 2 colunas no celular */
-        gap: 20px;
-    }
-    .pet-card {
-        padding: 12px;
-        background-color: #fafafa;
-        border-radius: 12px;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.05);
-    }
-
-    /* Formulário */
-    .form-grid {
-        grid-template-columns: 1fr; /* cada input em linha única */
-        gap: 15px;
-    }
-
-    .form-actions {
-        flex-direction: column-reverse;
-        align-items: stretch;
-        gap: 12px;
-    }
-    .form-actions .btn {
+    .card-time {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
         width: 100%;
+        min-width: 0;
+        padding: 1rem;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+    .card-details {
+        padding: 1rem;
+    }
+    .card-actions {
+        width: 100%;
+        min-width: 0;
+        flex-direction: row; /* Badge e botão lado a lado no mobile */
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 1rem 1rem 1rem;
+        gap: 0.5rem;
+    }
+}
+@media (min-width: 769px) {
+    .card-actions {
+        flex-direction: row; /* Desktop: lado a lado */
+        justify-content: flex-end;
+        align-items: center;
+    }
+}
+
+/* Botão de Ver Detalhes separado */
+.btn-detalhes {
+    /* Mantém o estilo do botão principal */
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+
+@media (max-width: 768px) {
+    .card-actions {
+        width: 100%;
+        min-width: 0;
+        flex-direction: row;
+        justify-content: flex-start; 
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem 1rem 1rem;
     }
 
-   
+@media (max-width: 768px) {
+    .btn-detalhes {
+        margin-left: 0.5rem; 
+    }
+}

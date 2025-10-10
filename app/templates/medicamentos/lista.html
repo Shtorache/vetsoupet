@@ -3,8 +3,10 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
     <title>Estoque de Medicamentos</title>
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lista_medicamentos.css' %}">
     <style>
         .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
@@ -16,8 +18,8 @@
 <main class="container">
     <header class="page-header">
         <div class="header-logo">
-            <img src="{% static 'imgs/IMG_6112.PNG' %}" alt="Logo VET Sou Pet">
-        </div>
+        <img src="{% static 'imgs/logo_parceiro_1.png' %}" alt="Logo VET Sou Pet">
+      </div>
         <div class="header-actions">
             <a href="{% url 'index' %}" class="btn btn-secondary">Voltar</a>
             <a href="{% url 'cadastrar_medicamento' %}" class="btn btn-primary">+ Novo Medicamento</a>

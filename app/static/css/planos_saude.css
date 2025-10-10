@@ -1,0 +1,180 @@
+/* planos_saude.css - Estilo para a página de Planos de Saúde */
+
+/* 1. Variáveis de Tema e Estilos Globais */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+:root {
+    --primary: #1e9400;
+    --secondary: #2a9d8f;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --bg-main: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-main: #212529;
+    --text-light: #ffffff;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --border-radius: 12px;
+    --shadow: 0 6px 18px rgba(0,0,0,0.07);
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* 2. Cabeçalho */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.header-logo img {
+    height: 50px;
+    display: block;
+}
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 3. Botões */
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    display: inline-block;
+    text-align: center;
+}
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.btn-primary { background-color: var(--primary); color: var(--text-light); }
+.btn-secondary { background-color: #e9ecef; color: var(--text-main); }
+.btn-success { background-color: var(--success); color: var(--text-light); }
+.btn-warning { background-color: var(--warning); color: var(--text-main); }
+.btn-danger { background-color: var(--danger); color: var(--text-light); }
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+/* 4. Lista e Cards de Planos */
+.plano-card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    border-left: 5px solid var(--secondary);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.plano-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+}
+
+.plano-details strong {
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 8px;
+}
+.plano-details small {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.plano-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0; /* Impede que os botões encolham */
+}
+
+/* 5. Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    .page-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .header-actions {
+        width: 100%;
+    }
+    .header-actions .btn {
+        flex-grow: 1; /* Faz os botões ocuparem o espaço */
+    }
+    .plano-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .plano-actions {
+        width: 100%;
+        margin-top: 1rem;
+        border-top: 1px solid var(--border-color);
+        padding-top: 1rem;
+    }
+    .plano-actions .btn {
+        flex-grow: 1;
+    }
+}
+
+
+/* planos_saude.css */
+
+/* ... (seus outros estilos) ... */
+
+
+/* --- Estilo para Mensagem de "Nenhum Plano" --- */
+.empty-state-card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 3rem 2rem;
+    margin-top: 2rem;
+    text-align: center;
+    border: 1px dashed var(--border-color);
+}
+
+.empty-state-card p:first-child {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin: 0 0 1.5rem 0;
+}

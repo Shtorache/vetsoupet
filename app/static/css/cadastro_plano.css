@@ -1,0 +1,202 @@
+/* cadastro_plano.css - Estilo CORRIGIDO para o formulário de planos de saúde */
+
+/* --- 1. Importação de Fonte e Reset Básico --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #1e9400;
+    --secondary: #6c757d;
+    --bg-main: #f0f2f5;
+    --bg-card: #ffffff;
+    --text-main: #212529;
+    --text-label: #495057;
+    --border-color: #dee2e6;
+    --border-radius: 12px;
+    --shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* --- 2. Estilos Globais e Layout Principal --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-main);
+    margin: 0;
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 800px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 0 1rem;
+    flex-grow: 1;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+    color: var(--primary);
+}
+
+/* --- 3. Cabeçalho --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.header-logo img {
+    height: 50px;
+    display: block;
+}
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* --- 4. Formulário --- */
+form {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 2.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-label);
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    background-color: #fdfdff;
+    width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 148, 0, 0.15);
+    outline: none;
+    background-color: #fff;
+}
+
+/* --- 5. Botões --- */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.btn {
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    flex-shrink: 0;
+    text-align: center; /* <<< CORREÇÃO AQUI */
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #166f00;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: #e9ecef;
+    color: var(--text-main);
+}
+.btn-secondary:hover {
+    background-color: #d3d9df;
+    transform: translateY(-2px);
+}
+
+/* --- 6. Responsividade --- */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: center; /* Centraliza no mobile */
+        gap: 1rem;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: center; /* Centraliza botões do header */
+        flex-wrap: wrap;
+    }
+    
+    form {
+        padding: 1.5rem;
+    }
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        gap: 12px;
+        align-items: center;
+    }
+    .form-actions .btn {
+        width: 100%;
+        max-width: 400px;
+    }
+}

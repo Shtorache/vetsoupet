@@ -3,8 +3,10 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastrar Medicamento</title>
-  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+  <link rel="stylesheet" href="{% static 'css/cadastro_medicamentos.css' %}">
+
 </head>
 <body>
 <main class="container">
@@ -13,7 +15,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <div class="form-actions">
-      <a href="{% url 'lista_medicamentos' %}" class="btn btn-secondary">Cancelar</a>
+      <a href="{% url 'lista_medicamentos' %}" class="btn btn-ghost">Cancelar</a>
       <button type="submit" class="btn btn-primary">Salvar</button>
     </div>
   </form>

@@ -2,43 +2,50 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Planos de Saúde</title>
-  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Planos de Saúde</title>
+    <link rel="stylesheet" href="{% static 'css/planos_saude.css' %}">
 </head>
 <body>
-  <main class="container">
-    <header class="page-header">
-      <div class="header-logo">
-        <img src="{% static 'imgs/IMG_6112.PNG' %}" alt="Logo VET Sou Pet">
-      </div>
-      <div class="header-actions">
-        <a href="{% url 'index' %}" class="btn btn-secondary">Voltar</a>
-        <a href="{% url 'cadastrar_plano' %}" class="btn btn-primary">+ Novo Plano</a>
-      </div>
-    </header>
-
-    <h2>Planos de Saúde Cadastrados</h2>
-
-    <section>
-        {% for plano in planos %}
-        <div class="cliente-card">
-            <div>
-            <strong>{{ plano.nome_plano }}</strong><br>
-            <small>Cliente: {{ plano.cliente.nome }} | Animal: {{ plano.animal.nome }}</small><br>
-            <small>Validade: {{ plano.validade|date:"d/m/Y" }} | Valor: R$ {{ plano.valor_mensal }}</small>
+    <main class="container">
+        <header class="page-header">
+            <div class="header-logo">
+                <a href="{% url 'index' %}">
+                    <img src="{% static 'imgs/logo_parceiro_1.png' %}" alt="Logo VET Sou Pet">
+                </a>
             </div>
-
-            <div class="cliente-actions">
-            <a href="{% url 'editar_plano' plano.id %}" class="btn btn-sm btn-warning">✏️ Editar</a>
-            <a href="{% url 'deletar_plano' plano.id %}" class="btn btn-sm btn-danger">🗑️ Excluir</a>
+            <div class="header-actions">
+                <a href="{% url 'index' %}" class="btn btn-secondary">Voltar</a>
+                <a href="{% url 'cadastrar_plano' %}" class="btn btn-primary">+ Novo Plano</a>
             </div>
-        </div>
-        {% empty %}
-        <p>Nenhum plano cadastrado.</p>
-        {% endfor %}
+        </header>
 
-    </section>
-  </main>
+        <h2>Planos de Saúde Cadastrados</h2>
+
+        <section class="plano-list">
+            {% for plano in planos %}
+                <div class="plano-card">
+                    <div class="plano-details">
+                        <strong>{{ plano.nome_plano }}</strong>
+                        <small>
+                            Cliente: {{ plano.cliente.nome }} | Animal: {{ plano.animal.nome }} <br>
+                            Validade: {{ plano.validade|date:"d/m/Y" }} | Valor: R$ {{ plano.valor_mensal }}
+                        </small>
+                    </div>
+
+                    <div class="plano-actions">
+                        <a href="{% url 'editar_plano' plano.id %}" class="btn btn-sm btn-warning">✏️ Editar</a>
+                        <a href="{% url 'deletar_plano' plano.id %}" class="btn btn-sm btn-danger">🗑️ Excluir</a>
+                    </div>
+                </div>
+            {% empty %}
+    <div class="empty-state-card">
+        <p>Nenhum plano de saúde cadastrado no momento.</p>
+       
+    </div>
+{% endfor %}
+        </section>
+    </main>
 </body>
 </html>

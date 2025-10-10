@@ -17,6 +17,7 @@ urlpatterns = [
     path('editar_agendamento/<int:pk>/', views.editar_agendamento, name='editar_agendamento'),
     path("planos/", views.lista_planos, name="lista_planos"),
     path("planos/novo/", views.cadastrar_plano, name="cadastrar_plano"),
+    path("buscar_pacientes_por_cliente/<int:cliente_id>/", views.buscar_pacientes_por_cliente, name="buscar_pacientes_por_cliente"),
     path("planos/<int:pk>/editar/", views.editar_plano, name="editar_plano"),
     path("planos/<int:pk>/deletar/", views.deletar_plano, name="deletar_plano"),
     path("medicamentos/", views.lista_medicamentos, name="lista_medicamentos"),

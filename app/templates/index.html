@@ -17,6 +17,8 @@
     <div class="header-actions">
       <a href="{% url 'atendimentos_realizados' %}" class="btn btn-secondary">Atendimentos Realizados</a>
       <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Clientes</a>
+      <a href="{% url 'lista_planos' %}" class="btn btn-secondary">Planos de Saúde</a>
+      <a href="{% url 'lista_medicamentos' %}" class="btn btn-secondary">Estoque de Medicamentos</a>
       <button class="btn btn-primary" id="new-appointment">+ Novo Agendamento</button>
       <form action="{% url 'logout' %}" method="post">
         {% csrf_token %}

@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Editar Medicamento — {{ medicamento.nome }}</title>
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+  <main class="container">
+    <header class="page-header">
+      <div class="header-logo">
+        <img src="{% static 'imgs/IMG_6112.PNG' %}" alt="Logo VET Sou Pet">
+      </div>
+      <div class="header-actions">
+        <a href="{% url 'lista_medicamentos' %}" class="btn btn-secondary">Voltar</a>
+      </div>
+    </header>
+
+    <h2>Editar Medicamento: {{ medicamento.nome }}</h2>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <!-- Render simples -->
+      {{ form.as_p }}
+
+      <div class="form-actions" style="margin-top:16px;">
+        <a href="{% url 'lista_medicamentos' %}" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+      </div>
+    </form>
+
+    <!-- Botão de excluir rápido (opcional): -->
+    <form method="post" action="{% url 'excluir_medicamento' medicamento.pk %}" style="margin-top:12px;" onsubmit="return confirm('Excluir {{ medicamento.nome }}? Esta ação é irreversível.');">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">🗑️ Excluir este medicamento</button>
+    </form>
+  </main>
+</body>
+</html>

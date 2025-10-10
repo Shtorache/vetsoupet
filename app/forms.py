@@ -1,10 +1,5 @@
 from django import forms
-from .models import Agendamento, Cliente, Animal, Profissional
-
-
-from django import forms
-from .models import Agendamento, Cliente, Animal, Profissional
-
+from .models import Agendamento, Cliente, Animal, Profissional, PlanoSaude, Medicamento
 
 class AgendamentoForm(forms.ModelForm):
     especie = forms.ChoiceField(
@@ -162,3 +157,45 @@ class ProfissionalForm(forms.ModelForm):
             "nome": forms.TextInput(attrs={"class": "form-control"}),
             "especialidade": forms.TextInput(attrs={"class": "form-control"}),
         }
+
+class PlanoSaudeForm(forms.ModelForm):
+    class Meta:
+        model = PlanoSaude
+        fields = ["cliente", "animal", "nome_plano", "descricao", "valor_mensal", "validade"]
+        widgets = {
+            "cliente": forms.Select(attrs={"class": "form-control", "id": "id_cliente_plano"}),
+            "animal": forms.Select(attrs={"class": "form-control", "id": "id_animal_plano"}),
+            "nome_plano": forms.TextInput(attrs={"class": "form-control"}),
+            "descricao": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "valor_mensal": forms.NumberInput(attrs={"class": "form-control", "step": "0.01"}),
+            "validade": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['animal'].queryset = Animal.objects.none()
+
+        if 'cliente' in self.data:
+            try:
+                cliente_id = int(self.data.get('cliente'))
+                self.fields['animal'].queryset = Animal.objects.filter(cliente_id=cliente_id)
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk:
+            self.fields['animal'].queryset = self.instance.cliente.pacientes.all()
+
+class MedicamentoForm(forms.ModelForm):
+    class Meta:
+        model = Medicamento
+        fields = ["nome", "fabricante", "descricao", "quantidade", "unidade", "validade", "preco"]
+        widgets = {
+            "nome": forms.TextInput(attrs={"class": "form-control"}),
+            "fabricante": forms.TextInput(attrs={"class": "form-control"}),
+            "descricao": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "quantidade": forms.NumberInput(attrs={"class": "form-control"}),
+            "unidade": forms.Select(attrs={"class": "form-control"}),
+            "validade": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "preco": forms.NumberInput(attrs={"class": "form-control", "step": "0.01"}),
+        }
+
+

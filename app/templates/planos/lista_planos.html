@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Planos de Saúde</title>
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+  <main class="container">
+    <header class="page-header">
+      <div class="header-logo">
+        <img src="{% static 'imgs/IMG_6112.PNG' %}" alt="Logo VET Sou Pet">
+      </div>
+      <div class="header-actions">
+        <a href="{% url 'index' %}" class="btn btn-secondary">Voltar</a>
+        <a href="{% url 'cadastrar_plano' %}" class="btn btn-primary">+ Novo Plano</a>
+      </div>
+    </header>
+
+    <h2>Planos de Saúde Cadastrados</h2>
+
+    <section>
+        {% for plano in planos %}
+        <div class="cliente-card">
+            <div>
+            <strong>{{ plano.nome_plano }}</strong><br>
+            <small>Cliente: {{ plano.cliente.nome }} | Animal: {{ plano.animal.nome }}</small><br>
+            <small>Validade: {{ plano.validade|date:"d/m/Y" }} | Valor: R$ {{ plano.valor_mensal }}</small>
+            </div>
+
+            <div class="cliente-actions">
+            <a href="{% url 'editar_plano' plano.id %}" class="btn btn-sm btn-warning">✏️ Editar</a>
+            <a href="{% url 'deletar_plano' plano.id %}" class="btn btn-sm btn-danger">🗑️ Excluir</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>Nenhum plano cadastrado.</p>
+        {% endfor %}
+
+    </section>
+  </main>
+</body>
+</html>

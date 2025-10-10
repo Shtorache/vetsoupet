@@ -2,96 +2,131 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta charset="UTF-8">
-  <title>Atendimentos Realizados</title>
-  <link rel="stylesheet" href="{% static 'css/atendimentos_realizados.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Atendimentos Realizados</title>
+    <link rel="stylesheet" href="{% static 'css/atendimentos_realizados.css' %}">
 </head>
 <body>
-  <main class="container">
-    <header class="page-header">
-      <h1>Atendimentos Realizados</h1>
-      
-      <div class="header-actions">
-          <button type="button" id="toggle-filtro" class="btn-secondary">Mostrar Filtros</button>
-          <a href="{% url 'index' %}" class="btn-success">Voltar aos Agendamentos</a>
-          <form action="{% url 'logout' %}" method="post">
-              {% csrf_token %}
-              
-          </form>
-      </div>
-    </header>
+    <main class="container">
+        <header class="page-header">
+            <div class="header-logo">
+                <a href="{% url 'index' %}">
+                    <img src="{% static 'imgs/logo_parceiro_1.png' %}" alt="Logo de Parceiros" id="dynamic-logo">
+                </a>
+            </div>
+            <div class="header-title">
+                <h1>Atendimentos Realizados</h1>
+            </div>
+            <div class="header-actions">
+                <button type="button" id="toggle-filtro" class="btn-secondary">Mostrar Filtros</button>
+                <a href="{% url 'index' %}" class="btn-success">Voltar aos Agendamentos</a>
+            </div>
+        </header>
 
-    <div id="filtro-panel" class="hidden filtro-panel">
-      <form method="get" class="filtro-form">
-        <input type="text" name="profissional" placeholder="Profissional" value="{{ filtros.profissional }}">
-        <input type="text" name="cliente" placeholder="Cliente" value="{{ filtros.cliente }}">
-        <input type="text" name="animal" placeholder="Animal" value="{{ filtros.animal }}">
-        <select name="especie_filtro">
-          <option value="">Espécie</option>
-          {% for key, val in form.especie.field.choices %}
-            <option value="{{ key }}" {% if filtros.especie_filtro == key %}selected{% endif %}>{{ val }}</option>
-          {% endfor %}
-        </select>
-        <input type="date" name="data" value="{{ filtros.data }}">
-        <button type="submit" class="btn-primary">Filtrar</button>
-        <a href="{% url 'atendimentos_realizados' %}" class="btn-secondary">Limpar</a>
-      </form>
-    </div>
-
-    <section class="agenda">
-        {% for ag in agendamentos %}
-        <div class="appt-card">
-          <div class="appt-time">
-              <div class="appt-date">{{ ag.data|date:"d/m/Y" }}</div>
-              <div class="appt-hour">{{ ag.hora|time:"H:i" }}</div>
-              <small class="user-info">Por: {{ ag.usuario.username }}</small>
-          </div>
-          
-          <div class="appt-details">
-              <p class="detail-category">
-                  <strong>Cliente:</strong> {{ ag.cliente }} | 
-                  <strong>Paciente:</strong> {{ ag.animal }} | 
-                  <strong>Espécie:</strong> {{ ag.get_especie_display }} {% if ag.raca %}({{ ag.raca }}){% endif %}
-              </p>
-              
-              <p class="detail-category">
-                  <strong>Serviço:</strong> {{ ag.tipo_atendimento }} | 
-                  <strong>Profissional:</strong> {{ ag.get_profissional_display }}
-              </p>
-
-              <div class="summary-details">
-                {% if ag.relato_atendimento %}
-                    <div class="atendimento-info">
-                        <strong>Relato:</strong> 
-                        <p class="small-text">{{ ag.relato_atendimento|truncatechars:100|linebreaksbr }}</p>
-                    </div>
-                {% endif %}
-                
-                {% if ag.prescricao %}
-                    <div class="atendimento-info">
-                        <strong>Prescrição:</strong> 
-                        <p class="small-text">{{ ag.prescricao|truncatechars:100|linebreaksbr }}</p>
-                    </div>
-                {% endif %}
-              </div>
-              
-              {% if ag.violento %}
-                  <span class="tag alert-tag">⚠️ Paciente Violento</span>
-              {% endif %}
-          </div>
-
-          <div class="appt-actions">
-              <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
-              <a href="{% url 'detalhar_atendimento' ag.id %}" class="edit-btn">Detalhar</a>
-          </div>
+        <div id="filtro-panel" class="hidden filtro-panel">
+            <form method="get" class="filtro-form">
+                <input type="text" name="profissional" placeholder="Profissional" value="{{ filtros.profissional }}">
+                <input type="text" name="cliente" placeholder="Cliente" value="{{ filtros.cliente }}">
+                <input type="text" name="animal" placeholder="Animal" value="{{ filtros.animal }}">
+                <select name="especie_filtro">
+                    <option value="">Espécie</option>
+                    {% for key, val in form.especie.field.choices %}
+                        <option value="{{ key }}" {% if filtros.especie_filtro == key %}selected{% endif %}>{{ val }}</option>
+                    {% endfor %}
+                </select>
+                <input type="date" name="data" value="{{ filtros.data }}">
+                <button type="submit" class="btn-primary">Filtrar</button>
+                <a href="{% url 'atendimentos_realizados' %}" class="btn-secondary">Limpar</a>
+            </form>
         </div>
-      {% empty %}
-        <p class="no-appt">Nenhum atendimento realizado.</p>
-      {% endfor %}
-    </section>
-  </main>
 
-  <script src="{% static 'js/main.js' %}"></script>
+        <section class="agenda">
+            {% for ag in agendamentos %}
+            <div class="appt-card">
+                <div class="appt-time">
+                    <div class="appt-date">{{ ag.data|date:"d/m/Y" }}</div>
+                    <div class="appt-hour">{{ ag.hora|time:"H:i" }}</div>
+                    <small class="user-info">Por: {{ ag.usuario.username }}</small>
+                </div>
+                <div class="appt-details">
+                    <p class="detail-category">
+                        <strong>Cliente:</strong> {{ ag.cliente }} | 
+                        <strong>Paciente:</strong> {{ ag.animal }} | 
+                        <strong>Espécie:</strong> {{ ag.get_especie_display }} {% if ag.raca %}({{ ag.raca }}){% endif %}
+                    </p>
+                    <p class="detail-category">
+                        <strong>Serviço:</strong> {{ ag.tipo_atendimento }} | 
+                        <strong>Profissional:</strong> {{ ag.get_profissional_display }}
+                    </p>
+                    <div class="summary-details">
+                        {% if ag.relato_atendimento %}
+                            <div class="atendimento-info">
+                                <strong>Relato:</strong> 
+                                <p class="small-text">{{ ag.relato_atendimento|truncatechars:100|linebreaksbr }}</p>
+                            </div>
+                        {% endif %}
+                        {% if ag.prescricao %}
+                            <div class="atendimento-info">
+                                <strong>Prescrição:</strong> 
+                                <p class="small-text">{{ ag.prescricao|truncatechars:100|linebreaksbr }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if ag.violento %}
+                        <span class="tag alert-tag">⚠️ Paciente Violento</span>
+                    {% endif %}
+                </div>
+                <div class="appt-actions">
+                    <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
+                    <a href="{% url 'detalhar_atendimento' ag.id %}" class="btn btn-primary btn-sm">Detalhar</a>
+                </div>
+            </div>
+            {% empty %}
+                <p class="no-appt">Nenhum atendimento realizado encontrado com os filtros aplicados.</p>
+            {% endfor %}
+        </section>
+    </main>
+
+    </main>
+
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoImage = document.getElementById('dynamic-logo');
+            if (!logoImage) return; // Se não encontrar o logo, não faz nada
+
+            // A lista de imagens com os caminhos corretos gerados pelo Django
+            const logoPaths = [
+                "{% static 'imgs/logo_parceiro_1.png' %}",
+                "{% static 'imgs/logo_parceiro_2.png' %}",
+                "{% static 'imgs/logo_parceiro_3.png' %}",
+                "{% static 'imgs/logo_parceiro_4.png' %}",
+                "{% static 'imgs/logo_parceiro_5.png' %}",
+            ];
+
+            let currentLogoIndex = 0;
+
+            // Função que troca o logo a cada 4 segundos
+            setInterval(() => {
+                // Efeito de fade-out
+                logoImage.style.opacity = 0;
+
+                // Espera o fade-out terminar para trocar a imagem
+                setTimeout(() => {
+                    currentLogoIndex = (currentLogoIndex + 1) % logoPaths.length;
+                    logoImage.src = logoPaths[currentLogoIndex];
+                    // Efeito de fade-in
+                    logoImage.style.opacity = 1;
+                }, 500); // 500ms (meio segundo)
+
+            }, 4000); // 4000ms (4 segundos)
+        });
+    </script>
+</body>
+</html>
+
+    <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

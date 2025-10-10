@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Medicamentos</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        h2 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <h2>Relatório de Estoque de Medicamentos</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Fabricante</th>
+                <th>Qtd.</th>
+                <th>Unidade</th>
+                <th>Validade</th>
+                <th>Preço (R$)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for med in medicamentos %}
+            <tr>
+                <td>{{ med.nome }}</td>
+                <td>{{ med.fabricante|default:"-" }}</td>
+                <td>{{ med.quantidade }}</td>
+                <td>{{ med.get_unidade_display }}</td>
+                <td>{% if med.validade %}{{ med.validade|date:"d/m/Y" }}{% else %}-{% endif %}</td>
+                <td>{% if med.preco %}{{ med.preco }}{% else %}-{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">Nenhum medicamento cadastrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

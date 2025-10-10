@@ -23,4 +23,6 @@ urlpatterns = [
     path("medicamentos/novo/", views.cadastrar_medicamento, name="cadastrar_medicamento"),
     path("medicamentos/<int:pk>/editar/", views.editar_medicamento, name="editar_medicamento"),
     path("medicamentos/<int:pk>/excluir/", views.excluir_medicamento, name="excluir_medicamento"),
+    path('relatorio-medicamentos/', views.gerar_relatorio_medicamentos, name='gerar_relatorio_medicamentos'),
+
     ]

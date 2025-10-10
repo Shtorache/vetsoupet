@@ -11,6 +11,34 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import Agendamento
+from .models import Medicamento # Supondo que seu modelo se chame Medicamento
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+from .models import Medicamento
+
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+from .models import Medicamento
+
+def gerar_relatorio_medicamentos(request):
+    medicamentos = Medicamento.objects.all()
+
+    # Renderiza o template correto
+    html = render_to_string('medicamentos/medicamentos_relatorio.html', {'medicamentos': medicamentos})
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="relatorio_medicamentos.pdf"'
+
+    # Gera PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Erro ao gerar PDF. Verifique o template e os dados.')
+
+    return response
+
 
 
 

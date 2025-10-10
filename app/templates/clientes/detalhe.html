@@ -10,12 +10,8 @@
 </head>
 <body>
     <main class="container">
+        <!-- Cabeçalho do cliente -->
         <header class="cliente-header">
-            {% if cliente.foto %}
-                
-            {% else %}
-                
-            {% endif %}
             <div class="cliente-info">
                 <h1>{{ cliente.nome }}</h1>
                 <p>Email: <strong>{{ cliente.email|default:"N/A" }}</strong></p>
@@ -24,25 +20,41 @@
             </div>
         </header>
 
+        <!-- Ações -->
         <div class="actions">
             <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Voltar</a>
-            <a href="{% url 'adicionar_paciente' cliente.pk %}" class="btn btn-primary">Adicionar Animal</a>
+            <a href="{% url 'adicionar_paciente' cliente.pk %}" class="btn btn-primary">+ Adicionar Animal</a>
         </div>
 
+        <!-- Lista de animais -->
         <section class="pacientes-section">
             <h2>Animais de {{ cliente.nome }}</h2>
 
             <div class="pacientes-grid">
-                {% for paciente in pacientes %}
-                    <a href="{% url 'historico_animal' animal_pk=paciente.pk %}" class="paciente-card clickable-card">
-                        {% if paciente.foto %}
-                            <img src="{{ paciente.foto.url }}" alt="{{ paciente.nome }}">
+                {% for animal in pacientes %}
+                    <div class="paciente-card">
+                        {% if animal.foto %}
+                            <img src="{{ animal.foto.url }}" alt="{{ animal.nome }}">
                         {% else %}
                             <img src="{% static 'img/default-pet.png' %}" alt="Animal">
                         {% endif %}
-                        <strong>{{ paciente.nome }}</strong>
-                        <span>{{ paciente.especie }}{% if paciente.raca %} ({{ paciente.raca }}){% endif %}</span>
-                    </a>
+
+                        <div class="paciente-info">
+                            <strong>{{ animal.nome }}</strong><br>
+                            <span>{{ animal.especie }}{% if animal.raca %} ({{ animal.raca }}){% endif %}</span><br>
+
+                            {% if animal.plano_saude %}
+                                <p class="plano-info">
+                                    <strong>Plano:</strong> {{ animal.plano_saude.nome_plano }}<br>
+                                    <small>Válido até {{ animal.plano_saude.validade|date:"d/m/Y" }}</small>
+                                </p>
+                            {% else %}
+                                <a href="{% url 'cadastrar_plano_animal' animal.id %}" class="btn btn-sm btn-primary">
+                                    + Adicionar Plano de Saúde
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
                 {% empty %}
                     <p>Nenhum animal cadastrado para este cliente.</p>
                 {% endfor %}

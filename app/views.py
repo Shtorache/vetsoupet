@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from .models import Agendamento, Cliente, Animal
-from .forms import AgendamentoForm, ClienteForm, AnimalForm, AtendimentoDetalhadoForm
+from .models import Agendamento, Cliente, Animal, PlanoSaude, Medicamento
+from .forms import AgendamentoForm, ClienteForm, AnimalForm, AtendimentoDetalhadoForm, PlanoSaudeForm, MedicamentoForm
 from django.contrib.auth.decorators import login_required
 import json
 import datetime # <-- Adicionado para a separação de datas
@@ -306,3 +306,86 @@ def historico_animal(request, animal_pk):
         "consultas_realizadas": consultas_realizadas,
         "detalhe_form": detalhe_form,
     })
+
+@login_required
+def lista_planos(request):
+    planos = PlanoSaude.objects.select_related("cliente", "animal").all().order_by("-validade")
+    return render(request, "planos/lista_planos.html", {"planos": planos})
+
+
+@login_required
+def cadastrar_plano(request):
+    if request.method == "POST":
+        form = PlanoSaudeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("lista_planos")
+    else:
+        form = PlanoSaudeForm()
+    return render(request, "planos/cadastrar_plano.html", {"form": form})
+
+@login_required
+def editar_plano(request, pk):
+    plano = get_object_or_404(PlanoSaude, pk=pk)
+    if request.method == "POST":
+        form = PlanoSaudeForm(request.POST, instance=plano)
+        if form.is_valid():
+            form.save()
+            return redirect("lista_planos")
+    else:
+        form = PlanoSaudeForm(instance=plano)
+    return render(request, "planos/editar_plano.html", {"form": form, "plano": plano})
+
+
+@login_required
+def deletar_plano(request, pk):
+    plano = get_object_or_404(PlanoSaude, pk=pk)
+    if request.method == "POST":
+        plano.delete()
+        return redirect("lista_planos")
+    return render(request, "planos/deletar_plano.html", {"plano": plano})
+
+@login_required
+def lista_medicamentos(request):
+    busca = request.GET.get("busca", "")
+    medicamentos = Medicamento.objects.all().order_by("nome")
+
+    if busca:
+        medicamentos = medicamentos.filter(nome__icontains=busca)
+
+    return render(request, "medicamentos/lista.html", {
+        "medicamentos": medicamentos,
+        "busca": busca,
+    })
+
+
+@login_required
+def cadastrar_medicamento(request):
+    if request.method == "POST":
+        form = MedicamentoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("lista_medicamentos")
+    else:
+        form = MedicamentoForm()
+    return render(request, "medicamentos/cadastrar.html", {"form": form})
+
+
+@login_required
+def editar_medicamento(request, pk):
+    medicamento = get_object_or_404(Medicamento, pk=pk)
+    if request.method == "POST":
+        form = MedicamentoForm(request.POST, instance=medicamento)
+        if form.is_valid():
+            form.save()
+            return redirect("lista_medicamentos")
+    else:
+        form = MedicamentoForm(instance=medicamento)
+    return render(request, "medicamentos/editar.html", {"form": form, "medicamento": medicamento})
+
+
+@login_required
+def excluir_medicamento(request, pk):
+    medicamento = get_object_or_404(Medicamento, pk=pk)
+    medicamento.delete()
+    return redirect("lista_medicamentos")

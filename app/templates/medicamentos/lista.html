@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Estoque de Medicamentos</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <style>
+        .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f5f5f5; }
+        .actions a { margin-right: 5px; }
+    </style>
+</head>
+<body>
+<main class="container">
+    <header class="page-header">
+        <div class="header-logo">
+            <img src="{% static 'imgs/IMG_6112.PNG' %}" alt="Logo VET Sou Pet">
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'index' %}" class="btn btn-secondary">Voltar</a>
+            <a href="{% url 'cadastrar_medicamento' %}" class="btn btn-primary">+ Novo Medicamento</a>
+        </div>
+    </header>
+
+    <h2>Estoque de Medicamentos</h2>
+
+    <form method="get">
+        <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Fabricante</th>
+                <th>Qtd.</th>
+                <th>Unidade</th>
+                <th>Validade</th>
+                <th>Preço (R$)</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for med in medicamentos %}
+            <tr>
+                <td>{{ med.nome }}</td>
+                <td>{{ med.fabricante|default:"-" }}</td>
+                <td>{{ med.quantidade }}</td>
+                <td>{{ med.get_unidade_display }}</td>
+                <td>{% if med.validade %}{{ med.validade|date:"d/m/Y" }}{% else %}-{% endif %}</td>
+                <td>{% if med.preco %}{{ med.preco }}{% else %}-{% endif %}</td>
+                <td class="actions">
+                    <a href="{% url 'editar_medicamento' med.pk %}" class="btn btn-sm btn-secondary">Editar</a>
+                    <a href="{% url 'excluir_medicamento' med.pk %}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir este medicamento?')">Excluir</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">Nenhum medicamento cadastrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

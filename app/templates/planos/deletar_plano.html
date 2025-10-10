@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Excluir Plano</title>
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+  <main class="container confirm-delete">
+    <header class="page-header">
+      <div class="header-logo">
+        <img src="{% static 'imgs/IMG_6112.PNG' %}" alt="Logo VET Sou Pet">
+      </div>
+      <div class="header-actions">
+        <a href="{% url 'lista_planos' %}" class="btn btn-secondary">Cancelar</a>
+      </div>
+    </header>
+
+    <h2>Excluir Plano</h2>
+
+    <p>Tem certeza que deseja excluir o plano <strong>{{ plano.nome_plano }}</strong>?</p>
+    <p>Animal: <strong>{{ plano.animal.nome }}</strong> | Cliente: <strong>{{ plano.cliente.nome }}</strong></p>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+      <a href="{% url 'lista_planos' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </main>
+</body>
+</html>

@@ -1,0 +1,222 @@
+/* ================================
+   editar_medicamento.css
+   Baseado no estilo editar_plano.css
+   Atualizado para consistência com o SouPet Style
+================================ */
+
+/* 1. Variáveis de tema (Padrão SouPet) */
+:root {
+    --primary-color: #1e9400;    /* Verde SouPet */
+    --secondary-color: #2a9d8f;  /* Verde-água (para botões 'voltar', alertas) */
+    --accent-color: #fca311;     /* Laranja (para destaques, CTAs) */
+    --background-color: #f8f9fa; /* Fundo geral (cinza bem claro) */
+    --card-background: #ffffff;  /* Fundo dos cards, formulários */
+    --text-color: #333333;       /* Texto principal */
+    --text-light: #6c757d;       /* Texto secundário (cinza) */
+    --border-color: #dee2e6;     /* Bordas de inputs, cards */
+    --danger-color: #e63946;     /* Vermelho para erros, exclusão */
+    --success-color: #1e9400;    /* Verde para sucesso */
+    
+    --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    --border-radius-small: 4px;
+    --border-radius-medium: 8px;
+    --border-radius-large: 12px;
+    
+    --font-family-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 2. Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family-main);
+}
+
+/* 3. Estrutura da página */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* 4. Container principal */
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+/* 5. Cabeçalho */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.header-logo img {
+    height: 55px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-voltar {
+    background-color: var(--secondary-color);
+    color: #fff;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--border-radius-medium);
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-voltar:hover {
+    background-color: #1f7b72;
+    transform: translateY(-2px);
+}
+
+/* 6. Título */
+h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    font-size: 1.8rem;
+}
+
+/* 7. Formulário */
+form {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow-medium);
+    margin-bottom: 1.5rem;
+}
+
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+form input,
+form select,
+form textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 148, 0, 0.2);
+}
+
+/* 8. Botões (Padrão SouPet) */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--border-radius-medium);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+    border: none;
+    box-shadow: var(--shadow-light);
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+/* Efeito hover genérico dos botões */
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Salvar */
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #1a8300;
+}
+
+/* Cancelar */
+.btn-secondary {
+    background-color: var(--text-light);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Excluir */
+.btn-danger {
+    background-color: var(--danger-color);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #c5303f;
+}
+
+/* 9. Área dos botões principais */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+/* 10. Animação de entrada */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 11. Responsividade */
+@media (max-width: 600px) {
+    .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    form {
+        padding: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+}

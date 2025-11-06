@@ -1,45 +1,89 @@
+# app/views.py
+
+# Imports do Django
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from .models import Agendamento, Cliente, Animal, PlanoSaude, Medicamento
-from .forms import AgendamentoForm, ClienteForm, AnimalForm, AtendimentoDetalhadoForm, PlanoSaudeForm, MedicamentoForm
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
-import json
-import datetime # <-- Adicionado para a separação de datas
-from .forms import AgendamentoForm, EditarAgendamentoForm
-from django.http import JsonResponse
+from django.db.models import Sum
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
-from .models import Agendamento
-from .models import Medicamento # Supondo que seu modelo se chame Medicamento
-from django.http import HttpResponse
-from django.template.loader import render_to_string
-from xhtml2pdf import pisa
-from .models import Medicamento
+import os
+import json
+import datetime
+from .forms import AtendimentoDetalhesForm
 
-from django.http import HttpResponse
-from django.template.loader import render_to_string
-from xhtml2pdf import pisa
-from .models import Medicamento
+from django.db.models import ProtectedError
+from django.contrib import messages
+from weasyprint import HTML, CSS
+from django.templatetags.static import static
+from django.conf import settings
 
+
+
+# Imports dos seus Models
+from .models import (
+    Agendamento,
+    Cliente,
+    Animal,
+    PlanoSaude,
+    Medicamento,
+    ProcedimentoRealizado
+)
+
+# Imports dos seus Forms
+# ✅ O NOME DO FORMULÁRIO FOI CORRIGIDO AQUI
+from .forms import (
+    AgendamentoForm,
+    EditarAgendamentoForm,
+    ClienteForm,
+    AnimalForm,
+    AtendimentoDetalhesForm, # <- Nome corrigido
+    PlanoSaudeForm,
+    MedicamentoForm,
+    ProcedimentoFormSet,
+    MedicamentoUsadoFormSet,
+)
+
+@login_required
 def gerar_relatorio_medicamentos(request):
-    medicamentos = Medicamento.objects.all()
+    """Gera o relatório de medicamentos com WeasyPrint"""
+    medicamentos = Medicamento.objects.all().order_by('nome')
 
-    # Renderiza o template correto
-    html = render_to_string('medicamentos/medicamentos_relatorio.html', {'medicamentos': medicamentos})
+    css_path = os.path.join(settings.BASE_DIR, 'app', 'static', 'css', 'pdf.css')
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="relatorio_medicamentos.pdf"'
+    html_string = render_to_string('medicamentos/medicamentos_relatorio.html', {
+        'medicamentos': medicamentos,
+    })
 
-    # Gera PDF
-    pisa_status = pisa.CreatePDF(html, dest=response)
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf(
+        stylesheets=[CSS(css_path)]
+    )
 
-    if pisa_status.err:
-        return HttpResponse('Erro ao gerar PDF. Verifique o template e os dados.')
-
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="relatorio_medicamentos.pdf"'
     return response
 
 
+@login_required
+def gerar_relatorio_clinico_pdf(request, agendamento_id):
+    """Gera o relatório clínico completo em PDF"""
+    agendamento = get_object_or_404(Agendamento, pk=agendamento_id)
+    css_path = os.path.join(settings.BASE_DIR, 'app', 'static', 'css', 'pdf.css')
+
+    html_string = render_to_string('relatorio_atendimentos.html', {
+        'ag': agendamento,
+    })
+
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf(
+        stylesheets=[CSS(css_path)]
+    )
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="relatorio_{agendamento.id}.pdf"'
+    return response
 
 
 @login_required
@@ -174,21 +218,40 @@ def atendimentos_realizados(request):
 
 @login_required
 def detalhar_atendimento(request, pk):
-    agendamento = get_object_or_404(Agendamento, pk=pk, status="realizado")
+    agendamento = get_object_or_404(Agendamento, pk=pk)
 
-    if request.method == "POST":
-        form = AtendimentoDetalhadoForm(request.POST, instance=agendamento)
-        if form.is_valid():
+    if request.method == 'POST':
+        form = AtendimentoDetalhesForm(request.POST, instance=agendamento)
+        formset = ProcedimentoFormSet(request.POST, instance=agendamento)
+        med_formset = MedicamentoUsadoFormSet(request.POST, instance=agendamento)
+
+        if form.is_valid() and formset.is_valid() and med_formset.is_valid():
             form.save()
-            return redirect("atendimentos_realizados")
+            formset.save()
+            med_formset.save()
+
+            # 🔹 Atualiza o estoque dos medicamentos usados
+            for uso in agendamento.medicamentos_usados.all():
+                med = uso.medicamento
+                if med.quantidade >= uso.quantidade_usada:
+                    med.quantidade -= uso.quantidade_usada
+                    med.save()
+
+            return redirect('atendimentos_realizados')
+
     else:
-        form = AtendimentoDetalhadoForm(instance=agendamento)
+        form = AtendimentoDetalhesForm(instance=agendamento)
+        formset = ProcedimentoFormSet(instance=agendamento)
+        med_formset = MedicamentoUsadoFormSet(instance=agendamento)
 
-    return render(request, "detalhar_atendimento.html", {
-        "agendamento": agendamento,
-        "form": form,
-    })
+    context = {
+        'agendamento': agendamento,
+        'form': form,
+        'formset': formset,
+        'med_formset': med_formset,
+    }
 
+    return render(request, 'detalhar_atendimento.html', context)
 
 
 
@@ -288,8 +351,25 @@ def cadastrar_cliente(request):
 
 @login_required
 def detalhe_cliente(request, pk):
+    # 1. Busca o cliente (isso já estava correto)
     cliente = get_object_or_404(Cliente, pk=pk)
+
+    # 2. Busca todos os pacientes daquele cliente (isso também já estava correto)
     pacientes = cliente.pacientes.all()
+    
+    # 3. --- A LÓGICA ADICIONADA ESTÁ AQUI ---
+    # Para cada paciente na lista, vamos encontrar o seu plano ativo.
+    for paciente in pacientes:
+        # Busca na tabela de planos, filtra por este paciente e pelo status 'ativo'.
+        # .first() pega o primeiro que encontrar ou retorna None se não achar nenhum.
+        plano_ativo = paciente.plano_saude.filter(ativo=True).first()
+        
+        # Criamos um novo atributo "plano_ativo" no objeto do paciente.
+        # O template vai usar isso para exibir os dados.
+        paciente.plano_ativo = plano_ativo
+
+    # 4. Envia os dados para o template. Note que a lista 'pacientes' agora
+    #    contém a informação extra do plano.
     return render(request, "clientes/detalhe.html", {"cliente": cliente, "pacientes": pacientes})
 
 
@@ -325,7 +405,8 @@ def historico_animal(request, animal_pk):
     animal = get_object_or_404(Animal, pk=animal_pk)
     historico = Agendamento.objects.filter(animal=animal).order_by("-data", "-hora")
     consultas_realizadas = historico.filter(status="realizado")
-    detalhe_form = AtendimentoDetalhadoForm()
+    detalhe_form = AtendimentoDetalhesForm()
+
 
     return render(request, "clientes/historico_animal.html", {
         "animal": animal,
@@ -373,6 +454,9 @@ def deletar_plano(request, pk):
         return redirect("lista_planos")
     return render(request, "planos/deletar_plano.html", {"plano": plano})
 
+# -----------------------------
+# CRUD de Medicamentos
+# -----------------------------
 @login_required
 def lista_medicamentos(request):
     busca = request.GET.get("busca", "")
@@ -415,5 +499,65 @@ def editar_medicamento(request, pk):
 @login_required
 def excluir_medicamento(request, pk):
     medicamento = get_object_or_404(Medicamento, pk=pk)
-    medicamento.delete()
+    try:
+        medicamento.delete()
+        messages.success(request, "✅ Medicamento excluído com sucesso!")
+    except ProtectedError:
+        messages.error(request, "❌ Este medicamento está vinculado a atendimentos e não pode ser excluído.")
     return redirect("lista_medicamentos")
+
+
+# -----------------------------
+# RELATÓRIO DE MEDICAMENTOS
+# -----------------------------
+@login_required
+def gerar_relatorio_medicamentos(request):
+    """Gera o relatório de medicamentos (PDF com WeasyPrint)."""
+    medicamentos = Medicamento.objects.all().order_by("nome")
+
+    # Caminho do CSS físico
+    css_path = os.path.join(settings.BASE_DIR, "app", "static", "css", "pdf.css")
+
+    # Datas de referência para destacar validade
+    hoje = timezone.now().date()
+    validade_alerta = hoje + datetime.timedelta(days=30)
+
+    # Renderiza o HTML do relatório
+    html_string = render_to_string("medicamentos/medicamentos_relatorio.html", {
+        "medicamentos": medicamentos,
+        "hoje": hoje,
+        "validade_alerta": validade_alerta,
+        "agora": timezone.now(),
+    })
+
+    # Gera o PDF com o CSS físico
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf(
+        stylesheets=[CSS(css_path)]
+    )
+
+    # Retorna resposta HTTP com PDF
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    response["Content-Disposition"] = 'inline; filename="relatorio_medicamentos.pdf"'
+    return response
+
+
+# -----------------------------
+# RELATÓRIO CLÍNICO (ATENDIMENTO)
+# -----------------------------
+@login_required
+def gerar_relatorio_clinico_pdf(request, agendamento_id):
+    """Gera o relatório clínico completo (PDF)"""
+    agendamento = get_object_or_404(Agendamento, pk=agendamento_id)
+    css_path = os.path.join(settings.BASE_DIR, "app", "static", "css", "pdf.css")
+
+    html_string = render_to_string("relatorio_atendimentos.html", {
+        "ag": agendamento,
+    })
+
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf(
+        stylesheets=[CSS(css_path)]
+    )
+
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    response["Content-Disposition"] = f'inline; filename="relatorio_{agendamento.id}.pdf"'
+    return response

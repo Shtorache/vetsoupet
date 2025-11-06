@@ -1,191 +1,252 @@
-// main.js (Com lógica dinâmica para Cliente/Animal e Espécie/Raça)
-document.addEventListener("DOMContentLoaded", () => {
-    const modal = document.getElementById("appointmentModal");
-    const openBtn = document.getElementById("new-appointment");
-    const closeBtn = document.getElementById("close-modal");
-    const cancelBtn = document.getElementById("cancel-modal");
-    const form = document.getElementById("appointment-form");
+document.addEventListener("DOMContentLoaded", function () {
 
-    let editingId = null; 
+  // =========== MODAL NOVO AGENDAMENTO ===========
+  const modal = document.getElementById("appointmentModal");
+  const form = document.getElementById("appointment-form");
+  const newAppointmentBtn = document.getElementById("new-appointment");
+  const cancelBtn = document.getElementById("cancel-modal");
+  const closeBtn = document.getElementById("close-modal");
 
-    // 🔹 Campos dinâmicos
-    const clienteSelect = document.getElementById("id_cliente");
-    const animalSelect = document.getElementById("id_animal");
-    const especieSelect = document.getElementById("id_especie");
-    const racaSelect = document.getElementById("id_raca");
-    
-    // Pega o JSON das raças que deve ser injetado no index.html
-    const racasChoicesElement = document.getElementById("racas-choices");
-    // Garante que o JSON exista para evitar erros
-    const racasChoices = racasChoicesElement ? JSON.parse(racasChoicesElement.textContent) : {};
-
-
-    // --------------------------------------------------------------------------------
-    // FUNÇÕES DE LÓGICA DINÂMICA
-    // --------------------------------------------------------------------------------
-
-    /** Carrega os animais de um cliente via API e preenche o select. */
-    const loadAnimals = async (clienteId, selectedAnimalId = null) => {
-        // Estado inicial de carregamento
-        animalSelect.innerHTML = '<option value="">Carregando...</option>';
-
-        if (!clienteId || clienteId === "") {
-            animalSelect.innerHTML = '<option value="">Selecione um cliente primeiro</option>';
-            return;
-        }
-
-        try {
-            const url = `/api/pacientes/${clienteId}/`;
-            const response = await fetch(url);
-            const data = await response.json();
-
-            animalSelect.innerHTML = '';
-            
-            if (data.pacientes && data.pacientes.length > 0) {
-                // Adiciona a opção padrão se não estiver em edição
-                if (!selectedAnimalId) {
-                     animalSelect.add(new Option('---------', ''));
-                }
-               
-                data.pacientes.forEach(animal => {
-                    const option = new Option(animal.nome, animal.id);
-                    // Seleciona o animal correto na edição
-                    if (selectedAnimalId && String(animal.id) === String(selectedAnimalId)) {
-                        option.selected = true;
-                    }
-                    animalSelect.add(option);
-                });
-            } else {
-                animalSelect.add(new Option('Nenhum animal cadastrado para este cliente', ''));
-            }
-
-        } catch (error) {
-            console.error("Erro ao carregar pacientes:", error);
-            animalSelect.innerHTML = '<option value="">Erro ao carregar animais</option>';
-        }
-    };
-
-    /** Atualiza as opções de raça com base na espécie selecionada. */
-    const updateRacaChoices = (especie, selectedRaca = null) => {
-        racaSelect.innerHTML = ''; 
-
-        const choices = racasChoices[especie] || [["", "Selecione uma espécie primeiro"]];
-        
-        choices.forEach(([value, label]) => {
-            const option = new Option(label, value);
-            // Seleciona a raça correta na edição
-            if (selectedRaca && value === selectedRaca) {
-                option.selected = true;
-            }
-            racaSelect.add(option);
-        });
-    };
-
-    // --------------------------------------------------------------------------------
-    // EVENTOS DE CAMPO
-    // --------------------------------------------------------------------------------
-
-    // Evento de mudança de Cliente (carrega os Animais)
-    if (clienteSelect) {
-        clienteSelect.addEventListener("change", (e) => {
-            loadAnimals(e.target.value);
-            // Resetar a espécie e raça ao trocar de cliente, pois o animal muda
-            especieSelect.value = "";
-            updateRacaChoices("");
-        });
-    }
-
-    // Evento de mudança de Espécie (carrega as Raças)
-    if (especieSelect) {
-        especieSelect.addEventListener("change", (e) => {
-            updateRacaChoices(e.target.value);
-        });
-    }
-
-    // --------------------------------------------------------------------------------
-    // AÇÕES DO MODAL (NOVO/EDITAR)
-    // --------------------------------------------------------------------------------
-
-    if (openBtn && modal) {
-        openBtn.onclick = () => {
-            editingId = null;
-            form.reset();
-            
-            // 🔹 Resetar campos dinâmicos ao criar novo agendamento
-            updateRacaChoices("");
-            animalSelect.innerHTML = '<option value="">Selecione um cliente primeiro</option>';
-            
-            form.action = '/criar/'; 
-            modal.classList.remove("hidden");
-        };
-    }
-    if (closeBtn && modal) {
-        closeBtn.onclick = () => modal.classList.add("hidden");
-    }
-    if (cancelBtn && modal) {
-        cancelBtn.onclick = () => modal.classList.add("hidden");
-    }
-
-    // Ações de editar - ATUALIZADAS
-    document.querySelectorAll(".edit-btn").forEach(btn => {
-        btn.addEventListener("click", async () => {
-            editingId = btn.dataset.id;
-            form.action = `/editar/${editingId}/`; 
-            
-            const response = await fetch(`/editar/${editingId}/`);
-            const data = await response.json();
-
-            if (data.error) {
-                alert(data.error);
-                return;
-            }
-
-            // 1. Preenche o cliente
-            document.getElementById("id_cliente").value = data.cliente;
-            
-            // 2. Carrega e seleciona o animal (dinâmico)
-            // Usa await para garantir que os animais estejam carregados antes de tentar selecionar
-            await loadAnimals(data.cliente, data.animal); 
-
-            // 3. Preenche a espécie e a raça (dinâmico)
-            document.getElementById("id_especie").value = data.especie || "";
-            updateRacaChoices(data.especie || "", data.raca);
-
-            // 4. Preenche o restante dos campos
-            document.getElementById("id_tipo_atendimento").value = data.tipo_atendimento;
-            document.getElementById("id_profissional").value = data.profissional;
-            document.getElementById("id_data").value = data.data;
-            document.getElementById("id_hora").value = data.hora;
-            document.getElementById("id_duracao").value = data.duracao;
-            document.getElementById("id_observacoes").value = data.observacoes;
-            document.getElementById("id_status").value = data.status;
-
-            modal.classList.remove("hidden");
-        });
+  // Função para abrir o modal de novo agendamento
+  if (modal && newAppointmentBtn) {
+    newAppointmentBtn.addEventListener("click", function () {
+      form.reset();
+      modal.classList.remove("hidden");
     });
+  }
+  // Funções para fechar modal novo agendamento
+  if (modal && cancelBtn) cancelBtn.onclick = () => modal.classList.add("hidden");
+  if (modal && closeBtn) closeBtn.onclick = () => modal.classList.add("hidden");
 
-    // ... (Seu código existente para filtros e agendamentos anteriores)
-    
-    // Submit do form (criação ou edição)
-    if (form) {
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const formData = new FormData(form);
-            const url = editingId ? `/editar/${editingId}/` : "/criar/";
-
-            const response = await fetch(url, {
-                method: "POST",
-                body: formData,
-                headers: { "X-Requested-With": "XMLHttpRequest" },
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                window.location.reload();
-            } else {
-                console.error(data.errors || data.error);
-                alert("Erro ao salvar o agendamento. Verifique os campos.");
-            }
+  // Intercepta submit do formulário de novo agendamento via AJAX
+  if (form) {
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: formData,
+          headers: { "X-Requested-With": "XMLHttpRequest" }
         });
+        const result = await response.json();
+        if (result.success) {
+          modal.classList.add("hidden");
+          window.location.href = "/";
+        } else {
+          alert("Erro ao salvar o agendamento.");
+        }
+      } catch {
+        alert("Erro de comunicação.");
+      }
+    });
+  }
+
+  // =========== LÓGICA DE PREENCHIMENTO DINÂMICO (CLIENTE -> ANIMAL -> ESPÉCIE/RAÇA) ===========
+  const clienteSelect = document.getElementById("id_cliente");
+  const animalSelect = document.getElementById("id_animal");
+  const especieSelect = document.getElementById("id_especie");
+  const racaSelect = document.getElementById("id_raca");
+  let loadedPacientesData = [];
+
+  // CARREGAR ANIMAIS QUANDO O CLIENTE MUDA
+  if (clienteSelect && animalSelect) {
+    clienteSelect.addEventListener("change", function() {
+      const clienteId = this.value;
+      animalSelect.innerHTML = '<option value="">Carregando...</option>';
+      loadedPacientesData = [];
+      especieSelect.value = '';
+      racaSelect.innerHTML = '<option value="">Selecione uma espécie primeiro</option>';
+
+      if (clienteId) {
+        fetch(`/clientes/${clienteId}/pacientes/`)
+          .then(response => response.json())
+          .then(data => {
+            animalSelect.innerHTML = '<option value="">Selecione o animal</option>';
+            loadedPacientesData = data.pacientes || [];
+            if (loadedPacientesData.length > 0) {
+              loadedPacientesData.forEach(paciente => {
+                const option = new Option(paciente.nome, paciente.id);
+                animalSelect.appendChild(option);
+              });
+            } else {
+              animalSelect.innerHTML = '<option value="">Nenhum paciente encontrado</option>';
+            }
+          })
+          .catch(err => {
+            console.error("Erro ao buscar pacientes:", err);
+            animalSelect.innerHTML = '<option value="">Erro ao carregar</option>';
+          });
+      } else {
+        animalSelect.innerHTML = '<option value="">Selecione um cliente primeiro</option>';
+      }
+    });
+  }
+
+  // PREENCHER ESPÉCIE/RAÇA QUANDO O ANIMAL MUDA
+  if (animalSelect && especieSelect && racaSelect) {
+    animalSelect.addEventListener("change", function() {
+      const animalId = parseInt(this.value);
+      const paciente = loadedPacientesData.find(p => p.id === animalId);
+      
+      if (paciente) {
+        especieSelect.value = paciente.especie;
+        const changeEvent = new Event('change');
+        especieSelect.dispatchEvent(changeEvent);
+        if (paciente.raca) {
+          setTimeout(() => { racaSelect.value = paciente.raca; }, 50);
+        }
+      } else {
+        especieSelect.value = '';
+        racaSelect.innerHTML = '<option value="">Selecione uma espécie primeiro</option>';
+      }
+    });
+  }
+
+  // CARREGAR RAÇAS QUANDO A ESPÉCIE MUDA
+  if (especieSelect && racaSelect) {
+    if (especieSelect.value) {
+      especieSelect.dispatchEvent(new Event('change'));
     }
+    especieSelect.addEventListener("change", function() {
+      const especie = this.value;
+      const racaOriginal = racaSelect.value;
+      racaSelect.innerHTML = ""; 
+      if (window.racasPorEspecie && window.racasPorEspecie[especie]) {
+        racaSelect.add(new Option('---------', ''));
+        window.racasPorEspecie[especie].forEach(([value, text]) => {
+          racaSelect.add(new Option(text, value));
+        });
+        racaSelect.value = racaOriginal;
+      } else {
+        racaSelect.add(new Option('Selecione uma espécie primeiro', ''));
+      }
+    });
+  }
+
+  // =========== MODAL DE EDIÇÃO ===========
+
+  const editModal = document.getElementById("editAppointmentModal");
+  const editForm = document.getElementById("edit-appointment-form");
+  const closeEditModalBtn = document.getElementById("close-edit-modal");
+  const cancelEditModalBtn = document.getElementById("cancel-edit-modal");
+
+  if (closeEditModalBtn) closeEditModalBtn.onclick = () => editModal.classList.add('hidden');
+  if (cancelEditModalBtn) cancelEditModalBtn.onclick = () => editModal.classList.add('hidden');
+
+  // Clique no botão Editar para abrir modal e preencher dados
+  document.body.addEventListener("click", function (event) {
+    const editButton = event.target.closest('.btn-edit');
+    if (!editButton) return;
+    const agendamentoId = editButton.dataset.id;
+    fetch(`/editar_agendamento/${agendamentoId}/`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('info-cliente').textContent = data.cliente_nome || data.cliente || 'N/A';
+        document.getElementById('info-animal').textContent = data.animal_nome || data.animal || 'N/A';
+        document.getElementById('info-data').textContent = data.data_formatada || data.data || 'N/A';
+        document.getElementById('info-hora').textContent = data.hora_formatada || data.hora || 'N/A';
+        editForm.querySelector('[name="status"]').value = data.status;
+        editForm.querySelector('[name="observacoes"]').value = data.observacoes;
+        editForm.setAttribute("data-id", agendamentoId);
+        editModal.classList.remove("hidden");
+      })
+      .catch(() => alert("Não foi possível carregar os dados para edição."));
+  });
+
+  // Submit AJAX - Edição
+  if (editForm) {
+    editForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const agId = editForm.getAttribute("data-id");
+      const status = editForm.querySelector("select[name='status']").value;
+      const observacoes = editForm.querySelector("textarea[name='observacoes']").value;
+      const csrf = editForm.querySelector("[name=csrfmiddlewaretoken]").value;
+      fetch(`/editar_agendamento/${agId}/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": csrf,
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        body: `status=${encodeURIComponent(status)}&observacoes=${encodeURIComponent(observacoes)}`
+      })
+        .then(r => r.json())
+        .then(result => {
+          if (result.success) {
+            editModal.classList.add("hidden");
+            window.location.href = "/";
+          } else {
+            alert("Erro ao salvar edição.");
+          }
+        })
+        .catch(() => alert("Erro de comunicação ao salvar edição."));
+    });
+  }
+
+  // =========== ATUALIZAÇÃO DE STATUS DIRETO NA LISTA ===========
+
+  document.body.addEventListener('change', async (event) => {
+    if (event.target.classList.contains('status-select')) {
+      const selectElement = event.target;
+      const appointmentId = selectElement.dataset.id;
+      const newStatus = selectElement.value;
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      try {
+        const response = await fetch('/agendamentos/atualizar-status/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+          },
+          body: JSON.stringify({ id: appointmentId, status: newStatus })
+        });
+        const result = await response.json();
+        if (!result.success) {
+          alert('Falha ao atualizar o status.');
+          selectElement.value = result.old_status;
+        }
+      } catch (error) {
+        alert('Ocorreu um erro de comunicação.');
+      }
+    }
+  });
+
+  // =========== FILTROS E AGENDAMENTOS ANTERIORES ===========
+
+  const filtroBtn = document.getElementById("toggle-filtro");
+  const filtroPanel = document.getElementById("filtro-panel");
+  if (filtroBtn && filtroPanel) {
+    filtroBtn.addEventListener("click", () => {
+      filtroPanel.classList.toggle("hidden");
+      filtroBtn.textContent = filtroPanel.classList.contains("hidden") ? "Mostrar Filtros" : "Ocultar Filtros";
+    });
+  }
+  const toggleAnterioresBtn = document.getElementById("toggle-anteriores");
+  const agendaAnteriores = document.getElementById("agenda-anteriores");
+  const iconeAnteriores = document.getElementById("icone-anteriores");
+  if (toggleAnterioresBtn && agendaAnteriores) {
+    toggleAnterioresBtn.addEventListener("click", () => {
+      agendaAnteriores.classList.toggle("hidden");
+      iconeAnteriores.textContent = agendaAnteriores.classList.contains("hidden") ? "▶" : "▼";
+    });
+  }
+
+  // =========== STATUS SPAN COLOR UPDATE ===========
+
+  document.querySelectorAll(".status-select").forEach(select => {
+    const card = select.closest('.appt-card');
+    if (!card) return;
+    const span = card.querySelector(".status");
+    if (!span) return;
+    const updateStatusSpan = () => {
+      span.className = "status " + select.value;
+      span.textContent = select.options[select.selectedIndex].text;
+    };
+    updateStatusSpan();
+    select.addEventListener("change", updateStatusSpan);
+  });
+
 });
+
+

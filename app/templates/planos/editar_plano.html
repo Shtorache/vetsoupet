@@ -3,7 +3,9 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Editar Plano de Saúde</title>
+  <link rel="stylesheet" href="{% static 'css/editar_plano.css' %}">
   <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
@@ -13,7 +15,7 @@
         <img src="{% static 'imgs/logo_parceiro_1.png' %}" alt="Logo VET Sou Pet">
       </div>
       <div class="header-actions">
-        <a href="{% url 'lista_planos' %}" class="btn btn-secondary">Voltar</a>
+       <a href="{% url 'index' %}" class="btn btn-secondary">Voltar</a>
       </div>
     </header>
 

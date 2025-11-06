@@ -2,61 +2,215 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta charset="UTF-8">
-  <title>Detalhes do Atendimento</title>
-  
-  
-  <link rel="stylesheet" href="{% static 'css/detalhar_atendimento.css' %}">
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Detalhes do Atendimento</title>
+    <link rel="stylesheet" href="{% static 'css/detalhar_atendimento.css' %}">
 </head>
 <body>
-  <main class="container">
+<main class="container">
+
     <header class="page-header">
-        <h1>Detalhes do Atendimento</h1>
-        <a href="{% url 'atendimentos_realizados' %}" class="btn btn-secondary">↩ Voltar</a>
+        <h1>Detalhes do Atendimento #{{ agendamento.id }}</h1>
+        <a href="{% url 'atendimentos_realizados' %}" class="btn btn-secondary no-underline">↩ Voltar</a>
     </header>
 
-    <section class="basic-details-card">
+    <section class="card basic-details-card">
         <h3>Dados do Paciente e Serviço</h3>
-        <div class="form-grid">
-            <p><strong>Cliente:</strong> {{ agendamento.cliente }}</p>
-            <p><strong>Animal:</strong> {{ agendamento.animal }}</p>
-            <p><strong>Espécie:</strong> {{ agendamento.get_especie_display }}</p>
-            <p><strong>Raça:</strong> {{ agendamento.raca|default:"N/A" }}</p>
-            <p><strong>Serviço:</strong> {{ agendamento.tipo_atendimento }}</p>
-            <p><strong>Profissional:</strong> {{ agendamento.get_profissional_display }}</p>
-            <p><strong>Data:</strong> {{ agendamento.data|date:"d/m/Y" }}</p>
-            <p><strong>Hora:</strong> {{ agendamento.hora|time:"H:i" }}</p>
+        <div class="grid-info">
+            <div class="info-pill"><strong>Cliente:</strong><div class="info-val">{{ agendamento.cliente }}</div></div>
+            <div class="info-pill"><strong>Animal:</strong><div class="info-val">{{ agendamento.animal }}</div></div>
+            <div class="info-pill"><strong>Data:</strong><div class="info-val">{{ agendamento.data|date:"d/m/Y" }} às {{ agendamento.hora|time:"H:i" }}</div></div>
+            <div class="info-pill"><strong>Profissional:</strong><div class="info-val">{{ agendamento.get_profissional_display }}</div></div>
         </div>
     </section>
-    
-    <hr>
 
     <form method="post" class="detail-form-section">
-      {% csrf_token %}
-      <h2>Registro do Atendimento</h2>
+        {% csrf_token %}
 
-      <div class="form-group">
-        <label for="{{ form.relato_atendimento.id_for_label }}">Relato do Atendimento</label>
-        {{ form.relato_atendimento }}
-      </div>
+        <section class="card">
+            <h2>Registro Clínico</h2>
+            <div class="form-group">
+                <label for="{{ form.relato_atendimento.id_for_label }}">Relato do Atendimento</label>
+                {{ form.relato_atendimento }}
+            </div>
 
-      <div class="form-group">
-        <label for="{{ form.prescricao.id_for_label }}">Prescrição</label>
-        {{ form.prescricao }}
-      </div>
-      
-      <div class="form-group checkbox-group">
-        {{ form.violento }}
-        <label for="{{ form.violento.id_for_label }}">Paciente violento?</label>
-      </div>
-      
-      <div class="modal-actions">
-        <button type="submit" class="btn btn-primary">Salvar Detalhes</button>
-      </div>
+            <div class="form-group">
+                <label for="{{ form.prescricao.id_for_label }}">Prescrição</label>
+                {{ form.prescricao }}
+            </div>
+
+            <div class="checkbox-group">
+                {{ form.violento }} <label for="{{ form.violento.id_for_label }}">Paciente violento?</label>
+            </div>
+        </section>
+
+        <!-- PROCEDIMENTOS (sem <table>) -->
+        <section class="card">
+            <h2>💉 Procedimentos e Valores</h2>
+            {{ formset.management_form }}
+
+            <div class="list-wrapper" id="procedimentos-list">
+                {% for proc_form in formset %}
+                <div class="row-card proc-item">
+                    {{ proc_form.id }}
+                    <div class="row-grid">
+                        <div class="field">
+                            <label>Código</label>
+                            {{ proc_form.codigo }}
+                        </div>
+                        <div class="field field-grow">
+                            <label>Procedimento</label>
+                            {{ proc_form.procedimento_descricao }}
+                        </div>
+                        <div class="field">
+                            <label>Valor (R$)</label>
+                            {{ proc_form.valor }}
+                        </div>
+                        <div class="field delete-field">
+                            {% if proc_form.instance.pk %}
+                                <label>Remover</label>
+                                {{ proc_form.DELETE }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="add-actions">
+                <button type="button" id="add-proc" class="btn btn-secondary btn-sm">+ Adicionar Procedimento</button>
+            </div>
+
+            <!-- template para novos procedimentos (usa formset.empty_form) -->
+            <template id="proc-template">
+                <div class="row-card proc-item">
+                    {{ formset.empty_form.id }}
+                    <div class="row-grid">
+                        <div class="field">
+                            <label>Código</label>
+                            {{ formset.empty_form.codigo }}
+                        </div>
+                        <div class="field field-grow">
+                            <label>Procedimento</label>
+                            {{ formset.empty_form.procedimento_descricao }}
+                        </div>
+                        <div class="field">
+                            <label>Valor (R$)</label>
+                            {{ formset.empty_form.valor }}
+                        </div>
+                        <div class="field delete-field"><!-- vazio para alinhamento --></div>
+                    </div>
+                </div>
+            </template>
+        </section>
+
+        <!-- MEDICAMENTOS (sem <table>) -->
+        <section class="card medicamentos-card">
+            <h2>💊 Medicamentos Utilizados</h2>
+            {{ med_formset.management_form }}
+
+            <div class="list-wrapper" id="medicamentos-list">
+                {% for med_form in med_formset %}
+                <div class="row-card med-item">
+                    {{ med_form.id }}
+                    <div class="row-grid">
+                        <div class="field field-grow">
+                            <label>Medicamento</label>
+                            {{ med_form.medicamento }}
+                        </div>
+                        <div class="field small-field">
+                            <label>Qtd. Usada</label>
+                            {{ med_form.quantidade_usada }}
+                        </div>
+                        <div class="field delete-field">
+                            {% if med_form.instance.pk %}
+                                <label>Remover</label>
+                                {{ med_form.DELETE }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="add-actions">
+                <button type="button" id="add-med" class="btn btn-secondary btn-sm">+ Adicionar Medicamento</button>
+            </div>
+
+            <template id="med-template">
+                <div class="row-card med-item">
+                    {{ med_formset.empty_form.id }}
+                    <div class="row-grid">
+                        <div class="field field-grow">
+                            <label>Medicamento</label>
+                            {{ med_formset.empty_form.medicamento }}
+                        </div>
+                        <div class="field small-field">
+                            <label>Qtd. Usada</label>
+                            {{ med_formset.empty_form.quantidade_usada }}
+                        </div>
+                        <div class="field delete-field"></div>
+                    </div>
+                </div>
+            </template>
+        </section>
+
+        <div class="total-value">
+            <strong>Valor Total dos Procedimentos: R$ {{ agendamento.valor_total|default:"0.00" }}</strong>
+        </div>
+
+        <div class="modal-actions">
+            <button type="submit" class="btn btn-primary">Salvar Atendimento Completo</button>
+        </div>
     </form>
+</main>
 
-  </main>
+<script>
+/*
+ JS simples para clonar os templates e atualizar índices do formset
+ (funciona com os nomes gerados pelo Django: __prefix__)
+*/
+document.addEventListener('DOMContentLoaded', function () {
+    function setupAdder(addBtnId, listId, templateId, totalFormsName) {
+        const addBtn = document.getElementById(addBtnId);
+        const list = document.getElementById(listId);
+        const template = document.getElementById(templateId);
+        const totalForms = document.querySelector(`input[name="${totalFormsName}"]`);
+
+        if (!addBtn || !list || !template || !totalForms) return;
+
+        addBtn.addEventListener('click', () => {
+            const index = parseInt(totalForms.value, 10);
+            const node = template.content.cloneNode(true);
+
+            // Atualiza todos os inputs/selects/textareas do clone
+            node.querySelectorAll('input, select, textarea').forEach(el => {
+                if (el.name) {
+                    el.name = el.name.replace(/__prefix__/g, index);
+                }
+                if (el.id) {
+                    el.id = el.id.replace(/__prefix__/g, index);
+                }
+                // limpa valores nos inputs clonados
+                if (el.tagName.toLowerCase() === 'input') {
+                    if (el.type === 'text' || el.type === 'number') el.value = '';
+                    if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+                }
+                if (el.tagName.toLowerCase() === 'textarea') el.value = '';
+                if (el.tagName.toLowerCase() === 'select') el.selectedIndex = 0;
+            });
+
+            list.appendChild(node);
+            totalForms.value = index + 1;
+        });
+    }
+
+    // nomes conforme Django: por exemplo 'procedimentos-TOTAL_FORMS' ou o prefix que você gerou
+    // ajuste se necessário com os nomes corretos.
+    setupAdder('add-proc', 'procedimentos-list', 'proc-template', 'procedimentos-TOTAL_FORMS');
+    setupAdder('add-med', 'medicamentos-list', 'med-template', 'medicamentos_usados-TOTAL_FORMS');
+});
+</script>
 </body>
 </html>

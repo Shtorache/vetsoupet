@@ -15,15 +15,8 @@ def upload_tutor(instance, filename):
     return f"tutores/{instance.id}/{filename}"
 
 def upload_paciente(instance, filename):
-    # 🎯 CORREÇÃO: Verifica se 'instance.cliente' existe e tem um PK.
-    # Se o objeto Animal está sendo criado (primeira submissão), ele ainda não tem um PK.
-    # No entanto, ele DEVE ter o objeto 'cliente' anexado na view antes de ser salvo (commit=False).
-    # Usamos uma string temporária se o cliente ainda não estiver anexado (embora a view deva cuidar disso).
     cliente_id = instance.cliente.pk if hasattr(instance, 'cliente') and instance.cliente else 'temp_upload'
-    
-    # Se a foto já existe (edição), instance.cliente já deve ter um PK.
     return f"pacientes/{cliente_id}/{filename}"
-
 
 
 class TipoAtendimento(models.Model):
@@ -47,7 +40,6 @@ class Agendamento(models.Model):
         ("confirmado", "Confirmado"),
         ("cancelado", "Cancelado"),
         ("realizado", "Realizado"),
-
     ]
 
     PROFISSIONAL_CHOICES = [
@@ -55,7 +47,6 @@ class Agendamento(models.Model):
         ("yago", "Yago Cabral"),
         ("matheus", "Matheus Corrêa"),
         ("carlos", "Carlos Alberto"),
-
     ]
 
     ESPECIE_CHOICES = [
@@ -105,7 +96,6 @@ class Agendamento(models.Model):
         ],
     }
 
-
     cliente = models.ForeignKey('Cliente', on_delete=models.PROTECT, related_name="agendamentos_cliente")
     animal = models.ForeignKey('Animal', on_delete=models.PROTECT, related_name="agendamentos_paciente")
 
@@ -135,19 +125,37 @@ class Agendamento(models.Model):
         related_name="agendamentos"
     )
 
+    # --- CAMPO NOVO ADICIONADO ABAIXO ---
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Valor Total")
+
     def __str__(self):
         return f"{self.cliente.nome} - {self.animal.nome} ({self.data} {self.hora})"
 
+# --- NOVO MODELO ADICIONADO ABAIXO ---
+class ProcedimentoRealizado(models.Model):
+    agendamento = models.ForeignKey(
+        Agendamento, 
+        on_delete=models.CASCADE, 
+        related_name='procedimentos'
+    )
+    codigo = models.CharField(max_length=50, blank=True, null=True, verbose_name="Código")
+    procedimento_descricao = models.CharField(max_length=255, verbose_name="Descrição do Procedimento")
+    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor (R$)")
+
+    def __str__(self):
+        return f"{self.procedimento_descricao} (R$ {self.valor})"
+        
 class Animal(models.Model):
     cliente = models.ForeignKey(Cliente, related_name="pacientes", on_delete=models.CASCADE)
     nome = models.CharField(max_length=150)
-    
-    
     especie = models.CharField(max_length=50, choices=Agendamento.ESPECIE_CHOICES) 
-    
     raca = models.CharField(max_length=100, blank=True, null=True)
     idade = models.PositiveIntegerField(blank=True, null=True)
     foto = models.ImageField(upload_to=upload_paciente, blank=True, null=True)
+    
+    # Adicionei esses campos para corresponder ao relatório que você quer gerar
+    peso = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True, verbose_name="Peso (kg)")
+    sexo = models.CharField(max_length=10, choices=[('macho', 'Macho'), ('femea', 'Fêmea')], blank=True, null=True)
 
     def __str__(self):
         return f"{self.nome} ({self.cliente.nome})"
@@ -157,12 +165,11 @@ class PlanoSaude(models.Model):
     descricao = models.TextField(blank=True, null=True)
     valor_mensal = models.DecimalField(max_digits=8, decimal_places=2)
     validade = models.DateField()
-    
     cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE, related_name="planos_cliente")
     animal = models.ForeignKey('Animal', on_delete=models.CASCADE, related_name="plano_saude")
-
-    cobertura = models.TextField(blank=True, null=True)  
+    cobertura = models.TextField(blank=True, null=True) 
     ativo = models.BooleanField(default=True) 
+
     def __str__(self):
         return f"{self.nome_plano} - {self.animal.nome}"
 
@@ -184,3 +191,19 @@ class Medicamento(models.Model):
 
     def __str__(self):
         return f"{self.nome} ({self.quantidade} {self.unidade})"
+
+class MedicamentoUsado(models.Model):
+    agendamento = models.ForeignKey(
+        Agendamento,
+        on_delete=models.CASCADE,
+        related_name="medicamentos_usados"
+    )
+    medicamento = models.ForeignKey(
+        Medicamento,
+        on_delete=models.PROTECT,
+        related_name="usos"
+    )
+    quantidade_usada = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.medicamento.nome} - {self.quantidade_usada} usada(s)"

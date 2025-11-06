@@ -1,0 +1,200 @@
+/* ===================================================
+   SouPet - Relatório de Atendimento (WeasyPrint)
+   ---------------------------------------------------
+   Tema vermelho institucional • PDF A4
+   =================================================== */
+
+@page {
+    size: A4;
+    margin: 2.5cm 2cm 2.5cm 2cm;
+
+    @top-left {
+        content: "SouPet - Relatório de Atendimento";
+        font-size: 11px;
+        color: #a30000;
+    }
+
+    @bottom-right {
+        content: "Página " counter(page) " de " counter(pages);
+        font-size: 10px;
+        color: #999;
+    }
+}
+
+/* ========================
+   BASE GERAL
+======================== */
+body {
+    font-family: "DejaVu Sans", Arial, Helvetica, sans-serif;
+    color: #222;
+    font-size: 13px;
+    line-height: 1.5;
+    background: #fff;
+}
+
+/* ========================
+   CABEÇALHO
+======================== */
+header {
+    text-align: center;
+    border-bottom: 3px solid #c62828; /* vermelho institucional */
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+
+header .logo {
+    width: 90px;
+    margin-bottom: 6px;
+}
+
+header h1 {
+    color: #c62828;
+    font-size: 20px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+/* ========================
+   BLOCO DE INFORMAÇÕES
+======================== */
+.info-block {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 12px 15px;
+    margin-bottom: 18px;
+    background-color: #fff7f7; /* leve vermelho claro */
+}
+
+.block-header {
+    background-color: #c62828;
+    color: #fff;
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.info-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.info-item-full {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.info-item-half {
+    width: 50%;
+    padding-right: 10px;
+    margin-bottom: 5px;
+}
+
+.info-item-half:last-child {
+    padding-right: 0;
+}
+
+/* ========================
+   TABELAS
+======================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    margin-bottom: 15px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 7px 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background-color: #c62828;
+    color: #fff;
+    font-weight: 600;
+}
+
+tr:nth-child(even) {
+    background-color: #fdf2f2;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.valor {
+    text-align: right;
+}
+
+/* ========================
+   PROCEDIMENTOS CLÍNICOS
+======================== */
+.procedimentos h3 {
+    color: #b71c1c;
+    border-bottom: 2px solid #b71c1c;
+    padding-bottom: 4px;
+    margin-top: 25px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.total-label {
+    text-align: right;
+    font-weight: bold;
+    color: #222;
+    background-color: #ffebee;
+}
+
+.total-valor {
+    font-weight: bold;
+    text-align: right;
+    color: #b71c1c;
+}
+
+/* ========================
+   MEDICAMENTOS UTILIZADOS
+======================== */
+.medicamentos h3 {
+    color: #b71c1c;
+    border-bottom: 2px solid #b71c1c;
+    padding-bottom: 4px;
+    margin-top: 25px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+/* ========================
+   RODAPÉ FIXO
+======================== */
+footer {
+    position: fixed;
+    bottom: 15px;
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    color: #777;
+    border-top: 1px solid #ccc;
+    padding-top: 6px;
+}
+
+/* ========================
+   AJUSTES DE IMPRESSÃO
+======================== */
+.page-break {
+    page-break-before: always;
+}
+
+@media print {
+    body {
+        background: none;
+        margin: 0;
+    }
+    .no-print {
+        display: none;
+    }
+}

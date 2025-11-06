@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Atendimento</title>
+    <link rel="stylesheet" href="{% static 'css/relatorio_agendamento.css' %}">
+</head>
+<body>
+    <header>
+        <img src="http://localhost:8000{% static 'imgs/logo_parceiro_1.png' %}" alt="Logo Sou Pet" class="logo">
+        <h1>SOU PET (RELATÓRIO DE ATENDIMENTO)</h1>
+    </header>
+    
+    <!-- BLOCO DE ATENDIMENTO -->
+    <section class="info-block">
+        <div class="block-header">ATENDIMENTO</div>
+        <div class="info-row">
+            <div class="info-item-half"><strong>Nº:</strong> {{ ag.id }}</div>
+            <div class="info-item-half"><strong>DATA:</strong> {{ ag.data|date:"d/m/Y" }}</div>
+        </div>
+        <div class="block-header">CLIENTE</div>
+        <div class="info-row">
+            <div class="info-item-full"><strong>Nome:</strong> {{ ag.cliente.nome }}</div>
+        </div>
+        <div class="info-row">
+            <div class="info-item-half"><strong>Tel:</strong> {{ ag.cliente.telefone|default:"-" }}</div>
+            <div class="info-item-half"><strong>E-mail:</strong> {{ ag.cliente.email|default:"-" }}</div>
+        </div>
+        <div class="info-row">
+            <div class="info-item-full"><strong>Endereço:</strong> {{ ag.cliente.endereco|default:"-" }}</div>
+        </div>
+    </section>
+
+    <!-- BLOCO DE PACIENTE -->
+    <section class="info-block">
+        <div class="block-header">PACIENTE</div>
+        <div class="info-row">
+            <div class="info-item-full"><strong>Nome:</strong> {{ ag.animal.nome }}</div>
+        </div>
+        <div class="info-row">
+            <div class="info-item-half"><strong>Espécie:</strong> {{ ag.animal.get_especie_display|default:"N/D" }}</div>
+            <div class="info-item-half"><strong>Raça:</strong> {{ ag.animal.raca|default:"N/D" }}</div>
+        </div>
+        <div class="info-row">
+            <div class="info-item-half"><strong>Peso:</strong> {% if ag.animal.peso %}{{ ag.animal.peso }} kg{% else %}N/D{% endif %}</div>
+            <div class="info-item-half"><strong>Gênero:</strong> {{ ag.animal.get_sexo_display|default:"N/D" }}</div>
+        </div>
+        <div class="info-row">
+            <div class="info-item-full"><strong>Idade:</strong> {% if ag.animal.idade %}{{ ag.animal.idade }} anos{% else %}N/D{% endif %}</div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO DE PROCEDIMENTOS -->
+    <section class="procedimentos">
+        <h3>PROCEDIMENTOS CLÍNICOS</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>CÓDIGO</th>
+                    <th>PROCEDIMENTO</th>
+                    <th>VALOR R$</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proc in ag.procedimentos.all %}
+                <tr>
+                    <td>{{ proc.codigo|default:"-" }}</td>
+                    <td>{{ proc.procedimento_descricao }}</td>
+                    <td class="valor">{{ proc.valor }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center">Nenhum procedimento registrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" class="total-label">VALOR TOTAL:</td>
+                    <td class="total-valor">R$ {{ ag.valor_total|default:"0,00" }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+
+    <!-- 💊 SEÇÃO DE MEDICAMENTOS UTILIZADOS -->
+    <section class="medicamentos">
+        <h3>MEDICAMENTOS UTILIZADOS</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>MEDICAMENTO</th>
+                    <th>QUANTIDADE USADA</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for med in ag.medicamentos_usados.all %}
+                <tr>
+                    <td>{{ med.medicamento.nome|default:"-" }}</td>
+                    <td>{{ med.quantidade_usada|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" class="text-center">Nenhum medicamento registrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

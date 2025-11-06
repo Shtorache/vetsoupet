@@ -6,22 +6,29 @@
     <meta charset="UTF-8">
     <title>Lista de Clientes</title>
     <link rel="stylesheet" href="{% static 'css/lista_clientes.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <main class="container">
         <header class="page-header">
             <div class="header-logo">
-        <img src="{% static 'imgs/logo_parceiro_1.png' %}" alt="Logo VET Sou Pet">
-      </div>
+                <img src="{% static 'imgs/logo_parceiro_1.png' %}" alt="Logo VET Sou Pet">
+            </div>
             <div class="header-actions">
                 <a href="{% url 'index' %}" class="btn btn-secondary">Voltar para Agenda</a>
-                <a href="{% url 'cadastrar_cliente' %}" class="btn btn-primary">+ Novo Cliente</a>
+                <a href="{% url 'cadastrar_cliente' %}" class="btn btn-primary">Novo Cliente</a>
             </div>
         </header>
 
-        <h2>Gerenciamento de Clientes</h2>
+        <h2>🐾 Gerenciamento de Clientes</h2>
+
+        <!-- 🔍 Barra de busca -->
+        <div class="search-bar">
+            <input type="text" placeholder="Pesquisar cliente..." id="searchInput">
+        </div>
         
-        <section class="cliente-list">
+        <section class="cliente-list" id="clienteList">
             {% for cliente in clientes %}
             <div class="cliente-card">
                 <div class="cliente-info">
@@ -35,9 +42,21 @@
                 </div>
             </div>
             {% empty %}
-                <p>Nenhum cliente cadastrado.</p>
+                <p class="empty">Nenhum cliente cadastrado.</p>
             {% endfor %}
         </section>
     </main>
+
+    <script>
+        // 🔍 Filtro simples de clientes
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.cliente-card');
+            cards.forEach(card => {
+                const nome = card.querySelector('.cliente-info').textContent.toLowerCase();
+                card.style.display = nome.includes(filter) ? '' : 'none';
+            });
+        });
+    </script>
 </body>
 </html>

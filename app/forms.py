@@ -1,5 +1,5 @@
 from django import forms
-from .models import Agendamento, Cliente, Animal, Profissional, PlanoSaude, Medicamento
+from .models import Agendamento, Cliente, Animal, Profissional, PlanoSaude, Medicamento, ProcedimentoRealizado, MedicamentoUsado
 
 class AgendamentoForm(forms.ModelForm):
     especie = forms.ChoiceField(
@@ -86,16 +86,36 @@ class EditarAgendamentoForm(forms.ModelForm):
 
 
 
-class AtendimentoDetalhadoForm(forms.ModelForm):
+class AtendimentoDetalhesForm(forms.ModelForm):
     class Meta:
         model = Agendamento
-        fields = ["prescricao", "relato_atendimento", "violento"]
-
+        fields = ['relato_atendimento', 'prescricao', 'violento']
         widgets = {
-            "prescricao": forms.Textarea(attrs={"rows": 2}),
-            "relato_atendimento": forms.Textarea(attrs={"rows": 4}),
-            "violento": forms.CheckboxInput(),
+            'relato_atendimento': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'prescricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'violento': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+# Formulário para UMA linha de procedimento
+class ProcedimentoForm(forms.ModelForm):
+    class Meta:
+        model = ProcedimentoRealizado
+        fields = ['codigo', 'procedimento_descricao', 'valor']
+        widgets = {
+            'codigo': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Código'}),
+            'procedimento_descricao': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Descrição do Procedimento'}),
+            'valor': forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Valor R$'}),
+        }
+
+# FormSet que gerencia MÚLTIPLAS linhas de procedimento
+ProcedimentoFormSet = forms.inlineformset_factory(
+    Agendamento,
+    ProcedimentoRealizado,
+    form=ProcedimentoForm,
+    extra=1,
+    can_delete=True,
+    can_delete_extra=True
+)
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -123,7 +143,7 @@ class AnimalForm(forms.ModelForm):
 
     class Meta:
         model = Animal
-        fields = ["cliente", "nome", "especie", "raca", "idade", "foto"]
+        fields = ['nome', 'especie', 'raca', 'idade', 'peso', 'sexo', 'foto', 'cliente']
         widgets = {
             "cliente": forms.HiddenInput(),
             "nome": forms.TextInput(attrs={"class": "form-control"}),
@@ -198,4 +218,22 @@ class MedicamentoForm(forms.ModelForm):
             "preco": forms.NumberInput(attrs={"class": "form-control", "step": "0.01"}),
         }
 
+
+
+class MedicamentoUsadoForm(forms.ModelForm):
+    class Meta:
+        model = MedicamentoUsado
+        fields = ['medicamento', 'quantidade_usada']
+        widgets = {
+            'medicamento': forms.Select(attrs={'class': 'form-control medicamento-select'}),
+            'quantidade_usada': forms.NumberInput(attrs={'class': 'form-control quantidade-input', 'min': 1}),
+        }
+
+MedicamentoUsadoFormSet = forms.inlineformset_factory(
+    Agendamento,
+    MedicamentoUsado,
+    form=MedicamentoUsadoForm,
+    extra=1,
+    can_delete=True
+)
 

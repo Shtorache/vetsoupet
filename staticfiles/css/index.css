@@ -2,15 +2,17 @@
 
 /* 1. Variáveis de Tema */
 :root {
-    --primary: #1e9400;      /* Verde principal */
-    --secondary: #2a9d8f;    /* Verde-água para ações secundárias */
-    --success: #28a745;      /* Verde para sucesso */
-    --warning: #f77428;      /* Laranja para pendente/alerta */
-    --danger: #f82626;       /* Vermelho para perigo */
-    --bg-main: #f8f9fa;      /* Fundo da página */
-    --bg-card: #ffffff;      /* Fundo dos cards */
-    --text-main: #212529;    /* Texto principal (quase preto) */
-    --text-muted: #6c757d;   /* Texto secundário (cinza) */
+    --primary: #1e9400;
+    --secondary: #2a9d8f;
+    --info: #0dcaf0;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --bg-main: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-main: #212529;
+    --text-light: #ffffff;
+    --text-muted: #6c757d;
     --border-color: #dee2e6;
     --border-radius: 8px;
     --shadow: 0 4px 12px rgba(0,0,0,0.07);
@@ -38,23 +40,37 @@ body {
     margin-bottom: 2.5rem;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-color);
+    width: 100%; /* Garante que o header ocupe todo o espaço do container */
 }
 .header-logo img {
     height: 50px;
     display: block;
 }
+
+/* ===== CORREÇÃO DO LAYOUT DOS BOTÕES ===== */
 .header-actions {
     display: flex;
     align-items: center;
     gap: 15px;
+    margin-left: auto; /* Empurra todo o grupo de botões para a direita */
+    flex-grow: 1; /* Permite que os botões internos cresçam */
+    max-width: 900px; /* Limite para não esticar demais em telas largas */
 }
 
+/* Faz todos os botões terem o mesmo tamanho */
+.header-actions .btn {
+    flex-grow: 1;       /* Permite que cresçam */
+    flex-basis: 0;        /* Começam com a mesma base de largura */
+    white-space: nowrap;  /* Impede que o texto quebre em duas linhas */
+}
+/* ======================================= */
+
 /* 4. Botões */
-.btn, .btn-primary, .btn-secondary, .btn-success, .btn-logout, .edit-btn, .primary, .secondary {
+.btn, .btn-primary, .btn-secondary {
     border: none;
     border-radius: var(--border-radius);
-    padding: 14px 28px;
-    font-size: 1rem;
+    padding: 14px 20px; /* Padding horizontal um pouco menor */
+    font-size: 0.9rem;  /* Fonte um pouco menor */
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
@@ -63,36 +79,47 @@ body {
     text-align: center;
     letter-spacing: 0.5px;
 }
-.btn:hover, .btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-logout:hover, .edit-btn:hover, .primary:hover, .secondary:hover {
-    transform: translateY(-3px) scale(1.03);
+.btn:hover, .btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-3px);
     box-shadow: 0 6px 14px rgba(0,0,0,0.12);
 }
 
-/* Variações de cor */
-.btn-primary, .primary { background-color: var(--primary); color: white; }
-.btn-secondary, .secondary { background-color: #e9ecef; color: var(--text-main); }
-.btn-success { background-color: var(--success); color: white; }
-.btn-logout { background-color: var(--danger); color: white; }
-.edit-btn { background-color: var(--secondary); color: white; font-size: 0.85rem; padding: 8px 14px; }
+.btn-primary { background-color: var(--primary); color: var(--text-light); }
+.btn-secondary { background-color: #e9ecef; color: var(--text-main); }
 
-/* 🔥 BOTÃO DE SAIR FLUTUANTE (VÁLIDO PARA TODAS AS TELAS) 🔥 */
+
+/* Botão de Sair Flutuante */
 .header-actions form {
     position: fixed;
     bottom: 20px;
     right: 20px;
     z-index: 999;
+    flex-grow: 0 !important; /* Impede que este form cresça com os outros botões */
+    flex-basis: auto !important;
 }
 .btn-logout {
+    background-color: var(--danger);
+    color: var(--text-light);
     padding: 10px 18px;
     font-size: 0.9rem;
-    border-radius: 40px; /* Deixa mais arredondado */
+    border-radius: 40px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 .btn-logout:hover {
-    background-color: #d60000;
+    background-color: #c82333;
     transform: translateY(-2px) scale(1.05);
 }
 
+/* ✨ NOVO ESTILO PARA O BOTÃO EDITAR ✨ */
+.btn-edit {
+    background-color: var(--secondary);
+    color: var(--text-light);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 8px 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
 
 /* 5. Painel de Filtros */
 .filtro-panel { margin-bottom: 2rem; padding: 1.5rem; background-color: var(--bg-card); border-radius: var(--border-radius); box-shadow: var(--shadow); }
@@ -116,6 +143,8 @@ body {
 .status.realizado { background-color: var(--success); }
 .status.cancelado { background-color: var(--danger); }
 .status.confirmado { background-color: var(--secondary); }
+
+
 
 /* 7. Modal */
 .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
@@ -204,3 +233,60 @@ body {
         width: 100%;
     }
 }
+
+
+.status-select {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* Adicione esta regra ao seu index.css para corrigir as cores das opções */
+
+.appt-card .status-select option {
+    background-color: #ffffff; /* Fundo branco para as opções */
+    color: #212529;         /* Texto escuro para as opções */
+}
+/* Cores aplicadas APENAS nos dropdowns DENTRO dos cards de agendamento */
+.appt-card .status-select.pendente { background-color: #ffc107; color: #333; }
+.appt-card .status-select.realizado { background-color: #28a745; color: white; }
+.appt-card .status-select.cancelado { background-color: #dc3545; color: white; }
+.appt-card .status-select.confirmado { background-color: #0dcaf0; color: white; }
+
+/* ======================================================= */
+/* 🔥 ESTILOS PARA O DROPDOWN DE STATUS INTERATIVO 🔥      */
+/* ======================================================= */
+
+/* 1. Estilo base do dropdown */
+.status-select {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 50px;
+    border: 1px solid transparent;
+    text-transform: capitalize;
+    cursor: pointer;
+    
+    /* Essencial para permitir cores customizadas no celular */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* 2. Cores baseadas no status (APENAS nos cards) */
+.appt-card .status-select.pendente { background-color: #ffc107; color: #212529; }
+.appt-card .status-select.realizado { background-color: #28a745; color: white; }
+.appt-card .status-select.cancelado { background-color: #dc3545; color: white; }
+.appt-card .status-select.confirmado { background-color: #0dcaf0; color: white; }
+
+/* 3. Garante que a lista de opções seja sempre branca */
+.appt-card .status-select option {
+    background-color: #ffffff;
+    color: #212529;
+}
+
+
+

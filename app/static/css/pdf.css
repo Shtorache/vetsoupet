@@ -1,0 +1,172 @@
+/* ===================================================
+   SouPet - Relatório de Medicamentos (WeasyPrint)
+   ---------------------------------------------------
+   Tema vermelho institucional + Destaques de validade
+   =================================================== */
+
+@page {
+    size: A4;
+    margin: 2.5cm 2cm 2.5cm 2cm;
+
+    @top-left {
+        content: "SouPet - Relatório de Medicamentos";
+        font-size: 11px;
+        color: #a30000;
+    }
+
+    @bottom-right {
+        content: "Página " counter(page) " de " counter(pages);
+        font-size: 10px;
+        color: #999;
+    }
+}
+
+/* ========================
+   BASE GERAL
+======================== */
+body {
+    font-family: "DejaVu Sans", Arial, Helvetica, sans-serif;
+    color: #222;
+    font-size: 13px;
+    line-height: 1.5;
+    background: #fff;
+}
+
+/* ========================
+   CABEÇALHO
+======================== */
+header {
+    text-align: center;
+    border-bottom: 3px solid #c62828;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+
+header img {
+    width: 90px;
+    margin-bottom: 6px;
+}
+
+header h2 {
+    color: #c62828;
+    font-size: 20px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+/* ========================
+   TABELA DE MEDICAMENTOS
+======================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: middle;
+    font-size: 12px;
+}
+
+th {
+    background-color: #c62828;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fdf2f2;
+}
+
+/* ========================
+   COLUNAS PERSONALIZADAS
+======================== */
+th.nome, td.nome { width: 25%; }
+th.fabricante, td.fabricante { width: 20%; }
+th.qtd, td.qtd { width: 8%; text-align: center; }
+th.unidade, td.unidade { width: 10%; text-align: center; }
+th.validade, td.validade { width: 12%; text-align: center; }
+th.preco, td.preco { width: 15%; text-align: right; }
+
+/* ========================
+   DESTAQUES DE VALIDADE
+======================== */
+
+/* Normal */
+td.validade {
+    color: #333;
+}
+
+/* Próximo do vencimento (até 30 dias) */
+td.validade-proxima {
+    color: #ef6c00;
+    font-weight: bold;
+    background-color: #fff3e0; /* leve laranja */
+}
+
+/* Vencido */
+td.validade-vencida {
+    color: #b71c1c;
+    font-weight: bold;
+    background-color: #ffebee; /* leve vermelho claro */
+    border-left: 3px solid #c62828;
+}
+
+/* ========================
+   TOTAL E SOMA
+======================== */
+.total {
+    text-align: right;
+    font-weight: bold;
+    background-color: #ffebee;
+    color: #b71c1c;
+    border-top: 2px solid #c62828;
+}
+
+/* ========================
+   TÍTULOS DE SEÇÃO
+======================== */
+h3 {
+    color: #b71c1c;
+    font-size: 16px;
+    border-bottom: 2px solid #b71c1c;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+/* ========================
+   RODAPÉ FIXO
+======================== */
+footer {
+    position: fixed;
+    bottom: 15px;
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    color: #777;
+    border-top: 1px solid #ccc;
+    padding-top: 6px;
+}
+
+/* ========================
+   AJUSTES DE IMPRESSÃO
+======================== */
+.page-break {
+    page-break-before: always;
+}
+
+@media print {
+    body {
+        background: none;
+        margin: 0;
+    }
+    .no-print {
+        display: none;
+    }
+}

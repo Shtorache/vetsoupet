@@ -21,19 +21,21 @@
         <img src="{% static 'imgs/logo_parceiro_1.png' %}" alt="Logo VET Sou Pet">
       </div>
         <div class="header-actions">
-            <a href="{% url 'index' %}" class="btn btn-secondary">Voltar</a>
-            <a href="{% url 'cadastrar_medicamento' %}" class="btn btn-primary">+ Novo Medicamento</a>
-            <a href="{% url 'gerar_relatorio_medicamentos' %}" class="btn btn-primary">📄 Gerar Relatório</a>
-            
-        </div>
+    <a href="{% url 'index' %}" class="btn header-btn btn-secondary">Voltar</a>
+    <a href="{% url 'cadastrar_medicamento' %}" class="btn header-btn btn-primary"> Novo Medicamento</a>
+    
+    <a href="{% url 'gerar_relatorio_medicamentos' %}" class="btn header-btn btn-info">📄 Gerar Relatório</a>
+</div>
     </header>
 
     <h2>Estoque de Medicamentos</h2>
 
-    <form method="get">
-        <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}">
+    <form method="get" class="search-form">
+ <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}">
         <button type="submit" class="btn btn-secondary">Buscar</button>
+   
     </form>
+       
 
     <table class="table">
         <thead>

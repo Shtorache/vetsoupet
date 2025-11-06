@@ -39,11 +39,17 @@
                         </div>
                         
                         <div class="card-actions">
-    <span class="status-badge status-{{ agendamento.status }}">{{ agendamento.get_status_display }}</span>
+    <span class="status-badge status-{{ agendamento.status }}">
+      {{ agendamento.get_status_display }}
+    </span>
     {% if agendamento.status == 'realizado' %}
-        <a href="{% url 'detalhar_atendimento' pk=agendamento.pk %}" class="btn btn-primary btn-sm btn-detalhes">Ver Detalhes</a>
+      <a href="{% url 'detalhar_atendimento' pk=agendamento.pk %}"
+         class="btn btn-primary btn-detalhes">
+         Ver Detalhes
+      </a>
     {% endif %}
 </div>
+
 
                     </div>
                 {% empty %}

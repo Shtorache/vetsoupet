@@ -3,14 +3,17 @@
 <html lang="pt-br">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta charset="UTF-8">
-  <title>Cadastrar Cliente</title>
-  <link rel="stylesheet" href="{% static 'css/index.css' %}">
-  <link rel="stylesheet" href="{% static 'css/cadastro_cliente.css' %}">
+<meta charset="UTF-8">
+<title>Cadastrar Cliente</title>
+<link rel="stylesheet" href="{% static 'css/cadastro_cliente.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <main class="container">
-        <h1 class="page-title">Cadastrar Cliente</h1>
+        <div class="form-header">
+            <img src="{% static 'imgs/logo_parceiro_1.png' %}" alt="Logo" class="logo">
+            <h1 class="page-title">Cadastrar Cliente</h1>
+        </div>
         
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -18,7 +21,7 @@
             <div class="form-grid">
                 {% for field in form %}
                     <div class="form-group {% if field.name == 'endereco' or field.name == 'foto' %}full-width{% endif %}">
-                        <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                         {{ field }}
                         {% if field.errors %}
                             <small class="text-danger">{{ field.errors }}</small>

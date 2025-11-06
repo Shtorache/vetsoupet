@@ -1,12 +1,29 @@
+/* ===== Reset e base ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #eef2f7, #e3e9f0);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 15px;
+}
+
 /* ===== Container principal ===== */
 .container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 30px 25px;
-    background: linear-gradient(145deg, #ffffff, #f9f9fa);
-    border-radius: 15px;
-    box-shadow: 0 12px 25px rgba(0,0,0,0.08);
-    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    max-width: 1100px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(14px);
+    border-radius: 22px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+    padding: 40px 35px;
+    animation: fadeIn 0.6s ease;
 }
 
 /* ===== Cabeçalho ===== */
@@ -14,54 +31,79 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 15px;
 }
+
 .header-logo img {
-    height: 60px;
+    height: 65px;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
 }
-.header-actions a {
-    margin-left: 10px;
+
+.header-actions {
+    display: flex;
+    gap: 10px;
 }
 
 /* ===== Título ===== */
 h2 {
     font-size: 28px;
-    margin-bottom: 20px;
-    color: #222;
-    font-weight: 600;
+    color: #2b2d42;
+    font-weight: 700;
+    margin-bottom: 25px;
 }
 
-/* ===== Cards de clientes ===== */
+/* ===== Barra de busca ===== */
+.search-bar {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+}
+.search-bar input {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+.search-bar input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 4px 15px rgba(0,123,255,0.25);
+}
+
+/* ===== Cards ===== */
 .cliente-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-.cliente-card {
-    background: #fff;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-}
-.cliente-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 25px;
 }
 
-/* ===== Informações do cliente ===== */
+.cliente-card {
+    background: linear-gradient(145deg, #ffffff, #f4f7fb);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+    transition: all 0.25s ease;
+    border: 1px solid rgba(0,0,0,0.04);
+    animation: slideUp 0.6s ease forwards;
+    opacity: 0;
+}
+.cliente-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
 .cliente-info p {
-    margin: 5px 0;
+    margin: 6px 0;
     font-size: 15px;
-    color: #555;
+    color: #333;
 }
 .cliente-info strong {
-    color: #333;
-    min-width: 80px;
+    color: #1e293b;
 }
 
 /* ===== Ações ===== */
@@ -70,84 +112,102 @@ h2 {
     align-items: center;
     justify-content: space-between;
     margin-top: 15px;
+    gap: 10px;
+    flex-wrap: wrap;
 }
-.cliente-actions .text-muted {
+.text-muted {
     font-size: 14px;
-    color: #888;
+    color: #6b7280;
 }
+
+/* ===== Botões ===== */
 .btn {
+    display: inline-block;
     padding: 10px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    text-decoration: none;
-    font-size: 14px;
+    border-radius: 10px;
     font-weight: 600;
-    transition: all 0.3s ease;
-    letter-spacing: 0.3px;
-    box-sizing: border-box; /* Boa prática para botões */
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    text-align: center;
+    min-width: 120px;
 }
+
 .btn-primary {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+    background: linear-gradient(135deg, #007bff, #0056d3);
     color: white;
-    border: none;
+    box-shadow: 0 3px 10px rgba(0, 91, 255, 0.3);
 }
 .btn-primary:hover {
-    background: linear-gradient(135deg, #0056b3, #003f7f);
+    background: linear-gradient(135deg, #0056d3, #003f9c);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
+
 .btn-secondary {
     background: linear-gradient(135deg, #6c757d, #495057);
     color: white;
-    border: none;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
 .btn-secondary:hover {
     background: linear-gradient(135deg, #495057, #343a40);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
-/* ================================== */
-/* ✨ OTIMIZAÇÕES PARA DISPOSITIVOS MÓVEIS ✨ */
-/* ================================== */
+/* ===== Vazio ===== */
+.empty {
+    text-align: center;
+    color: #777;
+    font-size: 16px;
+    margin-top: 30px;
+}
+
+/* ===== Animações ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Responsividade ===== */
 @media (max-width: 768px) {
-    
-    /* ✅ Ajusta o container principal */
-    .container {
-        margin: 20px 15px;
-        padding: 20px;
-    }
-
-    /* ✅ Centraliza o título e reduz o tamanho */
-    h2 {
-        font-size: 24px;
-        text-align: center;
-    }
-
-    /* ✅ Reorganiza o cabeçalho para ser vertical e centralizado */
     .page-header {
         flex-direction: column;
         align-items: center;
-        gap: 20px;
-    }
-    
-    /* ✅ Melhora as ações do cabeçalho para serem botões de largura total */
-    .header-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-        align-items: stretch;
-    }
-    .header-actions a {
-        margin-left: 0;
-        text-align: center;
+        gap: 15px;
     }
 
-    /* ✅ Ajusta as ações dentro de cada card de cliente */
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 15px;
+    }
+
+    h2 {
+        text-align: center;
+        font-size: 24px;
+    }
+
     .cliente-actions {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
+        align-items: stretch;
+    }
+
+    .text-muted {
+        text-align: center;
+        width: 100%;
+    }
+
+    .cliente-card {
+        padding: 18px;
     }
 }

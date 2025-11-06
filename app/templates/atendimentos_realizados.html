@@ -78,55 +78,19 @@
                     {% endif %}
                 </div>
                 <div class="appt-actions">
-                    <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
-                    <a href="{% url 'detalhar_atendimento' ag.id %}" class="btn btn-primary btn-sm">Detalhar</a>
-                </div>
+    <span class="status {{ ag.status }}">{{ ag.get_status_display }}</span>
+    <a href="{% url 'detalhar_atendimento' ag.id %}" class="btn btn-primary btn-sm">Detalhar</a>
+    
+    <a href="{% url 'gerar_relatorio_clinico_pdf' ag.id %}" class="btn btn-secondary btn-sm" target="_blank">Relatório</a>
+</div>
             </div>
             {% empty %}
                 <p class="no-appt">Nenhum atendimento realizado encontrado com os filtros aplicados.</p>
             {% endfor %}
         </section>
-    </main>
-
-    </main>
-
-    <script src="{% static 'js/main.js' %}"></script>
+    </main> <script src="{% static 'js/main.js' %}"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const logoImage = document.getElementById('dynamic-logo');
-            if (!logoImage) return; // Se não encontrar o logo, não faz nada
-
-            // A lista de imagens com os caminhos corretos gerados pelo Django
-            const logoPaths = [
-                "{% static 'imgs/logo_parceiro_1.png' %}",
-                "{% static 'imgs/logo_parceiro_2.png' %}",
-                "{% static 'imgs/logo_parceiro_3.png' %}",
-                "{% static 'imgs/logo_parceiro_4.png' %}",
-                "{% static 'imgs/logo_parceiro_5.png' %}",
-            ];
-
-            let currentLogoIndex = 0;
-
-            // Função que troca o logo a cada 4 segundos
-            setInterval(() => {
-                // Efeito de fade-out
-                logoImage.style.opacity = 0;
-
-                // Espera o fade-out terminar para trocar a imagem
-                setTimeout(() => {
-                    currentLogoIndex = (currentLogoIndex + 1) % logoPaths.length;
-                    logoImage.src = logoPaths[currentLogoIndex];
-                    // Efeito de fade-in
-                    logoImage.style.opacity = 1;
-                }, 500); // 500ms (meio segundo)
-
-            }, 4000); // 4000ms (4 segundos)
-        });
     </script>
-</body>
-</html>
-
-    <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

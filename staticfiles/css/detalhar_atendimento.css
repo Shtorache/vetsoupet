@@ -1,174 +1,295 @@
-/* ==========================================================================
-   CSS Completo para a Página de Detalhes do Atendimento
-   ========================================================================== */
-
-/* -------------------------------------------------------------------------- */
-/* #VARIÁVEIS DE TEMA E ESTILOS GLOBAIS */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/* VARIÁVEIS E BASE */
+/* ========================================================================== */
 :root {
     --primary: #b30000;
     --secondary: #2a9d8f;
     --success: #28a745;
-    --warning: #f4a261;
     --danger: #e76f51;
     --bg-main: #f8f9fa;
     --bg-card: #ffffff;
     --text-main: #212529;
     --text-muted: #6c757d;
     --border-color: #dee2e6;
-    --border-radius: 8px;
-    --shadow: 0 4px 12px rgba(0,0,0,0.07);
+    --radius: 12px;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 body {
     margin: 0;
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: var(--bg-main);
+    font-family: "Poppins", sans-serif;
     color: var(--text-main);
 }
 
+/* ========================================================================== */
+/* CONTAINER GERAL */
+/* ========================================================================== */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 2rem 1.5rem;
 }
 
-/* -------------------------------------------------------------------------- */
-/* #COMPONENTES GERAIS (CABEÇALHO, BOTÕES) */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/* CABEÇALHO */
+/* ========================================================================== */
 .page-header {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    gap: 1rem;
     margin-bottom: 2.5rem;
-    padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
 }
 
 .page-header h1 {
     margin: 0;
+    font-size: 1.8rem;
 }
 
-/* Base dos Botões */
-.btn, .btn-primary, .btn-secondary, .primary, .secondary {
+.page-header a {
+    text-decoration: none !important;
+}
+
+/* ========================================================================== */
+/* BOTÕES */
+/* ========================================================================== */
+.btn {
     border: none;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
     padding: 10px 20px;
-    font-size: 0.9rem;
     font-weight: 600;
+    font-size: 0.95rem;
     cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s ease;
     display: inline-block;
+    transition: all 0.25s ease;
 }
-.btn:hover, .btn-primary:hover, .btn-secondary:hover, .primary:hover, .secondary:hover {
+
+.btn-primary {
+    background-color: var(--primary);
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+    color: #fff;
+}
+
+.btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Variações de cor */
-.btn-primary, .primary { background-color: var(--primary); color: white; }
-.btn-secondary, .secondary { background-color: #e9ecef; color: var(--text-main); }
-
-
-/* -------------------------------------------------------------------------- */
-/* #ESTILOS ESPECÍFICOS DA PÁGINA DE DETALHES */
-/* -------------------------------------------------------------------------- */
-
-/* Card de Dados Básicos */
+/* ========================================================================== */
+/* CARD DE INFORMAÇÕES */
+/* ========================================================================== */
 .basic-details-card {
-    background-color: var(--bg-card);
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     padding: 1.5rem 2rem;
     margin-bottom: 2rem;
-    box-shadow: var(--shadow);
 }
 
 .basic-details-card h3 {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
     color: var(--primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.2rem;
 }
 
-.basic-details-card .form-grid {
+.form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1rem;
 }
 
-.basic-details-card p {
-    margin: 0;
-    padding: 10px;
+.form-grid p {
     background-color: var(--bg-main);
-    border-radius: 6px;
-    font-size: 0.95rem;
-    border-left: 3px solid var(--secondary);
+    border-left: 4px solid var(--secondary);
+    border-radius: 8px;
+    padding: 10px;
+    margin: 0;
 }
 
-.basic-details-card p strong {
-    color: var(--text-muted);
-}
-
-/* Separador */
-hr {
-    border: none;
-    border-top: 1px solid var(--border-color);
-    margin: 2.5rem 0;
-}
-
-/* Formulário de Registro */
+/* ========================================================================== */
+/* FORMULÁRIOS */
+/* ========================================================================== */
 .detail-form-section h2 {
     color: var(--primary);
-    margin-bottom: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
 }
 
-.detail-form-section .form-group {
-    margin-bottom: 1.5rem;
-}
-
-.detail-form-section .form-group label {
+.form-group label {
     display: block;
     font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 1rem;
+    margin-bottom: 6px;
 }
 
-.detail-form-section textarea {
+textarea {
     width: 100%;
-    min-height: 120px;
-    padding: 12px;
+    min-height: 100px;
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
+    padding: 10px;
     font-size: 1rem;
-    font-family: inherit;
-    box-sizing: border-box;
-    resize: vertical;
 }
 
-.checkbox-group {
+/* ========================================================================== */
+/* TABELAS */
+/* ========================================================================== */
+.table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.styled-table th {
+    background-color: var(--secondary);
+    color: white;
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 600;
+}
+
+.styled-table td {
+    border: 1px solid var(--border-color);
+    padding: 10px 12px;
+}
+
+.styled-table tr:hover {
+    background-color: #f2fdfc;
+}
+
+/* ========================================================================== */
+/* SEÇÃO DE ADIÇÃO */
+/* ========================================================================== */
+.add-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* ========================================================================== */
+/* SEÇÃO DE MEDICAMENTOS */
+/* ========================================================================== */
+.medicamentos-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left: 6px solid var(--secondary);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.medicamentos-section h2 {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 1rem;
-}
-.checkbox-group input[type="checkbox"] {
-    width: 1.3em;
-    height: 1.3em;
-    cursor: pointer;
-}
-.checkbox-group label {
-    margin-bottom: 0;
-    font-weight: normal;
-    cursor: pointer;
+    gap: 8px;
+    color: var(--primary);
+    font-size: 1.3rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
 }
 
-.detail-form-section .modal-actions {
-    display: flex; /* Adicionado para garantir o alinhamento */
-    justify-content: flex-start;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-color);
+/* ========================================================================== */
+/* TOTAL E BOTÃO FINAL */
+/* ========================================================================== */
+.total-value {
+    background: #fff6f6;
+    border: 1px solid var(--danger);
+    border-radius: var(--radius);
+    padding: 1rem 1.5rem;
+    color: var(--primary);
+    font-weight: 700;
+    text-align: right;
     margin-top: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+/* ========================================================================== */
+/* RESPONSIVIDADE REAL */
+/* ========================================================================== */
+@media (max-width: 992px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .btn {
+        font-size: 0.85rem;
+        padding: 8px 16px;
+    }
+
+    .total-value {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .styled-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        border-radius: 10px;
+    }
+
+    .styled-table th, .styled-table td {
+        min-width: 120px;
+    }
+
+    .add-actions {
+        justify-content: center;
+    }
+
+    .modal-actions {
+        justify-content: center;
+    }
+
+    .btn-primary {
+        width: 100%;
+        max-width: 280px;
+    }
 }

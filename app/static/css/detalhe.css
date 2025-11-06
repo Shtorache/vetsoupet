@@ -1,184 +1,223 @@
-/* detalhe.css - Perfil de cliente moderno */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
+:root {
+    --primary: #007bff;
+    --primary-dark: #0056d3;
+    --secondary: #6c757d;
+    --success: #00b960;
+    --bg-light: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #6b7280;
+    --radius: 16px;
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    --transition: 0.3s ease;
+}
+
+/* 🌿 BASE GERAL */
 body {
     font-family: 'Inter', sans-serif;
-    background: #f0f2f5;
+    background: linear-gradient(135deg, #eef3f9, #e5f6ee);
     margin: 0;
     padding: 0;
-    color: #333;
+    color: var(--text-main);
 }
 
+/* 🧱 CONTAINER PRINCIPAL */
 .container {
-    max-width: 1000px;
-    margin: 50px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    max-width: 950px;
+    margin: 60px auto;
+    padding: 40px 30px;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    animation: fadeIn 0.5s ease;
 }
 
+/* 🐾 CABEÇALHO DO CLIENTE */
 .cliente-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.info-subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.cliente-nome {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 25px;
+}
+
+/* 🧾 INFORMAÇÕES DO CLIENTE */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 15px;
+    justify-items: center;
+}
+
+.info-item {
     display: flex;
     align-items: center;
-    gap: 30px;
-    margin-bottom: 40px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e0e0e0;
+    gap: 10px;
+    background: var(--bg-light);
+    border-radius: 12px;
+    padding: 14px 18px;
+    border: 1px solid #e5e7eb;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    transition: all var(--transition);
+}
+.info-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 }
 
-.cliente-header img {
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    border: 4px solid #007bff;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+.icon {
+    font-size: 20px;
+    color: var(--primary);
+}
+.info-item strong {
+    color: var(--text-main);
 }
 
-.cliente-header img:hover {
-    transform: scale(1.05);
-}
-
-.cliente-info h1 {
-    margin: 0;
-    font-size: 32px;
-    font-weight: 700;
-}
-
-.cliente-info p {
-    margin: 6px 0;
-    font-size: 16px;
-    color: #555;
-}
-
-.cliente-info p strong {
-    color: #007bff;
-}
-
+/* 🔘 BOTÕES DE AÇÃO */
 .actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
+    align-items: center;
     gap: 15px;
-    margin-bottom: 30px;
+    margin: 30px 0 40px;
+    flex-wrap: wrap; /* permite empilhar no mobile */
 }
-
 .btn {
-    padding: 10px 22px;
-    border-radius: 8px;
-    text-decoration: none;
+    padding: 8px 8px;
+    border-radius: 10px;
     font-weight: 600;
-    font-size: 15px;
+    text-decoration: none;
     transition: all 0.3s ease;
-    cursor: pointer;
-    border: none;
+    min-width: 150px;
+    text-align: center;
 }
 
 .btn-primary {
-    background-color: #007bff;
-    color: white;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
-
 .btn-primary:hover {
-    background-color: #0056b3;
+    background: linear-gradient(135deg, var(--primary-dark), #003f9c);
     transform: translateY(-2px);
 }
-
 .btn-secondary {
-    background-color: #6c757d;
-    color: white;
+    background: linear-gradient(135deg, #6c757d, #4c5156);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
-
 .btn-secondary:hover {
-    background-color: #5a6268;
+    background: linear-gradient(135deg, #55595e, #343a40);
     transform: translateY(-2px);
 }
 
-.pacientes-section h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    font-weight: 600;
-    color: #333;
+/* 🐕 SEÇÃO DE ANIMAIS */
+.pacientes-section {
+    text-align: center;
 }
-
+.pacientes-section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
 .pacientes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 25px;
 }
 
+/* 🐈 CARD DE ANIMAL */
+.paciente-link-card {
+    text-decoration: none;
+    color: inherit;
+}
 .paciente-card {
-    background: linear-gradient(145deg, #ffffff, #f9f9f9);
-    border-radius: 16px;
-    padding: 20px;
+    background: linear-gradient(145deg, #ffffff, #f5f6f8);
+    border-radius: var(--radius);
+    padding: 25px 20px;
     text-align: center;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    transition: all var(--transition);
 }
-
 .paciente-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
-
 .paciente-card img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
+    border: 3px solid var(--primary);
     object-fit: cover;
-    margin-bottom: 15px;
-    border: 2px solid #007bff;
+    margin-bottom: 10px;
 }
-
-.paciente-card strong {
-    display: block;
+.paciente-info strong {
     font-size: 18px;
-    margin-bottom: 6px;
+    color: var(--text-main);
+    display: block;
 }
-
-.paciente-card span {
+.paciente-info span {
     font-size: 14px;
-    color: #666;
+    color: var(--text-muted);
+}
+.sem-plano-info {
+    font-size: 14px;
+    color: #888;
+    margin-top: 10px;
+}
+.plano-info {
+    font-size: 14px;
+    color: var(--primary);
+    margin-top: 10px;
 }
 
-/* ===================================== */
-/* ✨ RESPONSIVIDADE PARA CELULARES ✨     */
-/* ===================================== */
-@media(max-width: 768px){
+/* ✨ ANIMAÇÃO */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    /* ✅ Ajusta o container principal */
+/* 📱 RESPONSIVIDADE */
+@media (max-width: 768px) {
     .container {
-        margin: 20px 15px;
-        padding: 20px;
+        margin: 20px 10px;
+        padding: 25px;
+    }
+    .cliente-nome {
+        font-size: 26px;
+    }
+    .info-grid {
+        grid-template-columns: 1fr;
     }
 
-    /* Empilha o cabeçalho (já estava correto) e ajusta o conteúdo */
-    .cliente-header {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-    .cliente-header img {
-        width: 120px; /* ✅ Imagem um pouco menor */
-        height: 120px;
-        margin-bottom: 0; /* A propriedade 'gap' já cuida do espaçamento */
-    }
-    .cliente-info h1 {
-        font-size: 26px; /* ✅ Título um pouco menor */
-    }
-
-    /* Centraliza os botões (já estava correto) e ajusta o espaçamento */
     .actions {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 10px; /* ✅ Menor espaçamento entre os botões */
+        flex-direction: column; /* empilha os botões verticalmente no mobile */
+        gap: 10px;
+    }
+    .btn {
+        width: 100%; /* botão ocupa toda largura no mobile */
+        max-width: none;
     }
     
-    /* ✅ Ajusta a seção de pacientes */
-    .pacientes-section h2 {
-        text-align: center; /* Centraliza o subtítulo */
-    }
     .pacientes-grid {
-        gap: 15px; /* ✅ Menor espaçamento entre os cards */
+        grid-template-columns: 1fr;
+        gap: 15px;
     }
 }
+

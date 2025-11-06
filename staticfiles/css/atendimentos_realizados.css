@@ -26,6 +26,37 @@
     --font-main: 'Segoe UI', system-ui, sans-serif;
 }
 
+
+/* atendimentos_realizados.css */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* ... seus outros estilos ... */
+}
+
+.header-logo a {
+    display: block; /* Garante que a área clicável ocupe toda a imagem */
+}
+
+.header-logo img {
+    height: 50px; /* Mesma altura do logo na outra página */
+}
+
+.header-title {
+    /* Centraliza o título se necessário, caso ele saia do lugar */
+    text-align: center;
+    flex-grow: 1; /* Faz o título ocupar o espaço central */
+}
+
+
+
+#dynamic-logo {
+    height: 50px; /* Garante que a altura seja a mesma do original */
+    transition: opacity 0.5s ease-in-out; /* A mágica do fade está aqui */
+}
+
 /* -------------------------------------------------------------------------- */
 /* RESET E ESTILOS GLOBAIS
 /* -------------------------------------------------------------------------- */
@@ -49,9 +80,8 @@ body {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
-
 /* ==========================================================================
    CABEÇALHO
    ========================================================================== */
